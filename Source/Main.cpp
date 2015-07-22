@@ -51,6 +51,17 @@ int main(int argc, char* argv[])
         glfwDestroyWindow(window);
     };
 
+    // Initialize GLEW library.
+    glewExperimental = GL_TRUE;
+    GLenum error = glewInit();
+
+    if(error != GLEW_OK)
+    {
+        Log() << "GLEW Error: " << glewGetErrorString(error);
+        Log() << "Failed to initialze GLEW library!";
+        return -1;
+    }
+
     // Check created OpenGL context.
     int glMajor = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MAJOR);
     int glMinor = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MINOR);

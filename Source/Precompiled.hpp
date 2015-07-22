@@ -20,6 +20,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#define GLEW_STATIC
+#include <gl/glew.h>
 #include <glfw/glfw3.h>
 
 #include "Common/Debug.hpp"

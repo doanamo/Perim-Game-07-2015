@@ -195,7 +195,7 @@ Include_Directories("../External/GLM-0.9.6.3")
 # Find library.
 Find_Package(OpenGL REQUIRED)
 
-# Link libraries.
+# Link library.
 Target_Link_Libraries(${TargetName} ${OPENGL_gl_LIBRARY})
 
 #
@@ -221,3 +221,21 @@ Set_Property(TARGET "glfw" PROPERTY FOLDER "External")
 # Link library target.
 Add_Dependencies(${TargetName} "glfw")
 Target_Link_Libraries(${TargetName} "glfw")
+
+#
+# GLEW
+#
+
+# Add library directory.
+Add_SubDirectory("../External/GLEW-1.12.0" "GLEW" EXCLUDE_FROM_ALL)
+
+# Add include directory.
+Include_Directories("../External/GLEW-1.12.0/include")
+
+# Move library target to dependencies.
+Set_Property(TARGET "glew32s" PROPERTY PROJECT_LABEL "GLEW")
+Set_Property(TARGET "glew32s" PROPERTY FOLDER "External")
+
+# Link library target.
+Add_Dependencies(${TargetName} "glew32s")
+Target_Link_Libraries(${TargetName} "glew32s")
