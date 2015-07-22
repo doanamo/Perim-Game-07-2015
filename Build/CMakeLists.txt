@@ -51,6 +51,9 @@ Set(SourceFiles
     "Game/EntityHandle.hpp"
     "Game/EntitySystem.hpp"
     "Game/EntitySystem.cpp"
+    "Game/Component.hpp"
+    "Game/ComponentPool.hpp"
+    "Game/ComponentSystem.hpp"
 )
 
 #

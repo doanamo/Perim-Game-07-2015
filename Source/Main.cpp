@@ -4,6 +4,7 @@
 #include "Graphics/Shader.hpp"
 #include "Graphics/ScreenSpace.hpp"
 #include "Game/EntitySystem.hpp"
+#include "Game/ComponentSystem.hpp"
 
 void ErrorCallback(int error, const char* description)
 {
@@ -126,13 +127,23 @@ int main(int argc, char* argv[])
         Log() << "Entity created: " << handle.identifier << " " << handle.version;
     };
 
+    entitySystem.entityCreated.connect(entityCreated);
+
     auto entityDestroyed = [](Game::EntityHandle handle)
     {
         Log() << "Entity destroyed: " << handle.identifier << " " << handle.version;
     };
 
-    entitySystem.entityCreated.connect(entityCreated);
     entitySystem.entityDestroyed.connect(entityDestroyed);
+
+    // Initialize component system.
+    Game::ComponentSystem componentSystem;
+    if(!componentSystem.Initialize())
+    {
+        return -1;
+    }
+
+    componentSystem.ConnectEntityDestroyed(entitySystem.entityDestroyed);
 
     // Create an entity.
     Game::EntityHandle entity = entitySystem.CreateEntity();
