@@ -96,8 +96,8 @@ namespace Game
 
     public:
         // Event signals.
-        boost::signal<void (EntityHandle)> entityCreated;
-        boost::signal<void (EntityHandle)> entityDestroyed;
+        boost::signals2::signal<void (EntityHandle)> entityCreated;
+        boost::signals2::signal<void (EntityHandle)> entityDestroyed;
 
     private:
         // System state.
