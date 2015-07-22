@@ -3,6 +3,7 @@
 #include "Graphics/VertexInput.hpp"
 #include "Graphics/Shader.hpp"
 #include "Graphics/ScreenSpace.hpp"
+#include "Game/EntitySystem.hpp"
 
 void ErrorCallback(int error, const char* description)
 {
@@ -113,9 +114,38 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    // Initialize entity system.
+    Game::EntitySystem entitySystem;
+    if(!entitySystem.Initialize())
+    {
+        return -1;
+    }
+
+    auto entityCreated = [](Game::EntityHandle handle)
+    {
+        Log() << "Entity created: " << handle.identifier << " " << handle.version;
+    };
+
+    auto entityDestroyed = [](Game::EntityHandle handle)
+    {
+        Log() << "Entity destroyed: " << handle.identifier << " " << handle.version;
+    };
+
+    entitySystem.entityCreated.connect(entityCreated);
+    entitySystem.entityDestroyed.connect(entityDestroyed);
+
+    // Create an entity.
+    Game::EntityHandle entity = entitySystem.CreateEntity();
+
     // Main loop.
     while(!glfwWindowShouldClose(window))
     {
+        // Process window events.
+        glfwPollEvents();
+
+        // Process entity commands.
+        entitySystem.ProcessCommands();
+
         // Setup viewport.
         int windowWidth, windowHeight;
         glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
@@ -144,9 +174,6 @@ int main(int argc, char* argv[])
         // Swap the back buffer.
         glfwSwapInterval(1);
         glfwSwapBuffers(window);
-
-        // Process window events.
-        glfwPollEvents();
     }
 
     return 0;
