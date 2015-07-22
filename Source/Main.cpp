@@ -1,6 +1,7 @@
 #include "Precompiled.hpp"
 #include "Graphics/Buffer.hpp"
 #include "Graphics/VertexInput.hpp"
+#include "Graphics/Shader.hpp"
 
 void ErrorCallback(int error, const char* description)
 {
@@ -92,6 +93,13 @@ int main(int argc, char* argv[])
 
     Graphics::VertexInput vertexInput;
     if(!vertexInput.Initialize(boost::size(vertexAttributes), &vertexAttributes[0]))
+    {
+        return -1;
+    }
+
+    // Load a shader.
+    Graphics::Shader shader;
+    if(!shader.Load(Build::GetWorkingDir() + "Data/Shaders/Basic.glsl"))
     {
         return -1;
     }
