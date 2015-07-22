@@ -2,6 +2,7 @@
 #include "Graphics/Buffer.hpp"
 #include "Graphics/VertexInput.hpp"
 #include "Graphics/Shader.hpp"
+#include "Graphics/ScreenSpace.hpp"
 
 void ErrorCallback(int error, const char* description)
 {
@@ -71,12 +72,20 @@ int main(int argc, char* argv[])
 
     Log() << "Created OpenGL " << glMajor << "." << glMinor << " context.";
 
+    // Create a screen space.
+    Graphics::ScreenSpace screenSpace;
+    screenSpace.SetTargetSize(1024, 576);
+
     // Create a vertex buffer.
     const glm::vec3 vertices[] =
     {
-        glm::vec3( 0.0f,  0.433f, 0.0f),
-        glm::vec3(-0.5f, -0.433f, 0.0f),
-        glm::vec3( 0.5f, -0.433f, 0.0f)
+        { 100.0f, 200.0f, 0.0f, },
+        { 200.0f, 100.0f, 0.0f, },
+        { 100.0f, 100.0f, 0.0f, },
+
+        { 100.0f, 200.0f, 0.0f, },
+        { 200.0f, 200.0f, 0.0f, },
+        { 200.0f, 100.0f, 0.0f, },
     };
 
     Graphics::VertexBuffer vertexBuffer;
@@ -112,6 +121,9 @@ int main(int argc, char* argv[])
         glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
         glViewport(0, 0, windowWidth, windowHeight);
 
+        // Setup screen space.
+        screenSpace.SetSourceSize(windowWidth, windowHeight);
+
         // Clear the back buffer.
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClearDepth(1.0f);
@@ -125,7 +137,7 @@ int main(int argc, char* argv[])
         glUseProgram(shader.GetHandle());
         BOOST_SCOPE_EXIT(&) { glUseProgram(0); };
 
-        glUniformMatrix4fv(shader.GetUniform("vertexTransform"), 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
+        glUniformMatrix4fv(shader.GetUniform("vertexTransform"), 1, GL_FALSE, glm::value_ptr(screenSpace.GetTransform()));
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 

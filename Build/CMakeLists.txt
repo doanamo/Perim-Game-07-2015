@@ -45,6 +45,8 @@ Set(SourceFiles
     "Graphics/VertexInput.cpp"
     "Graphics/Shader.hpp"
     "Graphics/Shader.cpp"
+    "Graphics/ScreenSpace.hpp"
+    "Graphics/ScreenSpace.cpp"
 )
 
 #
