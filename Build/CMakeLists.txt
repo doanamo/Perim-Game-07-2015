@@ -10,8 +10,8 @@ CMake_Minimum_Required(VERSION 3.1.1)
 #
 
 # Build settings.
-Set(ProjectName "Project")
-Set(TargetName "Application")
+Set(ProjectName "Perim")
+Set(TargetName "Game")
 
 # Application settings.
 Set(ShowConsole "Yes")
