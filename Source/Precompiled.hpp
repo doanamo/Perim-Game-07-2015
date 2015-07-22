@@ -20,6 +20,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <glfw/glfw3.h>
+
 #include "Common/Debug.hpp"
 #include "Common/Build.hpp"
 #include "Common/Logger.hpp"

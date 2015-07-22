@@ -167,12 +167,12 @@ EndIf()
 # Boost
 #
 
-# Set Boost options.
+# Set build options.
 Set(Boost_USE_STATIC_LIBS ON)
 Set(Boost_USE_MULTITHREADED ON)
 Set(Boost_USE_STATIC_RUNTIME OFF)
 
-# Find installed Boost library.
+# Find library.
 Find_Package(Boost 1.58.0 COMPONENTS chrono thread system date_time filesystem log log_setup REQUIRED)
 
 # Add include directory.
@@ -187,3 +187,37 @@ Target_Link_Libraries(${TargetName} ${Boost_LIBRARIES})
 
 # Add include directory.
 Include_Directories("../External/GLM-0.9.6.3")
+
+#
+# OpenGL
+#
+
+# Find library.
+Find_Package(OpenGL REQUIRED)
+
+# Link libraries.
+Target_Link_Libraries(${TargetName} ${OPENGL_gl_LIBRARY})
+
+#
+# GLFW
+#
+
+# Set build options.
+Set(GLFW_BUILD_EXAMPLES OFF)
+Set(GLFW_BUILD_TESTS OFF)
+Set(GLFW_BUILD_DOCS OFF)
+Set(GLFW_INSTALL OFF)
+
+# Add library directory.
+Add_Subdirectory("../External/GLFW-3.1.1" "GLFW" EXCLUDE_FROM_ALL)
+
+# Add include directory.
+Include_Directories("../External/GLFW-3.1.1/include")
+
+# Set target properties.
+Set_Property(TARGET "glfw" PROPERTY PROJECT_LABEL "GLFW")
+Set_Property(TARGET "glfw" PROPERTY FOLDER "External")
+
+# Link library target.
+Add_Dependencies(${TargetName} "glfw")
+Target_Link_Libraries(${TargetName} "glfw")
