@@ -181,3 +181,9 @@ Include_Directories(${Boost_INCLUDE_DIRS})
 # Link library targets.
 Target_Link_Libraries(${TargetName} ${Boost_LIBRARIES})
 
+#
+# GLM
+#
+
+# Add include directory.
+Include_Directories("../External/GLM-0.9.6.3")

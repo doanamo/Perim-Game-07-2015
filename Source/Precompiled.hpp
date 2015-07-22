@@ -17,6 +17,9 @@
 #include <boost/scope_exit.hpp>
 #include <boost/range.hpp>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "Common/Debug.hpp"
 #include "Common/Build.hpp"
 #include "Common/Logger.hpp"
