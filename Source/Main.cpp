@@ -1,4 +1,5 @@
 #include "Precompiled.hpp"
+#include "Graphics/Buffer.hpp"
 
 void ErrorCallback(int error, const char* description)
 {
@@ -67,6 +68,20 @@ int main(int argc, char* argv[])
     int glMinor = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MINOR);
 
     Log() << "Created OpenGL " << glMajor << "." << glMinor << " context.";
+
+    // Create a vertex buffer.
+    const glm::vec3 vertices[] =
+    {
+        glm::vec3( 0.0f,  0.433f, 0.0f),
+        glm::vec3(-0.5f, -0.433f, 0.0f),
+        glm::vec3( 0.5f, -0.433f, 0.0f)
+    };
+
+    Graphics::VertexBuffer vertexBuffer;
+    if(!vertexBuffer.Initialize(sizeof(glm::vec3), boost::size(vertices), &vertices[0]))
+    {
+        return -1;
+    }
 
     // Main loop.
     while(!glfwWindowShouldClose(window))

@@ -38,6 +38,9 @@ Set(SourceFiles
     "Common/Logger.cpp"
     "Common/Utility.hpp"
     "Common/Utility.cpp"
+
+    "Graphics/Buffer.hpp"
+    "Graphics/Buffer.cpp"
 )
 
 #
