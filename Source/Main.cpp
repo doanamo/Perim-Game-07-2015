@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "Graphics/Buffer.hpp"
+#include "Graphics/VertexInput.hpp"
 
 void ErrorCallback(int error, const char* description)
 {
@@ -79,6 +80,18 @@ int main(int argc, char* argv[])
 
     Graphics::VertexBuffer vertexBuffer;
     if(!vertexBuffer.Initialize(sizeof(glm::vec3), boost::size(vertices), &vertices[0]))
+    {
+        return -1;
+    }
+
+    // Create a vertex input.
+    const Graphics::VertexAttribute vertexAttributes[] =
+    {
+        { &vertexBuffer, Graphics::VertexAttributeTypes::Float3 },
+    };
+
+    Graphics::VertexInput vertexInput;
+    if(!vertexInput.Initialize(boost::size(vertexAttributes), &vertexAttributes[0]))
     {
         return -1;
     }

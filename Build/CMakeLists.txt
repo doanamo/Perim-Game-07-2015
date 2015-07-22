@@ -41,6 +41,8 @@ Set(SourceFiles
 
     "Graphics/Buffer.hpp"
     "Graphics/Buffer.cpp"
+    "Graphics/VertexInput.hpp"
+    "Graphics/VertexInput.cpp"
 )
 
 #
