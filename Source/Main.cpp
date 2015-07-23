@@ -5,6 +5,7 @@
 #include "Graphics/ScreenSpace.hpp"
 #include "Game/EntitySystem.hpp"
 #include "Game/ComponentSystem.hpp"
+#include "Game/IdentitySystem.hpp"
 
 void ErrorCallback(int error, const char* description)
 {
@@ -145,8 +146,18 @@ int main(int argc, char* argv[])
 
     componentSystem.ConnectEntityDestroyed(entitySystem.entityDestroyed);
 
+    // Initialize identity system.
+    Game::IdentitySystem identitySystem;
+    if(!identitySystem.Initialize())
+    {
+        return -1;
+    }
+
+    identitySystem.ConnectEntityDestroyed(entitySystem.entityDestroyed);
+
     // Create an entity.
     Game::EntityHandle entity = entitySystem.CreateEntity();
+    identitySystem.SetEntityName(entity, "Player");
 
     // Main loop.
     while(!glfwWindowShouldClose(window))

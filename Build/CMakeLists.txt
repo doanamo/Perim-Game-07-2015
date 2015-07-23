@@ -54,6 +54,8 @@ Set(SourceFiles
     "Game/Component.hpp"
     "Game/ComponentPool.hpp"
     "Game/ComponentSystem.hpp"
+    "Game/IdentitySystem.hpp"
+    "Game/IdentitySystem.cpp"
 )
 
 #

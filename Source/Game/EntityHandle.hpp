@@ -63,3 +63,18 @@ namespace std
         }
     };
 }
+
+namespace boost
+{
+
+    // Entity handle hash functor.
+    template<>
+    struct hash<Game::EntityHandle>
+    {
+        std::size_t operator()(const Game::EntityHandle& handle) const
+        {
+            // Use the identifier as a hash.
+            return handle.identifier;
+        }
+    };
+}
