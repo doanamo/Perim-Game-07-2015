@@ -39,6 +39,9 @@ Set(SourceFiles
     "Common/Utility.hpp"
     "Common/Utility.cpp"
 
+    "System/System.hpp"
+    "System/System.cpp"
+
     "Graphics/Buffer.hpp"
     "Graphics/Buffer.cpp"
     "Graphics/VertexInput.hpp"
