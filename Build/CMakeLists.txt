@@ -56,6 +56,8 @@ Set(SourceFiles
     "Game/ComponentSystem.hpp"
     "Game/IdentitySystem.hpp"
     "Game/IdentitySystem.cpp"
+    "Game/Components/Transform.hpp"
+    "Game/Components/Transform.cpp"
 )
 
 #

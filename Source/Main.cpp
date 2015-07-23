@@ -6,6 +6,7 @@
 #include "Game/EntitySystem.hpp"
 #include "Game/ComponentSystem.hpp"
 #include "Game/IdentitySystem.hpp"
+#include "Game/Components/Transform.hpp"
 
 void ErrorCallback(int error, const char* description)
 {
@@ -155,9 +156,15 @@ int main(int argc, char* argv[])
 
     identitySystem.ConnectEntityDestroyed(entitySystem.entityDestroyed);
 
+    // Declare components.
+    componentSystem.Declare<Game::Components::Transform>();
+
     // Create an entity.
     Game::EntityHandle entity = entitySystem.CreateEntity();
     identitySystem.SetEntityName(entity, "Player");
+
+    auto transform = componentSystem.Create<Game::Components::Transform>(entity);
+    transform->SetPosition(glm::vec2(0.0f, 0.0f));
 
     // Main loop.
     while(!glfwWindowShouldClose(window))
