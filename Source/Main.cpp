@@ -117,7 +117,7 @@ int main(int argc, char* argv[])
     identitySystem.SetEntityName(entity, "Player");
 
     auto transform = componentSystem.Create<Game::Components::Transform>(entity);
-    transform->SetPosition(glm::vec2(0.0f, 0.0f));
+    transform->SetPosition(glm::vec2(2.0f, 2.0f));
 
     // Main loop.
     GLFWwindow* window = System::GetWindow();
@@ -151,7 +151,8 @@ int main(int argc, char* argv[])
         glUseProgram(shader.GetHandle());
         BOOST_SCOPE_EXIT(&) { glUseProgram(0); };
 
-        glUniformMatrix4fv(shader.GetUniform("vertexTransform"), 1, GL_FALSE, glm::value_ptr(screenSpace.GetTransform()));
+        glm::mat4 vertexTransform = transform->CalculateMatrix(screenSpace.GetTransform());
+        glUniformMatrix4fv(shader.GetUniform("vertexTransform"), 1, GL_FALSE, glm::value_ptr(vertexTransform));
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
