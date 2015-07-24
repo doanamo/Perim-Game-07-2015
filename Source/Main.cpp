@@ -31,18 +31,18 @@ int main(int argc, char* argv[])
 
     // Create a screen space.
     Graphics::ScreenSpace screenSpace;
-    screenSpace.SetTargetSize(1024, 576);
+    screenSpace.SetTargetSize(10.0f, 10.0f);
 
     // Create a vertex buffer.
     const glm::vec3 vertices[] =
     {
-        { 100.0f, 200.0f, 0.0f, },
-        { 200.0f, 100.0f, 0.0f, },
-        { 100.0f, 100.0f, 0.0f, },
+        { 0.0f, 1.0f, 0.0f, },
+        { 1.0f, 0.0f, 0.0f, },
+        { 0.0f, 0.0f, 0.0f, },
 
-        { 100.0f, 200.0f, 0.0f, },
-        { 200.0f, 200.0f, 0.0f, },
-        { 200.0f, 100.0f, 0.0f, },
+        { 0.0f, 1.0f, 0.0f, },
+        { 1.0f, 1.0f, 0.0f, },
+        { 1.0f, 0.0f, 0.0f, },
     };
 
     Graphics::VertexBuffer vertexBuffer;
