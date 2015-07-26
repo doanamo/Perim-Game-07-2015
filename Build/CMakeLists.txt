@@ -36,6 +36,7 @@ Set(SourceFiles
     "Common/Build.cpp"
     "Common/Logger.hpp"
     "Common/Logger.cpp"
+    "Common/Context.hpp"
     "Common/Utility.hpp"
     "Common/Utility.cpp"
 

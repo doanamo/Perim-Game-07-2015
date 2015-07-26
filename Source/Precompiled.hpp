@@ -19,6 +19,7 @@
 #include <boost/core/noncopyable.hpp>
 #include <boost/scope_exit.hpp>
 #include <boost/range.hpp>
+#include <boost/any.hpp>
 #include <boost/signals2.hpp>
 #include <boost/bimap.hpp>
 #include <boost/bimap/unordered_set_of.hpp>
@@ -31,6 +32,7 @@
 #include <gl/glew.h>
 #include <glfw/glfw3.h>
 
+#include "Common/Context.hpp"
 #include "Common/Debug.hpp"
 #include "Common/Build.hpp"
 #include "Common/Logger.hpp"
