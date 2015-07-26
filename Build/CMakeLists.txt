@@ -57,10 +57,12 @@ Set(SourceFiles
     "Game/Component.hpp"
     "Game/ComponentPool.hpp"
     "Game/ComponentSystem.hpp"
-    "Game/IdentitySystem.hpp"
-    "Game/IdentitySystem.cpp"
     "Game/Components/Transform.hpp"
     "Game/Components/Transform.cpp"
+    "Game/IdentitySystem.hpp"
+    "Game/IdentitySystem.cpp"
+    "Game/RenderSystem.hpp"
+    "Game/RenderSystem.cpp"
 )
 
 #

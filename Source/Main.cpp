@@ -6,8 +6,9 @@
 #include "Graphics/ScreenSpace.hpp"
 #include "Game/EntitySystem.hpp"
 #include "Game/ComponentSystem.hpp"
-#include "Game/IdentitySystem.hpp"
 #include "Game/Components/Transform.hpp"
+#include "Game/IdentitySystem.hpp"
+#include "Game/RenderSystem.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -108,6 +109,13 @@ int main(int argc, char* argv[])
     }
 
     identitySystem.ConnectEntityDestroyed(entitySystem.entityDestroyed);
+
+    // Initialize the render system.
+    Game::RenderSystem renderSystem;
+    if(!renderSystem.Initialize())
+    {
+        return -1;
+    }
 
     // Declare components.
     componentSystem.Declare<Game::Components::Transform>();
