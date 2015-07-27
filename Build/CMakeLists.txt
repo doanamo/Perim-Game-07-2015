@@ -40,8 +40,8 @@ Set(SourceFiles
     "Common/Utility.hpp"
     "Common/Utility.cpp"
 
-    "System/System.hpp"
-    "System/System.cpp"
+    "System/Window.hpp"
+    "System/Window.cpp"
 
     "Graphics/Buffer.hpp"
     "Graphics/Buffer.cpp"

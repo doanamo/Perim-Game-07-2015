@@ -1,5 +1,5 @@
 #include "Precompiled.hpp"
-#include "System/System.hpp"
+#include "System/Window.hpp"
 #include "Graphics/Buffer.hpp"
 #include "Graphics/VertexInput.hpp"
 #include "Graphics/Shader.hpp"
@@ -21,14 +21,12 @@ int main(int argc, char* argv[])
     // Initialize the logger.
     Logger::Initialize();
 
-    // Initialize the system.
-    if(!System::Initialize())
-        return -1;
-
-    BOOST_SCOPE_EXIT(&)
+    // Initialize the window.
+    System::Window window;
+    if(!window.Initialize())
     {
-        System::Cleanup();
-    };
+        return -1;
+    }
 
     // Create a screen space.
     Graphics::ScreenSpace screenSpace;
@@ -128,23 +126,21 @@ int main(int argc, char* argv[])
     transform->SetPosition(glm::vec2(2.0f, 2.0f));
 
     // Main loop.
-    GLFWwindow* window = System::GetWindow();
+    window.MakeContextCurrent();
 
-    while(!glfwWindowShouldClose(window))
+    while(!window.IsClosed())
     {
         // Process window events.
-        glfwPollEvents();
+        window.ProcessEvents();
 
         // Process entity commands.
         entitySystem.ProcessCommands();
 
         // Setup viewport.
-        int windowWidth, windowHeight;
-        glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
-        glViewport(0, 0, windowWidth, windowHeight);
+        glViewport(0, 0, window.GetWidth(), window.GetHeight());
 
         // Setup screen space.
-        screenSpace.SetSourceSize(windowWidth, windowHeight);
+        screenSpace.SetSourceSize(window.GetWidth(), window.GetHeight());
 
         // Clear the back buffer.
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -164,9 +160,8 @@ int main(int argc, char* argv[])
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        // Swap the back buffer.
-        glfwSwapInterval(1);
-        glfwSwapBuffers(window);
+        // Present backbuffer to the window.
+        window.Present(true);
     }
 
     return 0;
