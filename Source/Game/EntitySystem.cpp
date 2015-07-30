@@ -46,8 +46,8 @@ bool EntitySystem::Initialize()
 
     // Connect debug logging functions.
     #ifndef NDEBUG
-        entityCreated.connect(entityCreated);
-        entityDestroyed.connect(entityDestroyed);
+        this->entityCreated.connect(LogEntityCreated);
+        this->entityDestroyed.connect(LogEntityDestroyed);
     #endif
 
     // Success!
