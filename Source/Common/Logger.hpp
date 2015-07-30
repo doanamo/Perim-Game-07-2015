@@ -16,7 +16,7 @@ namespace Logger
 }
 
 // Log macro.
-#ifdef _DEBUG
+#ifndef NDEBUG
     #define Log() BOOST_LOG_FUNCTION(); BOOST_LOG_TRIVIAL(info)
 #else
     #define Log() BOOST_LOG_TRIVIAL(info)

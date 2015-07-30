@@ -1,7 +1,7 @@
 #pragma once
 
 // Windows specific defines.
-#if defined(_WINDOWS) && defined(_DEBUG)
+#if defined(_WINDOWS) && !defined(NDEBUG)
     #define _CRTDBG_MAP_ALLOC
     #define _CRTDBG_MAP_ALLOC_NEW
     #include <stdlib.h>
@@ -26,13 +26,8 @@ namespace Debug
     // Call once at the very beginning of main().
     inline void Initialize()
     {
-        // Don't do anything if not in debug mode.
-        #ifndef _DEBUG
-            return;
-        #endif
-
         // Enable memory leak detection.
-        #if defined(_WINDOWS) && defined(_DEBUG)
+        #if defined(_WINDOWS) && !defined(NDEBUG)
             _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
         #endif
     }

@@ -20,12 +20,12 @@ void Logger::Initialize()
     // Setup attributes.
     log::add_common_attributes();
 
-    #ifdef _DEBUG
+    #ifndef NDEBUG
         log::core::get()->add_global_attribute("Scope", log::attributes::named_scope());
     #endif
 
     // Create a console sink.
-    #ifdef _DEBUG
+    #ifndef NDEBUG
         typedef log::sinks::text_ostream_backend ConsoleBackend;
 
         auto consoleBackend = boost::make_shared<ConsoleBackend>();
@@ -45,7 +45,7 @@ void Logger::Initialize()
     #endif
 
     // Create a debugger sink.
-    #ifdef _DEBUG
+    #ifndef NDEBUG
         typedef log::sinks::debug_output_backend DebuggerBackend;
 
         auto debuggerBackend = boost::make_shared<DebuggerBackend>();
@@ -79,7 +79,7 @@ void Logger::Initialize()
             << log::expressions::format_date_time<boost::posix_time::ptime>("TimeStamp", "[%H:%M:%S]")
             << " : " << log::expressions::smessage
 
-            #ifdef _DEBUG
+            #ifndef NDEBUG
                 << " " << log::expressions::format_named_scope("Scope", log::keywords::format = "(%f:%l)")
             #endif
     );
