@@ -27,9 +27,9 @@ public:
 
     // Sets the unique instance.
     template<typename Type>
-    void Set(Type instance, int index = 0)
+    bool Set(Type instance, int index = 0)
     {
-        assert(index >= 0);
+        BOOST_ASSERT(index >= 0);
 
         // Free instance handle if nullptr.
         if(instance == nullptr)
@@ -50,11 +50,13 @@ public:
         {
             // Replace value at existing handle.
             it->second = instance;
+            return false;
         }
         else
         {
             // Add a new instance handle.
             m_instances.push_back({ index, instance });
+            return true;
         }
     }
 
@@ -62,7 +64,7 @@ public:
     template<typename Type>
     Type* Get(int index = 0) const
     {
-        assert(index >= 0);
+        BOOST_ASSERT(index >= 0);
 
         // Find handle by instance entry.
         auto it = std::find_if(m_instances.begin(), m_instances.end(),
@@ -87,7 +89,7 @@ public:
     template<typename Type>
     void Clear(int index = 0)
     {
-        assert(index >= 0);
+        BOOST_ASSERT(index >= 0);
 
         // Find and erase an instance handle.
         m_instances.erase(std::find_if(m_instances.begin(), m_instances.end(),
