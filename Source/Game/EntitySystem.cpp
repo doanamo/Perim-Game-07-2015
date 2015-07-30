@@ -9,17 +9,6 @@ namespace
     const int InvalidIdentifier   = 0;
     const int InvalidNextFree     = -1;
     const int InvalidQueueElement = -1;
-
-    // Debug log functions.
-    void LogEntityCreated(Game::EntityHandle handle)
-    {
-        Log() << "Entity created: " << handle.identifier << " " << handle.version;
-    }
-
-    void LogEntityDestroyed(Game::EntityHandle handle)
-    {
-        Log() << "Entity destroyed: " << handle.identifier << " " << handle.version;
-    }
 }
 
 EntitySystem::EntitySystem() :
@@ -43,12 +32,6 @@ EntitySystem::~EntitySystem()
 bool EntitySystem::Initialize()
 {
     BOOST_ASSERT(!m_initialized);
-
-    // Connect debug logging functions.
-    #ifndef NDEBUG
-        this->entityCreated.connect(LogEntityCreated);
-        this->entityDestroyed.connect(LogEntityDestroyed);
-    #endif
 
     // Success!
     return m_initialized = true;
