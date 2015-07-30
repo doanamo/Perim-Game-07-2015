@@ -9,6 +9,12 @@
 
 namespace Game
 {
+    // Forward declarations.
+    namespace Event
+    {
+        struct EntityDestroyed;
+    }
+
     // Identity system class.
     class IdentitySystem
     {
@@ -39,12 +45,12 @@ namespace Game
         EntityHandle Lookup(std::string name) const;
 
     public:
-        // Connects to entity destroyed event signal.
-        void ConnectEntityDestroyed(boost::signals2::signal<void(EntityHandle)>& signal);
+        // Connects to a signal.
+        void ConnectSignal(boost::signals2::signal<void(const Event::EntityDestroyed&)>& signal);
 
     private:
         // Called when an entity gets destroyed.
-        void OnEntityDestroyed(EntityHandle handle);
+        void OnEntityDestroyed(const Event::EntityDestroyed& event);
 
     private:
         // System state.

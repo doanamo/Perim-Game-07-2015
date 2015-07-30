@@ -4,6 +4,38 @@
 #include "EntityHandle.hpp"
 
 //
+// Entity Events
+//
+
+namespace Game
+{
+    namespace Event
+    {
+        // Entity created event structure.
+        struct EntityCreated
+        {
+            EntityCreated(EntityHandle handle) :
+                handle(handle)
+            {
+            }
+
+            EntityHandle handle;
+        };
+
+        // Entity destroyed event structure.
+        struct EntityDestroyed
+        {
+            EntityDestroyed(EntityHandle handle) :
+                handle(handle)
+            {
+            }
+
+            EntityHandle handle;
+        };
+    }
+}
+
+//
 // Entity System
 //
 
@@ -93,8 +125,8 @@ namespace Game
 
     public:
         // Event signals.
-        boost::signals2::signal<void(EntityHandle)> entityCreated;
-        boost::signals2::signal<void(EntityHandle)> entityDestroyed;
+        boost::signals2::signal<void(const Event::EntityCreated&)> entityCreated;
+        boost::signals2::signal<void(const Event::EntityDestroyed&)> entityDestroyed;
 
     private:
         // List of commands.

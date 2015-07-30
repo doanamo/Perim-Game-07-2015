@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "IdentitySystem.hpp"
+#include "EntitySystem.hpp"
 using namespace Game;
 
 namespace
@@ -103,17 +104,17 @@ EntityHandle IdentitySystem::Lookup(std::string name) const
     }
 }
 
-void IdentitySystem::ConnectEntityDestroyed(boost::signals2::signal<void(EntityHandle)>& signal)
+void IdentitySystem::ConnectSignal(boost::signals2::signal<void(const Event::EntityDestroyed&)>& signal)
 {
     m_entityDestroyed = signal.connect(boost::bind(&IdentitySystem::OnEntityDestroyed, this, _1));
 }
 
-void IdentitySystem::OnEntityDestroyed(EntityHandle handle)
+void IdentitySystem::OnEntityDestroyed(const Event::EntityDestroyed& event)
 {
     if(!m_initialized)
         return;
 
     // Remove entity from the name map.
-    auto result = m_names.right.erase(handle);
+    auto result = m_names.right.erase(event.handle);
     assert(result == 0 || result == 1);
 }

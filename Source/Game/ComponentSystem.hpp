@@ -9,6 +9,12 @@
 
 namespace Game
 {    
+    // Forward declarations.
+    namespace Event
+    {
+        struct EntityDestroyed;
+    }
+
     // Component system class.
     class ComponentSystem
     {
@@ -181,8 +187,8 @@ namespace Game
         }
 
     public:
-        // Connects to entity destroyed event signal.
-        void ConnectEntityDestroyed(boost::signals2::signal<void(EntityHandle)>& signal)
+        // Connects to a signal.
+        void ConnectSignal(boost::signals2::signal<void(const Event::EntityDestroyed&)>& signal)
         {
             BOOST_ASSERT(m_initialized);
 
@@ -191,7 +197,7 @@ namespace Game
 
     private:
         // Called when an entity gets destroyed.
-        void OnEntityDestroyed(EntityHandle handle)
+        void OnEntityDestroyed(const Event::EntityDestroyed& event)
         {
             BOOST_ASSERT(m_initialized);
 
@@ -199,7 +205,7 @@ namespace Game
             for(auto& pair : m_pools)
             {
                 auto& pool = pair.second;
-                pool->Remove(handle);
+                pool->Remove(event.handle);
             }
         }
 

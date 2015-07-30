@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    componentSystem.ConnectEntityDestroyed(entitySystem.entityDestroyed);
+    componentSystem.ConnectSignal(entitySystem.entityDestroyed);
 
     // Create a screen space.
     Graphics::ScreenSpace screenSpace;
@@ -95,7 +95,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    identitySystem.ConnectEntityDestroyed(entitySystem.entityDestroyed);
+    identitySystem.ConnectSignal(entitySystem.entityDestroyed);
 
     // Initialize the render system.
     Game::RenderSystem renderSystem;
