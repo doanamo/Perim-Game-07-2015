@@ -28,12 +28,24 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    // Create the game context.
+    Context gameContext;
+
+    // Initialize the component system.
+    Game::ComponentSystem componentSystem;
+    if(!componentSystem.Initialize(gameContext))
+    {
+        return -1;
+    }
+
     // Initialize the entity system.
     Game::EntitySystem entitySystem;
     if(!entitySystem.Initialize())
     {
         return -1;
     }
+
+    componentSystem.ConnectEntityDestroyed(entitySystem.entityDestroyed);
 
     // Create a screen space.
     Graphics::ScreenSpace screenSpace;
@@ -75,15 +87,6 @@ int main(int argc, char* argv[])
     {
         return -1;
     }
-
-    // Initialize the component system.
-    Game::ComponentSystem componentSystem;
-    if(!componentSystem.Initialize())
-    {
-        return -1;
-    }
-
-    componentSystem.ConnectEntityDestroyed(entitySystem.entityDestroyed);
 
     // Initialize the identity system.
     Game::IdentitySystem identitySystem;

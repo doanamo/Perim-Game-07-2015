@@ -26,23 +26,15 @@ namespace Game
 
         ~ComponentSystem()
         {
-            Cleanup();
-        }
-
-        // Restores class instance to it's original state.
-        void Cleanup()
-        {
-            m_entityDestroyed.disconnect();
-
-            Utility::ClearContainer(m_pools);
-
-            m_initialized = false;
         }
 
         // Initializes the component system.
-        bool Initialize()
+        bool Initialize(Context& context)
         {
-            Cleanup();
+            BOOST_ASSERT(!m_initialized);
+
+            // Add instance to the context.
+            BOOST_ASSERT(context.Set(this));
 
             // Success!
             return m_initialized = true;
@@ -52,8 +44,7 @@ namespace Game
         template<typename Type>
         void Declare()
         {
-            if(!m_initialized)
-                return;
+            BOOST_ASSERT(m_initialized);
 
             // Validate component type.
             static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
@@ -69,15 +60,14 @@ namespace Game
             auto pair = ComponentPoolPair(typeid(Type), std::move(pool));
             auto result = m_pools.insert(std::move(pair));
 
-            assert(result.second == true);
+            BOOST_ASSERT(result.second == true);
         }
 
         // Creates a component.
         template<typename Type>
         Type* Create(EntityHandle handle)
         {
-            if(!m_initialized)
-                return nullptr;
+            BOOST_ASSERT(m_initialized);
 
             // Validate component type.
             static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
@@ -96,8 +86,7 @@ namespace Game
         template<typename Type>
         Type* Lookup(EntityHandle handle)
         {
-            if(!m_initialized)
-                return nullptr;
+            BOOST_ASSERT(m_initialized);
 
             // Validate component type.
             static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
@@ -116,8 +105,7 @@ namespace Game
         template<typename Type>
         bool Remove(EntityHandle handle)
         {
-            if(!m_initialized)
-                return;
+            BOOST_ASSERT(m_initialized);
 
             // Validate component type.
             static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
@@ -136,11 +124,10 @@ namespace Game
         template<typename Type>
         typename ComponentPool<Type>::ComponentIterator Begin()
         {
-            if(!m_initialized)
-                return ComponentPool<Type>::ComponentIterator();
+            BOOST_ASSERT(m_initialized);
 
             // Validate component type.
-            static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
+            BOOST_STATIC_ASSERT_MSG(std::is_base_of<Component, Type>::value, "Not a component type.");
 
             // Get the component pool.
             ComponentPool<Type>* pool = GetComponentPool<Type>();
@@ -156,11 +143,10 @@ namespace Game
         template<typename Type>
         typename ComponentPool<Type>::ComponentIterator End()
         {
-            if(!m_initialized)
-                return ComponentPool<Type>::ComponentIterator();
+            BOOST_ASSERT(m_initialized);
 
             // Validate component type.
-            static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
+            BOOST_STATIC_ASSERT_MSG(std::is_base_of<Component, Type>::value, "Not a component type.");
 
             // Get the component pool.
             ComponentPool<Type>* pool = GetComponentPool<Type>();
@@ -176,11 +162,10 @@ namespace Game
         template<typename Type>
         ComponentPool<Type>* GetComponentPool()
         {
-            if(!m_initialized)
-                return nullptr;
+            BOOST_ASSERT(m_initialized);
 
             // Validate component type.
-            static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
+            BOOST_STATIC_ASSERT_MSG(std::is_base_of<Component, Type>::value, "Not a component type.");
 
             // Find pool by component type.
             auto it = m_pools.find(typeid(Type));
@@ -199,6 +184,8 @@ namespace Game
         // Connects to entity destroyed event signal.
         void ConnectEntityDestroyed(boost::signals2::signal<void(EntityHandle)>& signal)
         {
+            BOOST_ASSERT(m_initialized);
+
             m_entityDestroyed = signal.connect(boost::bind(&ComponentSystem::OnEntityDestroyed, this, _1));
         }
 
@@ -206,8 +193,7 @@ namespace Game
         // Called when an entity gets destroyed.
         void OnEntityDestroyed(EntityHandle handle)
         {
-            if(!m_initialized)
-                return;
+            BOOST_ASSERT(m_initialized);
 
             // Remove entity components from every pool.
             for(auto& pair : m_pools)
@@ -218,13 +204,13 @@ namespace Game
         }
 
     private:
-        // System state.
-        bool m_initialized;
-
         // Component pools.
         ComponentPoolList m_pools;
 
         // Signal connections.
         boost::signals2::connection m_entityDestroyed;
+
+        // Initialization state.
+        bool m_initialized;
     };
 }
