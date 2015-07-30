@@ -39,7 +39,7 @@ namespace Game
     {
     public:
         // Check template type.
-        static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
+        BOOST_STATIC_ASSERT_MSG(std::is_base_of<Component, Type>::value, "Not a component type.");
 
         // Type declarations.
         typedef std::unordered_map<EntityHandle, Type> ComponentList;
@@ -52,14 +52,6 @@ namespace Game
 
         ~ComponentPool()
         {
-            Cleanup();
-        }
-
-        // Restores class instance to it's original state.
-        void Cleanup()
-        {
-            // Free component memory.
-            Utility::ClearContainer(m_components);
         }
 
         // Creates a component.
