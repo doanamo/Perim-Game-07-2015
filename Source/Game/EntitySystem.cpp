@@ -9,49 +9,46 @@ namespace
     const int InvalidIdentifier   = 0;
     const int InvalidNextFree     = -1;
     const int InvalidQueueElement = -1;
+
+    // Debug log functions.
+    void LogEntityCreated(Game::EntityHandle handle)
+    {
+        Log() << "Entity created: " << handle.identifier << " " << handle.version;
+    }
+
+    void LogEntityDestroyed(Game::EntityHandle handle)
+    {
+        Log() << "Entity destroyed: " << handle.identifier << " " << handle.version;
+    }
 }
 
 EntitySystem::EntitySystem() :
-    m_initialized(false),
     m_entityCount(0),
     m_freeListDequeue(InvalidQueueElement),
     m_freeListEnqueue(InvalidQueueElement),
-    m_freeListIsEmpty(true)
+    m_freeListIsEmpty(true),
+    m_initialized(false)
 {
 }
 
 EntitySystem::~EntitySystem()
 {
-    Cleanup();
-}
-
-void EntitySystem::Cleanup()
-{
-    // Process remaining commands.
-    ProcessCommands();
-
-    Utility::ClearContainer(m_commands);
-
-    // Destroy all entities.
-    DestroyAllEntities();
-
-    Utility::ClearContainer(m_handles);
-
-    // Reset the entity counter.
-    m_entityCount = 0;
-
-    // Reset the free list queue.
-    m_freeListDequeue = InvalidQueueElement;
-    m_freeListEnqueue = InvalidQueueElement;
-    m_freeListIsEmpty = true;
-
-    // System state.
-    m_initialized = false;
+    // Destroy all remaining entities.
+    if(m_initialized)
+    {
+        DestroyAllEntities();
+    }
 }
 
 bool EntitySystem::Initialize()
 {
-    Cleanup();
+    BOOST_ASSERT(!m_initialized);
+
+    // Connect debug logging functions.
+    #ifndef NDEBUG
+        entityCreated.connect(entityCreated);
+        entityDestroyed.connect(entityDestroyed);
+    #endif
 
     // Success!
     return m_initialized = true;
@@ -151,8 +148,7 @@ void EntitySystem::DestroyEntity(const EntityHandle& entity)
 
 void EntitySystem::DestroyAllEntities()
 {
-    if(!m_initialized)
-        return;
+    BOOST_ASSERT(m_initialized);
 
     // Process entity commands.
     ProcessCommands();
@@ -198,8 +194,7 @@ void EntitySystem::DestroyAllEntities()
 
 void EntitySystem::ProcessCommands()
 {
-    if(!m_initialized)
-        return;
+    BOOST_ASSERT(m_initialized);
 
     // Process entity commands.
     for(auto command = m_commands.begin(); command != m_commands.end(); ++command)

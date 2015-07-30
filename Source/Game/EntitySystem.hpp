@@ -73,9 +73,6 @@ namespace Game
         // Initializes the entity system.
         bool Initialize();
 
-        // Restores class instance to it's original state.
-        void Cleanup();
-
         // Creates an entity.
         EntityHandle CreateEntity();
 
@@ -100,9 +97,6 @@ namespace Game
         boost::signals2::signal<void(EntityHandle)> entityDestroyed;
 
     private:
-        // System state.
-        bool m_initialized;
-
         // List of commands.
         CommandList m_commands;
 
@@ -116,5 +110,8 @@ namespace Game
         int  m_freeListDequeue;
         int  m_freeListEnqueue;
         bool m_freeListIsEmpty;
+
+        // Initialization state.
+        bool m_initialized;
     };
 }

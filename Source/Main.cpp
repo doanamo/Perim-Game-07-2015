@@ -28,6 +28,13 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    // Initialize the entity system.
+    Game::EntitySystem entitySystem;
+    if(!entitySystem.Initialize())
+    {
+        return -1;
+    }
+
     // Create a screen space.
     Graphics::ScreenSpace screenSpace;
     screenSpace.SetTargetSize(10.0f, 10.0f);
@@ -68,27 +75,6 @@ int main(int argc, char* argv[])
     {
         return -1;
     }
-
-    // Initialize the entity system.
-    Game::EntitySystem entitySystem;
-    if(!entitySystem.Initialize())
-    {
-        return -1;
-    }
-
-    auto entityCreated = [](Game::EntityHandle handle)
-    {
-        Log() << "Entity created: " << handle.identifier << " " << handle.version;
-    };
-
-    entitySystem.entityCreated.connect(entityCreated);
-
-    auto entityDestroyed = [](Game::EntityHandle handle)
-    {
-        Log() << "Entity destroyed: " << handle.identifier << " " << handle.version;
-    };
-
-    entitySystem.entityDestroyed.connect(entityDestroyed);
 
     // Initialize the component system.
     Game::ComponentSystem componentSystem;
