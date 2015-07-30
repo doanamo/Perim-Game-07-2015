@@ -186,7 +186,6 @@ namespace Game
             return pool;
         }
 
-    public:
         // Connects to a signal.
         void ConnectSignal(boost::signals2::signal<void(const Event::EntityDestroyed&)>& signal)
         {
