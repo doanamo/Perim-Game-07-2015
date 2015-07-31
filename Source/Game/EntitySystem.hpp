@@ -103,7 +103,7 @@ namespace Game
         ~EntitySystem();
 
         // Initializes the entity system.
-        bool Initialize();
+        bool Initialize(Context& context);
 
         // Creates an entity.
         EntityHandle CreateEntity();

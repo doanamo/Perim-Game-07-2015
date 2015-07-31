@@ -40,12 +40,11 @@ int main(int argc, char* argv[])
 
     // Initialize the entity system.
     Game::EntitySystem entitySystem;
-    if(!entitySystem.Initialize())
+    if(!entitySystem.Initialize(gameContext))
     {
         return -1;
     }
 
-    componentSystem.ConnectSignal(entitySystem.entityDestroyed);
 
     // Create a screen space.
     Graphics::ScreenSpace screenSpace;

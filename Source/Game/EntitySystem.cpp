@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "EntitySystem.hpp"
+#include "ComponentSystem.hpp"
 using namespace Game;
 
 namespace
@@ -29,9 +30,19 @@ EntitySystem::~EntitySystem()
     }
 }
 
-bool EntitySystem::Initialize()
+bool EntitySystem::Initialize(Context& context)
 {
     BOOST_ASSERT(!m_initialized);
+
+    // Add instance to the context.
+    BOOST_ASSERT(context.Set(this));
+
+    // Get required systems.
+    ComponentSystem* componentSystem = context.Get<ComponentSystem>();
+    if(componentSystem == nullptr) return false;
+
+    // Connect component system to our signal.
+    componentSystem->ConnectSignal(this->entityDestroyed);
 
     // Success!
     return m_initialized = true;
