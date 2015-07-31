@@ -19,6 +19,9 @@ namespace Game
     class ComponentSystem
     {
     public:
+        // Friend declarations.
+        friend class EntitySystem;
+
         // Type declarations.
         typedef std::unique_ptr<ComponentPoolInterface>               ComponentPoolPtr;
         typedef std::unordered_map<std::type_index, ComponentPoolPtr> ComponentPoolList;
@@ -186,6 +189,7 @@ namespace Game
             return pool;
         }
 
+    private:
         // Connects to a signal.
         void ConnectSignal(boost::signals2::signal<void(const Event::EntityDestroyed&)>& signal)
         {
@@ -194,7 +198,6 @@ namespace Game
             m_entityDestroyed = signal.connect(boost::bind(&ComponentSystem::OnEntityDestroyed, this, _1));
         }
 
-    private:
         // Called when an entity gets destroyed.
         void OnEntityDestroyed(const Event::EntityDestroyed& event)
         {
