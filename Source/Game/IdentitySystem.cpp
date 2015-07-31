@@ -16,21 +16,21 @@ IdentitySystem::IdentitySystem() :
 
 IdentitySystem::~IdentitySystem()
 {
-    Cleanup();
 }
 
-void IdentitySystem::Cleanup()
+bool IdentitySystem::Initialize(Context& context)
 {
-    m_entityDestroyed.disconnect();
+    BOOST_ASSERT(!m_initialized);
 
-    Utility::ClearContainer(m_names);
+    // Add system to the context.
+    BOOST_ASSERT(context.Set(this));
 
-    m_initialized = false;
-}
+    // Get required system.
+    EntitySystem* entitySystem = context.Get<EntitySystem>();
+    if(entitySystem == nullptr) return false;
 
-bool IdentitySystem::Initialize()
-{
-    Cleanup();
+    // Connect to a signal.
+    m_entityDestroyed = entitySystem->entityDestroyed.connect(boost::bind(&IdentitySystem::OnEntityDestroyed, this, _1));
 
     // Success!
     return m_initialized = true;
@@ -38,8 +38,7 @@ bool IdentitySystem::Initialize()
 
 bool IdentitySystem::SetEntityName(const EntityHandle& entity, std::string name)
 {
-    if(!m_initialized)
-        return false;
+    BOOST_ASSERT(m_initialized);
 
     // Remove existing entity from the map (make it anonymous). 
     auto it = m_names.right.find(entity);
@@ -66,8 +65,7 @@ bool IdentitySystem::SetEntityName(const EntityHandle& entity, std::string name)
 
 std::string IdentitySystem::GetEntityName(const EntityHandle& entity) const
 {
-    if(!m_initialized)
-        return InvalidName;
+    BOOST_ASSERT(m_initialized);
 
     // Find entity name.
     auto it = m_names.right.find(entity);
@@ -86,8 +84,7 @@ std::string IdentitySystem::GetEntityName(const EntityHandle& entity) const
 
 EntityHandle IdentitySystem::Lookup(std::string name) const
 {
-    if(!m_initialized)
-        return EntityHandle();
+    BOOST_ASSERT(m_initialized);
 
     // Find entity by name.
     auto it = m_names.left.find(name);
@@ -104,15 +101,9 @@ EntityHandle IdentitySystem::Lookup(std::string name) const
     }
 }
 
-void IdentitySystem::ConnectSignal(boost::signals2::signal<void(const Event::EntityDestroyed&)>& signal)
-{
-    m_entityDestroyed = signal.connect(boost::bind(&IdentitySystem::OnEntityDestroyed, this, _1));
-}
-
 void IdentitySystem::OnEntityDestroyed(const Event::EntityDestroyed& event)
 {
-    if(!m_initialized)
-        return;
+    BOOST_ASSERT(m_initialized);
 
     // Remove entity from the name map.
     auto result = m_names.right.erase(event.handle);

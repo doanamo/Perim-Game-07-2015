@@ -42,7 +42,7 @@ namespace Game
         {
             BOOST_ASSERT(!m_initialized);
 
-            // Add instance to the context.
+            // Add system to the context.
             BOOST_ASSERT(context.Set(this));
 
             // Success!
