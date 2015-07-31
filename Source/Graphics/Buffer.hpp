@@ -41,9 +41,6 @@ namespace Graphics
         // Initializes the buffer.
         bool Initialize(unsigned int elementSize, unsigned int elementCount, const void* data, GLenum usage = GL_STATIC_DRAW);
 
-        // Restores class instance to it's original state.
-        void Cleanup();
-
         // Updates buffer data.
         void Update(const void* data, int count = -1);
 
@@ -90,11 +87,15 @@ namespace Graphics
         virtual const char* GetName() const = 0;
 
     protected:
+        // Buffer instance.
         GLenum m_type;
         GLuint m_handle;
 
         unsigned int m_elementSize;
         unsigned int m_elementCount;
+
+        // Initialization state.
+        bool m_initialized;
     };
 }
 
