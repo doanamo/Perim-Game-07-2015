@@ -60,6 +60,7 @@ namespace Game
         EntityNameList m_names;
 
         // Signal connections.
-        boost::signals2::connection m_entityDestroyed;
+        boost::signals2::scoped_connection m_entityDestroyed;
+
     };
 }

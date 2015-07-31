@@ -216,7 +216,7 @@ namespace Game
         ComponentPoolList m_pools;
 
         // Signal connections.
-        boost::signals2::connection m_entityDestroyed;
+        boost::signals2::scoped_connection m_entityDestroyed;
 
         // Initialization state.
         bool m_initialized;
