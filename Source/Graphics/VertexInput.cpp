@@ -1,6 +1,6 @@
 #include "Precompiled.hpp"
-#include "Graphics/VertexInput.hpp"
-#include "Graphics/Buffer.hpp"
+#include "VertexInput.hpp"
+#include "Buffer.hpp"
 using namespace Graphics;
 
 namespace
@@ -95,27 +95,23 @@ namespace
 }
 
 VertexInput::VertexInput() :
-    m_handle(InvalidHandle)
+    m_handle(InvalidHandle),
+    m_initialized(false)
 {
 }
 
 VertexInput::~VertexInput()
 {
-    Cleanup();
-}
-
-void VertexInput::Cleanup()
-{
+    // Destroy the vertex array.
     if(m_handle != InvalidHandle)
     {
         glDeleteVertexArrays(1, &m_handle);
-        m_handle = InvalidHandle;
     }
 }
 
 bool VertexInput::Initialize(int attributeCount, const VertexAttribute* attributes)
 {
-    Cleanup();
+    BOOST_ASSERT(!m_initialized);
 
     // Validate arguments.
     if(attributeCount <= 0)
@@ -165,9 +161,17 @@ bool VertexInput::Initialize(int attributeCount, const VertexAttribute* attribut
     if(m_handle == 0)
     {
         Log() << LogInitializeError() << "Couldn't create a vertex array object.";
-        Cleanup();
         return false;
     }
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(!m_initialized)
+        {
+            glDeleteVertexArrays(1, &m_handle);
+            m_handle = InvalidHandle;
+        }
+    };
 
     // Cleanup after we are done.
     BOOST_SCOPE_EXIT(&)
@@ -228,5 +232,6 @@ bool VertexInput::Initialize(int attributeCount, const VertexAttribute* attribut
         }
     }
 
-    return true;
+    // Success!
+    return m_initialized = true;
 }

@@ -58,9 +58,6 @@ namespace Graphics
         // Initializes the vertex input.
         bool Initialize(int attributeCount, const VertexAttribute* attributes);
 
-        // Restores class instance to it's original state.
-        void Cleanup();
-
         // Gets the vertex array object handle.
         GLuint GetHandle() const
         {
@@ -70,5 +67,8 @@ namespace Graphics
     private:
         // Vertex array object.
         GLuint m_handle;
+
+        // Initialization state.
+        bool m_initialized;
     };
 }
