@@ -39,5 +39,8 @@ namespace System
     private:
         // Window implementation.
         GLFWwindow* m_window;
+
+        // Initialization state.
+        bool m_initialized;
     };
 }

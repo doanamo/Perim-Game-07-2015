@@ -18,7 +18,8 @@ void ErrorCallback(int error, const char* description)
 }
 
 Window::Window() :
-    m_window(nullptr)
+    m_window(nullptr),
+    m_initialized(false)
 {
     // Increase instance count.
     ++InstanceCount;
@@ -46,7 +47,7 @@ Window::~Window()
 
 bool Window::Initialize()
 {
-    assert(m_window == nullptr);
+    BOOST_ASSERT(!m_initialized);
 
     // Initialize GLFW library.
     if(!LibraryInitialized)
@@ -97,32 +98,42 @@ bool Window::Initialize()
     Log() << "Created OpenGL " << glMajor << "." << glMinor << " context.";
 
     // Success!
-    return true;
+    return m_initialized = true;
 }
 
 void Window::MakeContextCurrent()
 {
+    BOOST_ASSERT(m_initialized);
+
     glfwMakeContextCurrent(m_window);
 }
 
 void Window::ProcessEvents()
 {
+    BOOST_ASSERT(m_initialized);
+
     glfwPollEvents();
 }
 
 void Window::Present(bool verticalSync)
 {
+    BOOST_ASSERT(m_initialized);
+
     glfwSwapInterval((int)verticalSync);
     glfwSwapBuffers(m_window);
 }
 
 bool Window::IsClosed() const
 {
+    BOOST_ASSERT(m_initialized);
+
     return glfwWindowShouldClose(m_window) != 0;
 }
 
 int Window::GetWidth() const
 {
+    BOOST_ASSERT(m_initialized);
+
     int width = 0;
     glfwGetFramebufferSize(m_window, &width, nullptr);
     return width;
@@ -130,6 +141,8 @@ int Window::GetWidth() const
 
 int Window::GetHeight() const
 {
+    BOOST_ASSERT(m_initialized);
+
     int height = 0;
     glfwGetFramebufferSize(m_window, nullptr, &height);
     return height;
