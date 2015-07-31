@@ -5,7 +5,7 @@
 //
 // Context
 //
-//  Conveniently holds instances of different types (usually pointers).
+//  Conveniently holds pointers to instances of different types.
 //  Use when you have to pass a non trivial number of references as a single argument.
 //
 
@@ -27,7 +27,7 @@ public:
 
     // Sets the unique instance.
     template<typename Type>
-    bool Set(Type instance, int index = 0)
+    bool Set(Type* instance, int index = 0)
     {
         BOOST_ASSERT(index >= 0);
 
@@ -41,7 +41,7 @@ public:
         auto it = std::find_if(m_instances.begin(), m_instances.end(),
             [&index](const InstanceHandle& handle) -> bool
             {
-                return handle.first == index && handle.second.type() == typeid(Type);
+                return handle.first == index && handle.second.type() == typeid(Type*);
             }
         );
 
@@ -70,14 +70,14 @@ public:
         auto it = std::find_if(m_instances.begin(), m_instances.end(),
             [&index](const InstanceHandle& handle) -> bool
             {
-                return handle.first == index && handle.second.type() == typeid(Type);
+                return handle.first == index && handle.second.type() == typeid(Type*);
             }
         );
 
         // Return instance reference.
         if(it != m_instances.end())
         {
-            return it->second;
+            return boost::any_cast<Type*>(it->second);
         }
         else
         {
@@ -95,7 +95,7 @@ public:
         m_instances.erase(std::find_if(m_instances.begin(), m_instances.end(),
             [&index](const InstanceHandle& handle) -> bool
             {
-                return handle.first == index && handle.second.type() == typeid(Type);
+                return handle.first == index && handle.second.type() == typeid(Type*);
             }
         ));
     }
