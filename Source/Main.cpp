@@ -21,12 +21,17 @@ int main(int argc, char* argv[])
     // Initialize the logger.
     Logger::Initialize();
 
+    // Create the core context.
+    Context coreContext;
+
     // Initialize the window.
     System::Window window;
     if(!window.Initialize())
     {
         return -1;
     }
+
+    coreContext.Set(&window);
 
     // Create the game context.
     Context gameContext;
@@ -45,6 +50,19 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    // Initialize the identity system.
+    Game::IdentitySystem identitySystem;
+    if(!identitySystem.Initialize(gameContext))
+    {
+        return -1;
+    }
+
+    // Initialize the render system.
+    Game::RenderSystem renderSystem;
+    if(!renderSystem.Initialize(coreContext, gameContext))
+    {
+        return -1;
+    }
 
     // Create a screen space.
     Graphics::ScreenSpace screenSpace;
@@ -83,22 +101,6 @@ int main(int argc, char* argv[])
     // Load a shader.
     Graphics::Shader shader;
     if(!shader.Load(Build::GetWorkingDir() + "Data/Shaders/Basic.glsl"))
-    {
-        return -1;
-    }
-
-    // Initialize the identity system.
-    Game::IdentitySystem identitySystem;
-    if(!identitySystem.Initialize())
-    {
-        return -1;
-    }
-
-    identitySystem.ConnectSignal(entitySystem.entityDestroyed);
-
-    // Initialize the render system.
-    Game::RenderSystem renderSystem;
-    if(!renderSystem.Initialize())
     {
         return -1;
     }

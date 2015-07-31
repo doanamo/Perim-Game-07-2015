@@ -16,16 +16,13 @@ namespace Game
         ~RenderSystem();
 
         // Initializes the render system.
-        bool Initialize();
-
-        // Restores class instance to it's original state.
-        void Cleanup();
+        bool Initialize(Context& coreContext, Context& gameContext);
 
         // Draws the scene.
         void Draw();
 
     private:
-        // System state.
+        // Initialization state.
         bool m_initialized;
     };
 }

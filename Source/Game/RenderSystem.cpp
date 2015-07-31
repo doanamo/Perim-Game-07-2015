@@ -3,26 +3,20 @@
 using namespace Game;
 
 RenderSystem::RenderSystem() :
-m_initialized()
+    m_initialized(false)
 {
 }
 
 RenderSystem::~RenderSystem()
 {
-    Cleanup();
 }
 
-bool RenderSystem::Initialize()
+bool RenderSystem::Initialize(Context& coreContext, Context& gameContext)
 {
-    Cleanup();
+    BOOST_ASSERT(!m_initialized);
 
     // Success!
     return m_initialized = true;
-}
-
-void RenderSystem::Cleanup()
-{
-    m_initialized = false;
 }
 
 void RenderSystem::Draw()
