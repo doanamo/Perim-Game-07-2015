@@ -31,11 +31,8 @@ namespace Graphics
         ScreenSpace();
         ~ScreenSpace();
 
-        // Restores class instance to it's original size.
-        void Cleanup();
-
         // Sets the source size.
-        // Needs to be updates evey time source resizes.
+        // Needs to be updated evey time source resizes.
         void SetSourceSize(int width, int height);
 
         // Sets the target size.

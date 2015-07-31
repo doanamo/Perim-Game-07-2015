@@ -1,5 +1,5 @@
 #include "Precompiled.hpp"
-#include "Graphics/ScreenSpace.hpp"
+#include "ScreenSpace.hpp"
 using namespace Graphics;
 
 namespace
@@ -30,21 +30,6 @@ ScreenSpace::ScreenSpace() :
 
 ScreenSpace::~ScreenSpace()
 {
-}
-
-void ScreenSpace::Cleanup()
-{
-    m_sourceSize = glm::vec2(4.0f, 4.0f);
-    m_targetSize = glm::vec2(4.0f, 4.0f);
-    m_targetAspect = 1.0f;
-    m_rectangle = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-    m_offset = glm::vec2(0.0f, 0.0f);
-    m_projection = glm::mat4(1.0f);
-    m_view = glm::mat4(1.0f);
-    m_transform = glm::mat4(1.0f);
-
-    m_rebuild = true;
-    m_rebuildTarget = false;
 }
 
 void ScreenSpace::SetSourceSize(int width, int height)
