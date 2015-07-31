@@ -50,9 +50,6 @@ namespace Graphics
         // Loads the shader from a file.
         bool Load(std::string filename);
 
-        // Restores object instance to it's previous state.
-        void Cleanup();
-
         // Gets the shader's program handle.
         GLuint GetHandle() const
         {
@@ -71,5 +68,8 @@ namespace Graphics
     private:
         // Linked program handle.
         GLuint m_handle;
+
+        // Initialization state.
+        bool m_initialized;
     };
 }
