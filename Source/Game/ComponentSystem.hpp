@@ -2,6 +2,7 @@
 
 #include "Precompiled.hpp"
 #include "ComponentPool.hpp"
+#include "EntitySystem.hpp"
 
 //
 // Component System
@@ -10,7 +11,7 @@
 namespace Game
 {    
     // Forward declarations.
-    namespace Event
+    namespace Events
     {
         struct EntityDestroyed;
     }
@@ -82,7 +83,7 @@ namespace Game
             static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
 
             // Get the component pool.
-            ComponentPool<Type>* pool = GetComponentPool<Type>();
+            ComponentPool<Type>* pool = this->GetPool<Type>();
 
             if(pool == nullptr)
                 return nullptr;
@@ -139,7 +140,7 @@ namespace Game
             BOOST_STATIC_ASSERT_MSG(std::is_base_of<Component, Type>::value, "Not a component type.");
 
             // Get the component pool.
-            ComponentPool<Type>* pool = GetComponentPool<Type>();
+            ComponentPool<Type>* pool = this->GetPool<Type>();
 
             if(pool == nullptr)
                 return ComponentPool<Type>::ComponentIterator();
@@ -169,7 +170,7 @@ namespace Game
 
         // Gets a component pool.
         template<typename Type>
-        ComponentPool<Type>* GetComponentPool()
+        ComponentPool<Type>* GetPool()
         {
             BOOST_ASSERT(m_initialized);
 
@@ -191,7 +192,7 @@ namespace Game
 
     private:
         // Connects to a signal.
-        void ConnectSignal(boost::signals2::signal<void(const Event::EntityDestroyed&)>& signal)
+        void ConnectSignal(boost::signals2::signal<void(const Events::EntityDestroyed&)>& signal)
         {
             BOOST_ASSERT(m_initialized);
 
@@ -199,7 +200,7 @@ namespace Game
         }
 
         // Called when an entity gets destroyed.
-        void OnEntityDestroyed(const Event::EntityDestroyed& event)
+        void OnEntityDestroyed(const Events::EntityDestroyed& event)
         {
             BOOST_ASSERT(m_initialized);
 

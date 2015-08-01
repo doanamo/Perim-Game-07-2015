@@ -23,7 +23,7 @@ namespace Game
         {
         }
 
-        virtual void Remove(EntityHandle handle) = 0;
+        virtual bool Remove(EntityHandle handle) = 0;
     };
 }
 

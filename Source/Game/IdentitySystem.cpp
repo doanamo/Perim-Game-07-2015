@@ -101,7 +101,7 @@ EntityHandle IdentitySystem::Lookup(std::string name) const
     }
 }
 
-void IdentitySystem::OnEntityDestroyed(const Event::EntityDestroyed& event)
+void IdentitySystem::OnEntityDestroyed(const Events::EntityDestroyed& event)
 {
     BOOST_ASSERT(m_initialized);
 

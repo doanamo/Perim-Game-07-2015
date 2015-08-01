@@ -9,7 +9,7 @@
 
 namespace Game
 {
-    namespace Event
+    namespace Events
     {
         // Entity created event structure.
         struct EntityCreated
@@ -125,8 +125,8 @@ namespace Game
 
     public:
         // Event signals.
-        boost::signals2::signal<void(const Event::EntityCreated&)> entityCreated;
-        boost::signals2::signal<void(const Event::EntityDestroyed&)> entityDestroyed;
+        boost::signals2::signal<void(const Events::EntityCreated&)> entityCreated;
+        boost::signals2::signal<void(const Events::EntityDestroyed&)> entityDestroyed;
 
     private:
         // List of commands.

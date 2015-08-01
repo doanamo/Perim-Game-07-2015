@@ -10,7 +10,7 @@
 namespace Game
 {
     // Forward declarations.
-    namespace Event
+    namespace Events
     {
         struct EntityDestroyed;
     }
@@ -43,7 +43,7 @@ namespace Game
 
     private:
         // Called when an entity gets destroyed.
-        void OnEntityDestroyed(const Event::EntityDestroyed& event);
+        void OnEntityDestroyed(const Events::EntityDestroyed& event);
 
     private:
         // List of named entities.
