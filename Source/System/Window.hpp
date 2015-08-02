@@ -39,6 +39,61 @@ namespace System
         // Gets window's private data.
         GLFWwindow* GetPrivate();
 
+    public:
+        // Keyboard key signal.
+        struct KeyboardKey
+        {
+            int key;
+            int scancode;
+            int action;
+            int mods;
+        };
+
+        boost::signals2::signal<void(const KeyboardKey&)> keyboardKey;
+
+        // Text input signal.
+        struct TextInput
+        {
+            unsigned int character;
+        };
+
+        boost::signals2::signal<void(const TextInput&)> textInput;
+
+        // Mouse button signal.
+        struct MouseButton
+        {
+            int button;
+            int action;
+            int mods;
+        };
+
+        boost::signals2::signal<void(const MouseButton&)> mouseButton;
+
+        // Mouse scroll signal.
+        struct MouseScroll
+        {
+            double offset;
+        };
+
+        boost::signals2::signal<void(const MouseScroll&)> mouseScroll;
+
+        // Cursor position signal.
+        struct CursorPosition
+        {
+            double x;
+            double y;
+        };
+
+        boost::signals2::signal<void(const CursorPosition&)> cursorPosition;
+
+        // Cursor enter signal.
+        struct CursorEnter
+        {
+            bool entered;
+        };
+
+        boost::signals2::signal<void(const CursorEnter&)> cursorEnter;
+
     private:
         // Window implementation.
         GLFWwindow* m_window;
