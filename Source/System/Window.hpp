@@ -36,6 +36,9 @@ namespace System
         // Gets window'd height.
         int GetHeight() const;
 
+        // Gets window's private data.
+        GLFWwindow* GetPrivate();
+
     private:
         // Window implementation.
         GLFWwindow* m_window;

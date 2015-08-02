@@ -147,3 +147,9 @@ int Window::GetHeight() const
     glfwGetFramebufferSize(m_window, nullptr, &height);
     return height;
 }
+
+GLFWwindow* Window::GetPrivate()
+{
+    BOOST_ASSERT(m_initialized);
+    return m_window;
+}
