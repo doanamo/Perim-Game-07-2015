@@ -106,6 +106,9 @@ void RenderSystem::Draw()
     //
     Components::Transform& transform = m_componentSystem->Begin<Components::Transform>()->second;
 
+    // Calculate camera view.
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), -glm::vec3(m_screenSpace.GetOffset(), 0.0f));
+
     // Draw scene.
     glBindVertexArray(m_vertexInput.GetHandle());
     BOOST_SCOPE_EXIT(&) { glBindVertexArray(0); };
@@ -113,7 +116,7 @@ void RenderSystem::Draw()
     glUseProgram(m_shader.GetHandle());
     BOOST_SCOPE_EXIT(&) { glUseProgram(0); };
 
-    glm::mat4 vertexTransform = transform.CalculateMatrix(m_screenSpace.GetTransform());
+    glm::mat4 vertexTransform = transform.CalculateMatrix(m_screenSpace.GetTransform() * view);
     glUniformMatrix4fv(m_shader.GetUniform("vertexTransform"), 1, GL_FALSE, glm::value_ptr(vertexTransform));
 
     glDrawArrays(GL_TRIANGLES, 0, 6);

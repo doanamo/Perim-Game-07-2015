@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
     identitySystem.SetEntityName(entity, "Player");
 
     auto transform = componentSystem.Create<Game::Components::Transform>(entity);
-    transform->SetPosition(glm::vec2(2.0f, 2.0f));
+    transform->SetPosition(glm::vec2(0.0f, 0.0f));
 
     // Main loop.
     window.MakeContextCurrent();
