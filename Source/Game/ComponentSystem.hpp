@@ -102,7 +102,7 @@ namespace Game
             static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
 
             // Get the component pool.
-            ComponentPool<Type>* pool = GetComponentPool<Type>();
+            ComponentPool<Type>* pool = this->GetPool<Type>();
 
             if(pool == nullptr)
                 return nullptr;
@@ -121,7 +121,7 @@ namespace Game
             static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
 
             // Get the component pool.
-            ComponentPool<Type>* pool = GetComponentPool<Type>();
+            ComponentPool<Type>* pool = this->GetPool<Type>();
 
             if(pool == nullptr)
                 return false;
@@ -159,7 +159,7 @@ namespace Game
             BOOST_STATIC_ASSERT_MSG(std::is_base_of<Component, Type>::value, "Not a component type.");
 
             // Get the component pool.
-            ComponentPool<Type>* pool = GetComponentPool<Type>();
+            ComponentPool<Type>* pool = this->GetPool<Type>();
 
             if(pool == nullptr)
                 return ComponentPool<Type>::ComponentIterator();
