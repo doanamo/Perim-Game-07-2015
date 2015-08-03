@@ -81,7 +81,7 @@ EntityHandle EntitySystem::CreateEntity()
 
     // Retrieve an unused handle from the free list.
     int handleIndex = m_freeListDequeue;
-    HandleEntry& handleEntry = m_handles[m_freeListDequeue];
+    HandleEntry& handleEntry = m_handles[handleIndex];
 
     // Clear next free handle index.
     handleEntry.nextFree = InvalidNextFree;
