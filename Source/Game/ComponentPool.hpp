@@ -84,7 +84,7 @@ namespace Game
         }
 
         // Removes a component.
-        bool Remove(EntityHandle handle)
+        bool Remove(EntityHandle handle) override
         {
             return m_components.erase(handle) == 1;
         }

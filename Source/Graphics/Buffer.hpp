@@ -113,7 +113,7 @@ namespace Graphics
         {
         }
 
-        const char* GetName() const
+        const char* GetName() const override
         {
             return "a vertex buffer";
         }
@@ -134,9 +134,9 @@ namespace Graphics
         {
         }
 
-        GLenum GetElementType() const;
+        GLenum GetElementType() const override;
 
-        const char* GetName() const
+        const char* GetName() const override
         {
             return "an index buffer";
         }
@@ -157,12 +157,12 @@ namespace Graphics
         {
         }
 
-        bool IsInstanced() const
+        bool IsInstanced() const override
         {
             return true;
         }
 
-        const char* GetName() const
+        const char* GetName() const override
         {
             return "an instance buffer";
         }
