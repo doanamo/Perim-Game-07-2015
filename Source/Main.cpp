@@ -1,5 +1,6 @@
 #include "Precompiled.hpp"
 #include "System/Window.hpp"
+#include "System/Timer.hpp"
 #include "Game/EntitySystem.hpp"
 #include "Game/ComponentSystem.hpp"
 #include "Game/Components/Transform.hpp"
@@ -28,6 +29,12 @@ int main(int argc, char* argv[])
     }
 
     coreContext.Set(&window);
+
+    // Initialize the timer.
+    System::Timer timer;
+    timer.SetMaxDelta(1.0f / 10.0f);
+
+    coreContext.Set(&timer);
 
     // Create the game context.
     Context gameContext;
@@ -67,9 +74,11 @@ int main(int argc, char* argv[])
     auto transform = componentSystem.Create<Game::Components::Transform>(entity);
     transform->SetPosition(glm::vec2(0.0f, 0.0f));
 
-    // Main loop.
-    window.MakeContextCurrent();
+    // Tick timer once after the initialization to avoid big
+    // time delta value right at the start of the first frame.
+    timer.Tick();
 
+    // Main loop.
     while(!window.IsClosed())
     {
         // Process window events.
@@ -83,6 +92,9 @@ int main(int argc, char* argv[])
 
         // Present backbuffer to the window.
         window.Present(true);
+
+        // Tick the timer.
+        timer.Tick();
     }
 
     return 0;

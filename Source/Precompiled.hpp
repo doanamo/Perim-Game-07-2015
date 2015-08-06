@@ -2,6 +2,7 @@
 
 #include <typeinfo>
 #include <typeindex>
+#include <limits>
 #include <memory>
 #include <chrono>
 #include <algorithm>

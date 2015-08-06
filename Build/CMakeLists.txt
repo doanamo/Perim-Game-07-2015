@@ -42,6 +42,8 @@ Set(SourceFiles
 
     "System/Window.hpp"
     "System/Window.cpp"
+    "System/Timer.hpp"
+    "System/Timer.cpp"
 
     "Graphics/Buffer.hpp"
     "Graphics/Buffer.cpp"
