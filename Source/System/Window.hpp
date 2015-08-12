@@ -40,59 +40,63 @@ namespace System
         GLFWwindow* GetPrivate();
 
     public:
-        // Keyboard key signal.
-        struct KeyboardKey
+        // Event signals.
+        struct Events
         {
-            int key;
-            int scancode;
-            int action;
-            int mods;
-        };
+            // Keyboard key signal.
+            struct KeyboardKey
+            {
+                int key;
+                int scancode;
+                int action;
+                int mods;
+            };
 
-        boost::signals2::signal<void(const KeyboardKey&)> keyboardKey;
+            boost::signals2::signal<void(const KeyboardKey&)> keyboardKey;
 
-        // Text input signal.
-        struct TextInput
-        {
-            unsigned int character;
-        };
+            // Text input signal.
+            struct TextInput
+            {
+                unsigned int character;
+            };
 
-        boost::signals2::signal<void(const TextInput&)> textInput;
+            boost::signals2::signal<void(const TextInput&)> textInput;
 
-        // Mouse button signal.
-        struct MouseButton
-        {
-            int button;
-            int action;
-            int mods;
-        };
+            // Mouse button signal.
+            struct MouseButton
+            {
+                int button;
+                int action;
+                int mods;
+            };
 
-        boost::signals2::signal<void(const MouseButton&)> mouseButton;
+            boost::signals2::signal<void(const MouseButton&)> mouseButton;
 
-        // Mouse scroll signal.
-        struct MouseScroll
-        {
-            double offset;
-        };
+            // Mouse scroll signal.
+            struct MouseScroll
+            {
+                double offset;
+            };
 
-        boost::signals2::signal<void(const MouseScroll&)> mouseScroll;
+            boost::signals2::signal<void(const MouseScroll&)> mouseScroll;
 
-        // Cursor position signal.
-        struct CursorPosition
-        {
-            double x;
-            double y;
-        };
+            // Cursor position signal.
+            struct CursorPosition
+            {
+                double x;
+                double y;
+            };
 
-        boost::signals2::signal<void(const CursorPosition&)> cursorPosition;
+            boost::signals2::signal<void(const CursorPosition&)> cursorPosition;
 
-        // Cursor enter signal.
-        struct CursorEnter
-        {
-            bool entered;
-        };
+            // Cursor enter signal.
+            struct CursorEnter
+            {
+                bool entered;
+            };
 
-        boost::signals2::signal<void(const CursorEnter&)> cursorEnter;
+            boost::signals2::signal<void(const CursorEnter&)> cursorEnter;
+        } events;
 
     private:
         // Window implementation.

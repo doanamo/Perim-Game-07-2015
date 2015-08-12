@@ -24,13 +24,13 @@ namespace
         BOOST_ASSERT(instance != nullptr);
 
         // Send an event.
-        Window::KeyboardKey event;
+        Window::Events::KeyboardKey event;
         event.key = key;
         event.scancode = scancode;
         event.action = action;
         event.mods = mods;
 
-        instance->keyboardKey(event);
+        instance->events.keyboardKey(event);
     }
 
     void TextInputCallback(GLFWwindow* window, unsigned int character)
@@ -40,10 +40,10 @@ namespace
         BOOST_ASSERT(instance != nullptr);
 
         // Send an event.
-        Window::TextInput event;
+        Window::Events::TextInput event;
         event.character = character;
 
-        instance->textInput(event);
+        instance->events.textInput(event);
     }
 
     void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
@@ -53,12 +53,12 @@ namespace
         BOOST_ASSERT(instance != nullptr);
 
         // Send an event.
-        Window::MouseButton event;
+        Window::Events::MouseButton event;
         event.button = button;
         event.action = action;
         event.mods = mods;
 
-        instance->mouseButton(event);
+        instance->events.mouseButton(event);
     }
 
     void MouseScrollCallback(GLFWwindow* window, double offsetx, double offsety)
@@ -68,10 +68,10 @@ namespace
         BOOST_ASSERT(instance != nullptr);
 
         // Send an event.
-        Window::MouseScroll event;
+        Window::Events::MouseScroll event;
         event.offset = offsety;
 
-        instance->mouseScroll(event);
+        instance->events.mouseScroll(event);
     }
 
     void CursorPositionCallback(GLFWwindow* window, double x, double y)
@@ -81,11 +81,11 @@ namespace
         BOOST_ASSERT(instance != nullptr);
 
         // Send an event.
-        Window::CursorPosition event;
+        Window::Events::CursorPosition event;
         event.x = x;
         event.y = y;
 
-        instance->cursorPosition(event);
+        instance->events.cursorPosition(event);
     }
 
     void CursorEnterCallback(GLFWwindow* window, int entered)
@@ -95,10 +95,10 @@ namespace
         BOOST_ASSERT(instance != nullptr);
 
         // Send an event.
-        Window::CursorEnter event;
+        Window::Events::CursorEnter event;
         event.entered = entered != 0;
 
-        instance->cursorEnter(event);
+        instance->events.cursorEnter(event);
     }
 }
 
