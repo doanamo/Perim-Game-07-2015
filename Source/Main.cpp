@@ -1,6 +1,7 @@
 #include "Precompiled.hpp"
 #include "System/Timer.hpp"
 #include "System/Window.hpp"
+#include "System/InputState.hpp"
 #include "Game/EntitySystem.hpp"
 #include "Game/ComponentSystem.hpp"
 #include "Game/Components/Transform.hpp"
@@ -36,7 +37,14 @@ int main(int argc, char* argv[])
 
     coreContext.Set(&window);
 
+    // Initialize the input state.
+    System::InputState inputState;
+    if(!inputState.Initialize(window))
+    {
+        return -1;
+    }
 
+    coreContext.Set(&inputState);
 
     // Create the game context.
     Context gameContext;
@@ -83,6 +91,9 @@ int main(int argc, char* argv[])
     // Main loop.
     while(window.IsOpen())
     {
+        // Update input state before processing events.
+        inputState.Update();
+
         // Process window events.
         window.ProcessEvents();
 
