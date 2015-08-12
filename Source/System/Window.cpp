@@ -17,6 +17,45 @@ namespace
         Log() << "GLFW Error: " << description;
     }
 
+    void ResizeCallback(GLFWwindow* window, int width, int height)
+    {
+        // Get window instance.
+        Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+        BOOST_ASSERT(instance != nullptr);
+
+        // Send an event.
+        Window::Events::Resize event;
+        event.width = width;
+        event.height = height;
+
+        instance->events.resize(event);
+    }
+
+    void FocusCallback(GLFWwindow* window, int focused)
+    {
+        // Get window instance.
+        Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+        BOOST_ASSERT(instance != nullptr);
+
+        // Send and event.
+        Window::Events::Focus event;
+        event.focused = focused > 0;
+        
+        instance->events.focus(event);
+    }
+
+    void CloseCallback(GLFWwindow* window)
+    {
+        // Get window instance.
+        Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+        BOOST_ASSERT(instance != nullptr);
+
+        // Send and event.
+        Window::Events::Close event;
+        
+        instance->events.close(event);
+    }
+
     void KeyboardKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
         // Get window instance.
@@ -166,6 +205,9 @@ bool Window::Initialize()
     glfwSetWindowUserPointer(m_window, this);
 
     // Add event callbacks.
+    glfwSetFramebufferSizeCallback(m_window, ResizeCallback);
+    glfwSetWindowFocusCallback(m_window, FocusCallback);
+    glfwSetWindowCloseCallback(m_window, CloseCallback);
     glfwSetKeyCallback(m_window, KeyboardKeyCallback);
     glfwSetCharCallback(m_window, TextInputCallback);
     glfwSetMouseButtonCallback(m_window, MouseButtonCallback);
@@ -219,11 +261,25 @@ void Window::Present(bool verticalSync)
     glfwSwapBuffers(m_window);
 }
 
-bool Window::IsClosed() const
+void Window::Close()
 {
     BOOST_ASSERT(m_initialized);
 
-    return glfwWindowShouldClose(m_window) != 0;
+    glfwSetWindowShouldClose(m_window, GL_TRUE);
+}
+
+bool Window::IsOpen() const
+{
+    BOOST_ASSERT(m_initialized);
+
+    return glfwWindowShouldClose(m_window) == 0;
+}
+
+bool Window::IsFocused() const
+{
+    BOOST_ASSERT(m_initialized);
+
+    return glfwGetWindowAttrib(m_window, GLFW_FOCUSED) > 0;
 }
 
 int Window::GetWidth() const

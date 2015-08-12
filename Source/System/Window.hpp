@@ -27,8 +27,14 @@ namespace System
         // Presents backbuffer content to the window.
         void Present(bool verticalSync);
 
-        // Checks if window has been closed.
-        bool IsClosed() const;
+        // Closes the window.
+        void Close();
+
+        // Checks if window is open.
+        bool IsOpen() const;
+
+        // Checks if window is focused.
+        bool IsFocused() const;
 
         // Gets window's width.
         int GetWidth() const;
@@ -43,6 +49,30 @@ namespace System
         // Event signals.
         struct Events
         {
+            // Resize signal.
+            struct Resize
+            {
+                int width;
+                int height;
+            };
+
+            boost::signals2::signal<void(const Resize&)> resize;
+
+            // Focus signal.
+            struct Focus
+            {
+                bool focused;
+            };
+
+            boost::signals2::signal<void(const Focus&)> focus;
+
+            // Close signal.
+            struct Close
+            {
+            };
+
+            boost::signals2::signal<void(const Close&)> close;
+
             // Keyboard key signal.
             struct KeyboardKey
             {

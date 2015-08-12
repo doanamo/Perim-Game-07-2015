@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
     timer.Tick();
 
     // Main loop.
-    while(!window.IsClosed())
+    while(window.IsOpen())
     {
         // Process window events.
         window.ProcessEvents();
