@@ -100,6 +100,31 @@ int main(int argc, char* argv[])
         // Process entity commands.
         entitySystem.ProcessCommands();
 
+        // Get frame delta.
+        float dt = timer.GetDelta();
+
+        //
+        glm::vec2 direction;
+
+        if(inputState.IsKeyDown(GLFW_KEY_D))
+            direction.x += 1.0f;
+
+        if(inputState.IsKeyDown(GLFW_KEY_A))
+            direction.x -= 1.0f;
+
+        if(inputState.IsKeyDown(GLFW_KEY_W))
+            direction.y += 1.0f;
+
+        if(inputState.IsKeyDown(GLFW_KEY_S))
+            direction.y -= 1.0f;
+
+        if(direction != glm::vec2(0.0f, 0.0f))
+        {
+            glm::vec2 position = transform->GetPosition();
+            position += glm::normalize(direction) * 6.0f * dt;
+            transform->SetPosition(position);
+        }
+        
         // Draw the scene.
         renderSystem.Draw();
 
