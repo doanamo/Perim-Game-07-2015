@@ -5,7 +5,10 @@
 #include "Game/EntitySystem.hpp"
 #include "Game/ComponentSystem.hpp"
 #include "Game/Components/Transform.hpp"
+#include "Game/Components/Script.hpp"
 #include "Game/IdentitySystem.hpp"
+#include "Game/ScriptSystem.hpp"
+#include "Game/Scripts/Player.hpp"
 #include "Game/RenderSystem.hpp"
 
 int main(int argc, char* argv[])
@@ -60,17 +63,27 @@ int main(int argc, char* argv[])
     if(!identitySystem.Initialize(gameContext))
         return -1;
 
+    // Initialize the script system.
+    Game::ScriptSystem scriptSystem;
+    if(!scriptSystem.Initialize(coreContext, gameContext))
+        return -1;
+
     // Initialize the render system.
     Game::RenderSystem renderSystem;
     if(!renderSystem.Initialize(coreContext, gameContext))
         return -1;
 
     // Create an entity.
-    Game::EntityHandle entity = entitySystem.CreateEntity();
-    identitySystem.SetEntityName(entity, "Player");
+    {
+        Game::EntityHandle entity = entitySystem.CreateEntity();
+        identitySystem.SetEntityName(entity, "Player");
 
-    auto transform = componentSystem.Create<Game::Components::Transform>(entity);
-    transform->SetPosition(glm::vec2(0.0f, 0.0f));
+        auto transform = componentSystem.Create<Game::Components::Transform>(entity);
+        transform->SetPosition(glm::vec2(0.0f, 0.0f));
+
+        auto script = componentSystem.Create<Game::Components::Script>(entity);
+        script->Emplace<Game::Scripts::Player>(&inputState, transform);
+    }
 
     // Tick timer once after the initialization to avoid big
     // time delta value right at the start of the first frame.
@@ -89,30 +102,11 @@ int main(int argc, char* argv[])
         entitySystem.ProcessCommands();
 
         // Get frame delta.
-        float dt = timer.GetDelta();
+        float timeDelta = timer.GetDelta();
 
-        //
-        glm::vec2 direction;
+        // Update entity scripts.
+        scriptSystem.Update(timeDelta);
 
-        if(inputState.IsKeyDown(GLFW_KEY_D))
-            direction.x += 1.0f;
-
-        if(inputState.IsKeyDown(GLFW_KEY_A))
-            direction.x -= 1.0f;
-
-        if(inputState.IsKeyDown(GLFW_KEY_W))
-            direction.y += 1.0f;
-
-        if(inputState.IsKeyDown(GLFW_KEY_S))
-            direction.y -= 1.0f;
-
-        if(direction != glm::vec2(0.0f, 0.0f))
-        {
-            glm::vec2 position = transform->GetPosition();
-            position += glm::normalize(direction) * 6.0f * dt;
-            transform->SetPosition(position);
-        }
-        
         // Draw the scene.
         renderSystem.Draw();
 
