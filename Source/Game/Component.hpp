@@ -9,7 +9,7 @@
 namespace Game
 {
     // Component base class.
-    class Component
+    class Component : private boost::noncopyable
     {
     protected:
         Component()

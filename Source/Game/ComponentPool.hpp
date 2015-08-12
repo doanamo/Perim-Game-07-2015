@@ -58,7 +58,7 @@ namespace Game
         Type* Create(EntityHandle handle)
         {
             // Create a new component for this entity handle.
-            auto result = m_components.emplace(std::make_pair(handle, Type()));
+            auto result = m_components.emplace(std::piecewise_construct, std::forward_as_tuple(handle), std::forward_as_tuple());
 
             if(result.second == false)
                 return nullptr;
