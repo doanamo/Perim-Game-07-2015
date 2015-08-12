@@ -31,18 +31,14 @@ int main(int argc, char* argv[])
     // Initialize the window.
     System::Window window;
     if(!window.Initialize())
-    {
         return -1;
-    }
 
     coreContext.Set(&window);
 
     // Initialize the input state.
     System::InputState inputState;
     if(!inputState.Initialize(window))
-    {
         return -1;
-    }
 
     coreContext.Set(&inputState);
 
@@ -52,30 +48,22 @@ int main(int argc, char* argv[])
     // Initialize the component system.
     Game::ComponentSystem componentSystem;
     if(!componentSystem.Initialize(gameContext))
-    {
         return -1;
-    }
 
     // Initialize the entity system.
     Game::EntitySystem entitySystem;
     if(!entitySystem.Initialize(gameContext))
-    {
         return -1;
-    }
 
     // Initialize the identity system.
     Game::IdentitySystem identitySystem;
     if(!identitySystem.Initialize(gameContext))
-    {
         return -1;
-    }
 
     // Initialize the render system.
     Game::RenderSystem renderSystem;
     if(!renderSystem.Initialize(coreContext, gameContext))
-    {
         return -1;
-    }
 
     // Create an entity.
     Game::EntityHandle entity = entitySystem.CreateEntity();
