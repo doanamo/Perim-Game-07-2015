@@ -1,6 +1,6 @@
 #include "Precompiled.hpp"
-#include "System/Window.hpp"
 #include "System/Timer.hpp"
+#include "System/Window.hpp"
 #include "Game/EntitySystem.hpp"
 #include "Game/ComponentSystem.hpp"
 #include "Game/Components/Transform.hpp"
@@ -21,6 +21,12 @@ int main(int argc, char* argv[])
     // Create the core context.
     Context coreContext;
 
+    // Initialize the timer.
+    System::Timer timer;
+    timer.SetMaxDelta(1.0f / 10.0f);
+
+    coreContext.Set(&timer);
+
     // Initialize the window.
     System::Window window;
     if(!window.Initialize())
@@ -30,11 +36,7 @@ int main(int argc, char* argv[])
 
     coreContext.Set(&window);
 
-    // Initialize the timer.
-    System::Timer timer;
-    timer.SetMaxDelta(1.0f / 10.0f);
 
-    coreContext.Set(&timer);
 
     // Create the game context.
     Context gameContext;
