@@ -27,9 +27,9 @@ namespace Game
             Script();
             ~Script();
 
-            // Creates a script of a given type and returns a pointer to it.
+            // Adds a script of a given type and returns a pointer to it.
             template<class Type, typename... Arguments>
-            Type* Emplace(Arguments&&... arguments)
+            Type* Add(Arguments&&... arguments)
             {
                 BOOST_STATIC_ASSERT_MSG(std::is_base_of<ScriptInterface, Type>::value, "Not a script type.");
                 m_scripts.emplace_back(new Type(std::forward<Arguments>(arguments)...));
@@ -61,20 +61,15 @@ namespace Game
         {
         }
 
-        
-
     public:
         // Virtual destructor.
         virtual ~ScriptInterface()
         {
         }
 
-        ScriptInterface(ScriptInterface&& other)
-        {
-            
-        }
-
         // Script logic methods.
-        virtual void OnUpdate(EntityHandle self, float timeDelta) { }
+        virtual void OnUpdate(EntityHandle self, float timeDelta)
+        {
+        }
     };
 }
