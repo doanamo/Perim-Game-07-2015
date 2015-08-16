@@ -2,7 +2,7 @@
 
 #include "Precompiled.hpp"
 #include "Game/Component.hpp"
-#include "GAme/EntityHandle.hpp"
+#include "Game/EntityHandle.hpp"
 
 //
 // Script Component
