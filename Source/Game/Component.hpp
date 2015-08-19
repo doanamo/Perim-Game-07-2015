@@ -8,6 +8,8 @@
 
 namespace Game
 {
+
+
     // Component base class.
     class Component : private boost::noncopyable
     {
@@ -19,6 +21,11 @@ namespace Game
     public:
         virtual ~Component()
         {
+        }
+
+        virtual bool Finalize()
+        {
+            return true;
         }
     };
 }

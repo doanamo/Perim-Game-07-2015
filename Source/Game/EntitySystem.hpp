@@ -105,9 +105,35 @@ namespace Game
         };
 
     private:
+        // Signal combiner.
+        class FailureAbort
+        {
+        public:
+            typedef bool result_type;
+
+            template<typename Type>
+            result_type operator()(Type begin, Type end) const
+            {
+                // Abort when first listener return false.
+                for(auto it = begin; it != end; ++it)
+                {
+                    if(*it == false)
+                        return false;
+                }
+
+                return true;
+            }
+        };
+
         // Type declarations.
         typedef std::vector<HandleEntry>   HandleList;
         typedef std::vector<EntityCommand> CommandList;
+
+    public:
+        // Signal type declarations.
+        typedef boost::signals2::signal<bool(const Events::EntityFinalize&), FailureAbort> EntityFinalizeSignal;
+        typedef boost::signals2::signal<void(const Events::EntityCreated&)> EntityCreatedSignal;
+        typedef boost::signals2::signal<void(const Events::EntityDestroyed&)> EntityDestroyedSignal;
 
     public:
         EntitySystem();
@@ -139,30 +165,10 @@ namespace Game
         void FreeHandle(int handleIndex, HandleEntry& handleEntry);
 
     public:
-        // Signal combiner.
-        class FailureAbort
-        {
-        public:
-            typedef bool result_type;
-
-            template<typename Type>
-            result_type operator()(Type begin, Type end) const
-            {
-                // Abort when first listener return false.
-                for(auto it = begin; it != end; ++it)
-                {
-                    if(*it == false)
-                        return false;
-                }
-
-                return true;
-            }
-        };
-
         // Event signals.
-        boost::signals2::signal<bool(const Events::EntityFinalize&), FailureAbort> entityFinalize;
-        boost::signals2::signal<void(const Events::EntityCreated&)> entityCreated;
-        boost::signals2::signal<void(const Events::EntityDestroyed&)> entityDestroyed;
+        EntityFinalizeSignal  entityFinalize;
+        EntityCreatedSignal   entityCreated;
+        EntityDestroyedSignal entityDestroyed;
 
     private:
         // List of commands.

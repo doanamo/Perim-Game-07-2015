@@ -41,7 +41,8 @@ bool EntitySystem::Initialize(Context& context)
     ComponentSystem* componentSystem = context.Get<ComponentSystem>();
     if(componentSystem == nullptr) return false;
 
-    // Connect component system to our signal.
+    // Connect component system to our signals.
+    componentSystem->ConnectSignal(this->entityFinalize);
     componentSystem->ConnectSignal(this->entityDestroyed);
 
     // Success!

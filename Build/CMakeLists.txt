@@ -62,6 +62,7 @@ Set(SourceFiles
     "Game/Component.hpp"
     "Game/ComponentPool.hpp"
     "Game/ComponentSystem.hpp"
+    "Game/ComponentSystem.cpp"
     "Game/Components/Transform.hpp"
     "Game/Components/Transform.cpp"
     "Game/Components/Script.hpp"
