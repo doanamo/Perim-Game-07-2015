@@ -10,8 +10,9 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
-#include <vector>
 #include <string>
+#include <vector>
+#include <queue>
 #include <unordered_map>
 
 #define BOOST_SCOPE_EXIT_CONFIG_USE_LAMBDAS

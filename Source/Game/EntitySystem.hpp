@@ -126,8 +126,8 @@ namespace Game
         };
 
         // Type declarations.
-        typedef std::vector<HandleEntry>   HandleList;
-        typedef std::vector<EntityCommand> CommandList;
+        typedef std::vector<HandleEntry>  HandleList;
+        typedef std::queue<EntityCommand> CommandList;
 
     public:
         // Signal type declarations.

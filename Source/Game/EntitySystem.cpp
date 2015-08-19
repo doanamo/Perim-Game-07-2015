@@ -111,7 +111,7 @@ EntityHandle EntitySystem::CreateEntity()
     command.type = EntityCommands::Create;
     command.handle = handleEntry.handle;
 
-    m_commands.push_back(command);
+    m_commands.push(command);
 
     // Return the handle, which is still inactive
     // until the next ProcessCommands() call.
@@ -138,7 +138,7 @@ void EntitySystem::DestroyEntity(const EntityHandle& entity)
     command.type = EntityCommands::Destroy;
     command.handle = handleEntry.handle;
 
-    m_commands.push_back(command);
+    m_commands.push(command);
 }
 
 void EntitySystem::DestroyAllEntities()
@@ -192,18 +192,22 @@ void EntitySystem::ProcessCommands()
     BOOST_ASSERT(m_initialized);
 
     // Process entity commands.
-    for(auto command = m_commands.begin(); command != m_commands.end(); ++command)
+    while(!m_commands.empty())
     {
-        switch(command->type)
+        // Get the command from the queue.
+        EntityCommand& command = m_commands.front();
+
+        // Process entity command.
+        switch(command.type)
         {
         case EntityCommands::Create:
             {
                 // Locate the handle entry.
-                int handleIndex = command->handle.identifier - 1;
+                int handleIndex = command.handle.identifier - 1;
                 HandleEntry& handleEntry = m_handles[handleIndex];
 
                 // Make sure handles match.
-                BOOST_ASSERT(command->handle == handleEntry.handle);
+                BOOST_ASSERT(command.handle == handleEntry.handle);
 
                 // Inform that we want this entity finalized.
                 if(!this->entityFinalize(handleEntry.handle))
@@ -229,11 +233,11 @@ void EntitySystem::ProcessCommands()
         case EntityCommands::Destroy:
             {
                 // Locate the handle entry.
-                int handleIndex = command->handle.identifier - 1;
+                int handleIndex = command.handle.identifier - 1;
                 HandleEntry& handleEntry = m_handles[handleIndex];
 
                 // Check if handles match.
-                if(command->handle != handleEntry.handle)
+                if(command.handle != handleEntry.handle)
                 {
                     // Trying to destroy an entity twice.
                     BOOST_ASSERT(false);
@@ -253,10 +257,10 @@ void EntitySystem::ProcessCommands()
             }
             break;
         }
-    }
 
-    // Clear processed entity commands.
-    m_commands.clear();
+        // Remove command from the queue.
+        m_commands.pop();
+    }
 }
 
 void EntitySystem::FreeHandle(int handleIndex, HandleEntry& handleEntry)
