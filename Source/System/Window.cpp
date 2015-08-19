@@ -17,6 +17,20 @@ namespace
         Log() << "GLFW Error: " << description;
     }
 
+    void MoveCallback(GLFWwindow* window, int x, int y)
+    {
+        // Get window instance.
+        Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+        BOOST_ASSERT(instance != nullptr);
+
+        // Send an event.
+        Window::Events::Move event;
+        event.x = x;
+        event.y = y;
+
+        instance->events.move(event);
+    }
+
     void ResizeCallback(GLFWwindow* window, int width, int height)
     {
         // Get window instance.
@@ -205,6 +219,7 @@ bool Window::Initialize()
     glfwSetWindowUserPointer(m_window, this);
 
     // Add event callbacks.
+    glfwSetWindowPosCallback(m_window, MoveCallback);
     glfwSetFramebufferSizeCallback(m_window, ResizeCallback);
     glfwSetWindowFocusCallback(m_window, FocusCallback);
     glfwSetWindowCloseCallback(m_window, CloseCallback);

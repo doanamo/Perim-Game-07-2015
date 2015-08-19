@@ -49,6 +49,15 @@ namespace System
         // Event signals.
         struct Events
         {
+            // Move signal.
+            struct Move
+            {
+                int x;
+                int y;
+            };
+
+            boost::signals2::signal<void(const Move&)> move;
+
             // Resize signal.
             struct Resize
             {
