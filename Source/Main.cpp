@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
         transform->SetPosition(glm::vec2(0.0f, 0.0f));
 
         auto script = componentSystem.Create<Game::Components::Script>(entity);
-        script->Add<Game::Scripts::Player>(&inputState, transform);
+        script->Add<Game::Scripts::Player>();
     }
 
     // Tick timer once after the initialization to avoid big

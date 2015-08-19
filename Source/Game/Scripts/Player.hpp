@@ -2,7 +2,6 @@
 
 #include "Precompiled.hpp"
 #include "Game/Components/Script.hpp"
-#include "Game/Components/Transform.hpp"
 
 // Forward declarations.
 namespace System
@@ -16,15 +15,21 @@ namespace System
 
 namespace Game
 {
+    namespace Components
+    {
+        class Transform;
+    }
+
     namespace Scripts
     {
         // Player script class.
         class Player : public ScriptInterface
         {
         public:
-            Player(System::InputState* inputState, Components::Transform* transform);
+            Player();
             ~Player();
 
+            bool OnFinalize(EntityHandle self, const Context& context) override;
             void OnUpdate(EntityHandle self, float timeDelta) override;
 
         private:

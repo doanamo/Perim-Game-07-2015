@@ -1,20 +1,35 @@
 #include "Precompiled.hpp"
 #include "Player.hpp"
 #include "System/InputState.hpp"
+#include "Game/ComponentSystem.hpp"
 #include "Game/Components/Transform.hpp"
 using namespace Game;
 using namespace Scripts;
 
-Player::Player(System::InputState* inputState, Components::Transform* transform) :
-    m_inputState(inputState),
-    m_transform(transform)
+Player::Player() :
+    m_inputState(nullptr),
+    m_transform(nullptr)
 {
-    BOOST_ASSERT(m_inputState != nullptr);
-    BOOST_ASSERT(m_transform  != nullptr);
 }
 
 Player::~Player()
 {
+}
+
+bool Player::OnFinalize(EntityHandle self, const Context& context)
+{
+    // Get required systems.
+    m_inputState = context[ContextTypes::Main].Get<System::InputState>();
+    if(m_inputState == nullptr) return false;
+
+    ComponentSystem* componentSystem = context[ContextTypes::Game].Get<ComponentSystem>();
+    if(componentSystem == nullptr) return false;
+
+    // Get required components.
+    m_transform = componentSystem->Lookup<Components::Transform>(self);
+    if(m_transform == nullptr) return false;
+
+    return true;
 }
 
 void Player::OnUpdate(EntityHandle self, float timeDelta)

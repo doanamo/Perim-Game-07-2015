@@ -55,6 +55,6 @@ void ScriptSystem::Update(float timeDelta)
             continue;
 
         // Update script component.
-        script.OnUpdate(entity, timeDelta);
+        script.Update(entity, timeDelta);
     }
 }

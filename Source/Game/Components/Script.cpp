@@ -11,7 +11,18 @@ Script::~Script()
 {
 }
 
-void Script::OnUpdate(EntityHandle self, float timeDelta)
+bool Script::Finalize(EntityHandle self, const Context& context)
+{
+    for(auto& script : m_scripts)
+    {
+        if(!script->OnFinalize(self, context))
+            return false;
+    }
+
+    return true;
+}
+
+void Script::Update(EntityHandle self, float timeDelta)
 {
     for(auto& script : m_scripts)
     {

@@ -83,6 +83,9 @@ namespace Game
         boost::signals2::scoped_connection m_entityFinalize;
         boost::signals2::scoped_connection m_entityDestroyed;
 
+        // Context reference.
+        Context* m_context;
+
         // Initialization state.
         bool m_initialized;
     };

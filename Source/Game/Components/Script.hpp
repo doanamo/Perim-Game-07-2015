@@ -36,8 +36,11 @@ namespace Game
                 return reinterpret_cast<Type*>(m_scripts.back().get());
             }
 
-            // Script logic methods.
-            void OnUpdate(EntityHandle self, float timeDelta);
+            // Finalizes scripts.
+            bool Finalize(EntityHandle self, const Context& context) override;
+
+            // Updates scripts.
+            void Update(EntityHandle self, float timeDelta);
 
         private:
             // List of scripts.
@@ -68,6 +71,11 @@ namespace Game
         }
 
         // Script logic methods.
+        virtual bool OnFinalize(EntityHandle self, const Context& context)
+        {
+            return true;
+        }
+
         virtual void OnUpdate(EntityHandle self, float timeDelta)
         {
         }

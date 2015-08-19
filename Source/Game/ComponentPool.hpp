@@ -23,7 +23,7 @@ namespace Game
         {
         }
 
-        virtual bool Finalize(EntityHandle handle) = 0;
+        virtual bool Finalize(EntityHandle handle, const Context& context) = 0;
         virtual bool Remove(EntityHandle handle) = 0;
     };
 }
@@ -85,14 +85,14 @@ namespace Game
         }
 
         // Finalizes a component.
-        bool Finalize(EntityHandle handle) override
+        bool Finalize(EntityHandle handle, const Context& context) override
         {
             // Find the component.
             Type* component = this->Lookup(handle);
             BOOST_ASSERT(component != nullptr);
 
             // Call the finalizing function.
-            return component->Finalize();
+            return component->Finalize(handle, context);
         }
 
         // Removes a component.

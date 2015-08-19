@@ -108,6 +108,28 @@ public:
         return m_contexts[index - 1];
     }
 
+    const Context& operator[](int index) const
+    {
+        BOOST_ASSERT(index >= 0);
+
+        // Return self at zero index.
+        if(index == 0)
+        {
+            return *this;
+        }
+
+        // Return an empty context.
+        // Useful indices start from 1 here.
+        if(m_contexts.size() < size_t(index))
+        {
+            static const Context Invalid;
+            return Invalid;
+        }
+
+        // Return a subcontext.
+        return m_contexts[index - 1];
+    }
+
 private:
     // List of unique instances.
     InstanceList m_instances;
