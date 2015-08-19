@@ -121,13 +121,17 @@ void RenderSystem::Draw()
 
     for(auto it = componentsBegin; it != componentsEnd; ++it)
     {
-        // Get the transform components.
-        Components::Transform* transform = it->second.GetTransform();
+        // Get the components.
+        Components::Render* render = &it->second;
+        BOOST_ASSERT(render != nullptr);
+
+        Components::Transform* transform = render->GetTransform();
         BOOST_ASSERT(transform != nullptr);
 
         // Draw entity.
         glm::mat4 vertexTransform = transform->CalculateMatrix(m_screenSpace.GetTransform() * view);
-        glUniformMatrix4fv(m_shader.GetUniform("vertexTransform"), 1, GL_FALSE, glm::value_ptr(vertexTransform));
+        glUniformMatrix4fv(m_shader.GetUniform("viewTransform"), 1, GL_FALSE, glm::value_ptr(vertexTransform));
+        glUniform4fv(m_shader.GetUniform("fragmentDiffuseColor"), 1, glm::value_ptr(render->GetDiffuseColor()));
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }

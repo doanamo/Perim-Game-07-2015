@@ -83,6 +83,7 @@ int main(int argc, char* argv[])
         script->Add<Game::Scripts::Player>();
 
         auto render = componentSystem.Create<Game::Components::Render>(entity);
+        render->SetDiffuseColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
     }
 
     // Tick timer once after the initialization to avoid big
