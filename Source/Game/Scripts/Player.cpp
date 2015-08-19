@@ -15,7 +15,6 @@ Player::Player(System::InputState* inputState, Components::Transform* transform)
 
 Player::~Player()
 {
-    
 }
 
 void Player::OnUpdate(EntityHandle self, float timeDelta)

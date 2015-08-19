@@ -11,6 +11,17 @@ namespace Game
 {
     namespace Events
     {
+        // Entity finalize event structure.
+        struct EntityFinalize
+        {
+            EntityFinalize(EntityHandle handle) :
+                handle(handle)
+            {
+            }
+
+            EntityHandle handle;
+        };
+
         // Entity created event structure.
         struct EntityCreated
         {
@@ -123,8 +134,33 @@ namespace Game
         // Returns the number of active entities.
         unsigned int GetEntityCount() const;
 
+    private:
+        // Frees an entity handle.
+        void FreeHandle(int handleIndex, HandleEntry& handleEntry);
+
     public:
+        // Signal combiner.
+        class FailureAbort
+        {
+        public:
+            typedef bool result_type;
+
+            template<typename Type>
+            result_type operator()(Type begin, Type end) const
+            {
+                // Abort when first listener return false.
+                for(auto it = begin; it != end; ++it)
+                {
+                    if(*it == false)
+                        return false;
+                }
+
+                return true;
+            }
+        };
+
         // Event signals.
+        boost::signals2::signal<bool(const Events::EntityFinalize&), FailureAbort> entityFinalize;
         boost::signals2::signal<void(const Events::EntityCreated&)> entityCreated;
         boost::signals2::signal<void(const Events::EntityDestroyed&)> entityDestroyed;
 
