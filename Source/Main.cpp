@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
     if(!renderSystem.Initialize(context))
         return -1;
 
-    // Create an entity.
+    // Create entities.
     {
         Game::EntityHandle entity = entitySystem.CreateEntity();
         identitySystem.SetEntityName(entity, "Player");
@@ -84,6 +84,26 @@ int main(int argc, char* argv[])
 
         auto render = componentSystem.Create<Game::Components::Render>(entity);
         render->SetDiffuseColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+    }
+
+    {
+        Game::EntityHandle entity = entitySystem.CreateEntity();
+
+        auto transform = componentSystem.Create<Game::Components::Transform>(entity);
+        transform->SetPosition(glm::vec2(3.0f, 0.0f));
+
+        auto render = componentSystem.Create<Game::Components::Render>(entity);
+        render->SetDiffuseColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    }
+
+    {
+        Game::EntityHandle entity = entitySystem.CreateEntity();
+
+        auto transform = componentSystem.Create<Game::Components::Transform>(entity);
+        transform->SetPosition(glm::vec2(-3.0f, 0.0f));
+
+        auto render = componentSystem.Create<Game::Components::Render>(entity);
+        render->SetDiffuseColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
     }
 
     // Tick timer once after the initialization to avoid big
