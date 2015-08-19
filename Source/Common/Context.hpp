@@ -14,6 +14,7 @@ class Context
 public:
     // Type declarations.
     typedef std::vector<boost::any> InstanceList;
+    typedef std::vector<Context> ContextList;
 
     // Search function definition.
     template<typename Type>
@@ -85,7 +86,32 @@ public:
         m_instances.erase(std::find_if(m_instances.begin(), m_instances.end(), SearchInstance<Type>));
     }
 
+    // Gets a subcontext.
+    Context& operator[](int index)
+    {
+        BOOST_ASSERT(index >= 0);
+
+        // Return self at zero index.
+        if(index == 0)
+        {
+            return *this;
+        }
+
+        // Resize context list if needed.
+        // Useful indices start from 1 here.
+        if(m_contexts.size() < size_t(index))
+        {
+            m_contexts.resize(index);
+        }
+
+        // Return a subcontext.
+        return m_contexts[index - 1];
+    }
+
 private:
     // List of unique instances.
     InstanceList m_instances;
+
+    // List of subcontextes.
+    ContextList m_contexts;
 };
