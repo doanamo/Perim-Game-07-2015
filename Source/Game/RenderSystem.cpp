@@ -104,7 +104,11 @@ void RenderSystem::Draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //
-    Components::Transform& transform = m_componentSystem->Begin<Components::Transform>()->second;
+    auto it = m_componentSystem->Begin<Components::Transform>();
+    if(it == m_componentSystem->End<Components::Transform>())
+        return;
+
+    Components::Transform& transform = it->second;
 
     // Calculate camera view.
     glm::mat4 view = glm::translate(glm::mat4(1.0f), -glm::vec3(m_screenSpace.GetOffset(), 0.0f));
