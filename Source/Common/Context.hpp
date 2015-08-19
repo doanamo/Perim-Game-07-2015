@@ -13,8 +13,14 @@ class Context
 {
 public:
     // Type declarations.
-    typedef std::pair<int, boost::any> InstanceHandle;
-    typedef std::vector<InstanceHandle> InstanceList;
+    typedef std::vector<boost::any> InstanceList;
+
+    // Search function definition.
+    template<typename Type>
+    static bool SearchFunction(const boost::any& instance)
+    {
+        return instance.type() == typeid(Type*);
+    }
 
 public:
     Context()
@@ -27,77 +33,48 @@ public:
 
     // Sets the unique instance.
     template<typename Type>
-    bool Set(Type* instance, int index = 0)
+    bool Set(Type* instance)
     {
-        BOOST_ASSERT(index >= 0);
-
         // Free instance handle if nullptr.
         if(instance == nullptr)
         {
-            this->Clear<Type>(index);
+            this->Clear<Type>();
         }
 
         // Find handle by instance entry.
-        auto it = std::find_if(m_instances.begin(), m_instances.end(),
-            [&index](const InstanceHandle& handle) -> bool
-            {
-                return handle.first == index && handle.second.type() == typeid(Type*);
-            }
-        );
+        auto it = std::find_if(m_instances.begin(), m_instances.end(), SearchFunction<Type>);
 
         // Set the instance value.
         if(it != m_instances.end())
         {
             // Replace value at existing handle.
-            it->second = instance;
+            *it = instance;
             return false;
         }
         else
         {
             // Add a new instance handle.
-            m_instances.push_back({ index, instance });
+            m_instances.push_back(instance);
             return true;
         }
     }
 
     // Gets the unique instance.
     template<typename Type>
-    Type* Get(int index = 0) const
+    Type* Get() const
     {
-        BOOST_ASSERT(index >= 0);
-
         // Find handle by instance entry.
-        auto it = std::find_if(m_instances.begin(), m_instances.end(),
-            [&index](const InstanceHandle& handle) -> bool
-            {
-                return handle.first == index && handle.second.type() == typeid(Type*);
-            }
-        );
+        auto it = std::find_if(m_instances.begin(), m_instances.end(), SearchFunction<Type>);
 
         // Return instance reference.
         if(it != m_instances.end())
         {
-            return boost::any_cast<Type*>(it->second);
+            return boost::any_cast<Type*>(*it);
         }
         else
         {
             return nullptr;
         }
-    }
-
-    // Clears the uniqe instance handle.
-    template<typename Type>
-    void Clear(int index = 0)
-    {
-        BOOST_ASSERT(index >= 0);
-
-        // Find and erase an instance handle.
-        m_instances.erase(std::find_if(m_instances.begin(), m_instances.end(),
-            [&index](const InstanceHandle& handle) -> bool
-            {
-                return handle.first == index && handle.second.type() == typeid(Type*);
-            }
-        ));
     }
 
 private:

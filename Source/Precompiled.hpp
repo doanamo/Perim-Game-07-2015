@@ -19,9 +19,11 @@
 #include <boost/assert.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/core/noncopyable.hpp>
+#include <boost/serialization/strong_typedef.hpp>
 #include <boost/scope_exit.hpp>
 #include <boost/range.hpp>
 #include <boost/any.hpp>
+#include <boost/variant.hpp>
 #include <boost/signals2.hpp>
 #include <boost/bimap.hpp>
 #include <boost/bimap/unordered_set_of.hpp>
