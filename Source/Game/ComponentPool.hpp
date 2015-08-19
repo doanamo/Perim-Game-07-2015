@@ -87,6 +87,9 @@ namespace Game
         // Finalizes a component.
         bool Finalize(EntityHandle handle, const Context& context) override
         {
+            if(m_components.empty())
+                return true;
+
             // Find the component.
             Type* component = this->Lookup(handle);
             BOOST_ASSERT(component != nullptr);
