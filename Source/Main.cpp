@@ -6,6 +6,7 @@
 #include "Game/ComponentSystem.hpp"
 #include "Game/Components/Transform.hpp"
 #include "Game/Components/Script.hpp"
+#include "Game/Components/Render.hpp"
 #include "Game/IdentitySystem.hpp"
 #include "Game/ScriptSystem.hpp"
 #include "Game/Scripts/Player.hpp"
@@ -80,6 +81,8 @@ int main(int argc, char* argv[])
 
         auto script = componentSystem.Create<Game::Components::Script>(entity);
         script->Add<Game::Scripts::Player>();
+
+        auto render = componentSystem.Create<Game::Components::Render>(entity);
     }
 
     // Tick timer once after the initialization to avoid big

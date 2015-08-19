@@ -2,6 +2,7 @@
 #include "RenderSystem.hpp"
 #include "ComponentSystem.hpp"
 #include "Components/Transform.hpp"
+#include "Components/Render.hpp"
 #include "System/Window.hpp"
 using namespace Game;
 
@@ -38,6 +39,7 @@ bool RenderSystem::Initialize(Context& context)
 
     // Declare required components.
     m_componentSystem->Declare<Game::Components::Transform>();
+    m_componentSystem->Declare<Game::Components::Render>();
 
     // Set screen space target size.
     m_screenSpace.SetTargetSize(10.0f, 10.0f);
@@ -97,31 +99,36 @@ void RenderSystem::Draw()
     // Setup screen space.
     m_screenSpace.SetSourceSize(windowWidth, windowHeight);
 
+    // Calculate camera view.
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), -glm::vec3(m_screenSpace.GetOffset(), 0.0f));
+
     // Clear the back buffer.
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClearDepth(1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //
-    auto it = m_componentSystem->Begin<Components::Transform>();
-    if(it == m_componentSystem->End<Components::Transform>())
-        return;
-
-    Components::Transform& transform = it->second;
-
-    // Calculate camera view.
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), -glm::vec3(m_screenSpace.GetOffset(), 0.0f));
-
-    // Draw scene.
+    // Set render states.
     glBindVertexArray(m_vertexInput.GetHandle());
     BOOST_SCOPE_EXIT(&) { glBindVertexArray(0); };
 
     glUseProgram(m_shader.GetHandle());
     BOOST_SCOPE_EXIT(&) { glUseProgram(0); };
 
-    glm::mat4 vertexTransform = transform.CalculateMatrix(m_screenSpace.GetTransform() * view);
-    glUniformMatrix4fv(m_shader.GetUniform("vertexTransform"), 1, GL_FALSE, glm::value_ptr(vertexTransform));
+    // Iterate over all render components.
+    auto componentsBegin = m_componentSystem->Begin<Components::Render>();
+    auto componentsEnd = m_componentSystem->End<Components::Render>();
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    for(auto it = componentsBegin; it != componentsEnd; ++it)
+    {
+        // Get the transform components.
+        Components::Transform* transform = it->second.GetTransform();
+        BOOST_ASSERT(transform != nullptr);
+
+        // Draw entity.
+        glm::mat4 vertexTransform = transform->CalculateMatrix(m_screenSpace.GetTransform() * view);
+        glUniformMatrix4fv(m_shader.GetUniform("vertexTransform"), 1, GL_FALSE, glm::value_ptr(vertexTransform));
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
 }
