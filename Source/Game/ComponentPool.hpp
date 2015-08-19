@@ -92,10 +92,14 @@ namespace Game
 
             // Find the component.
             Type* component = this->Lookup(handle);
-            BOOST_ASSERT(component != nullptr);
 
             // Call the finalizing function.
-            return component->Finalize(handle, context);
+            if(component != nullptr)
+            {
+                return component->Finalize(handle, context);
+            }
+            
+            return true;
         }
 
         // Removes a component.
