@@ -17,7 +17,7 @@ public:
 
     // Search function definition.
     template<typename Type>
-    static bool SearchFunction(const boost::any& instance)
+    static bool SearchInstance(const boost::any& instance)
     {
         return instance.type() == typeid(Type*);
     }
@@ -41,8 +41,8 @@ public:
             this->Clear<Type>();
         }
 
-        // Find handle by instance entry.
-        auto it = std::find_if(m_instances.begin(), m_instances.end(), SearchFunction<Type>);
+        // Find instance by type.
+        auto it = std::find_if(m_instances.begin(), m_instances.end(), SearchInstance<Type>);
 
         // Set the instance value.
         if(it != m_instances.end())
@@ -63,8 +63,8 @@ public:
     template<typename Type>
     Type* Get() const
     {
-        // Find handle by instance entry.
-        auto it = std::find_if(m_instances.begin(), m_instances.end(), SearchFunction<Type>);
+        // Find instance by type.
+        auto it = std::find_if(m_instances.begin(), m_instances.end(), SearchInstance<Type>);
 
         // Return instance reference.
         if(it != m_instances.end())
@@ -75,6 +75,14 @@ public:
         {
             return nullptr;
         }
+    }
+
+    // Clears the uniqe instance handle.
+    template<typename Type>
+    void Clear()
+    {
+        // Find and erase an instance.
+        m_instances.erase(std::find_if(m_instances.begin(), m_instances.end(), SearchInstance<Type>));
     }
 
 private:
