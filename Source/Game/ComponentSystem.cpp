@@ -16,7 +16,7 @@ bool ComponentSystem::Initialize(Context& context)
     BOOST_ASSERT(!m_initialized);
 
     // Add system to the context.
-    BOOST_ASSERT(context.Set(this));
+    BOOST_ASSERT(context[ContextTypes::Game].Set(this));
 
     // Success!
     return m_initialized = true;

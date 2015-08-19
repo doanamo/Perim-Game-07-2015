@@ -30,6 +30,7 @@ Set(SourceFiles
     "${PrecompiledSource}"
 
     "Main.cpp"
+    "Main.hpp"
 
     "Common/Debug.hpp"
     "Common/Build.hpp"

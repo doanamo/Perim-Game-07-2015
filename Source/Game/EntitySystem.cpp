@@ -35,10 +35,10 @@ bool EntitySystem::Initialize(Context& context)
     BOOST_ASSERT(!m_initialized);
 
     // Add system to the context.
-    BOOST_ASSERT(context.Set(this));
+    BOOST_ASSERT(context[ContextTypes::Game].Set(this));
 
     // Get required systems.
-    ComponentSystem* componentSystem = context.Get<ComponentSystem>();
+    ComponentSystem* componentSystem = context[ContextTypes::Game].Get<ComponentSystem>();
     if(componentSystem == nullptr) return false;
 
     // Connect component system to our signals.

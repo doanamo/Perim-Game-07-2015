@@ -22,18 +22,18 @@ RenderSystem::~RenderSystem()
 {
 }
 
-bool RenderSystem::Initialize(Context& coreContext, Context& gameContext)
+bool RenderSystem::Initialize(Context& context)
 {
     BOOST_ASSERT(!m_initialized);
 
     // Add system to the context.
-    BOOST_ASSERT(gameContext.Set(this));
+    BOOST_ASSERT(context[ContextTypes::Game].Set(this));
 
     // Get required systems.
-    m_window = coreContext.Get<System::Window>();
+    m_window = context[ContextTypes::Main].Get<System::Window>();
     BOOST_ASSERT_MSG(m_window != nullptr, "Context is missing Window instance.");
 
-    m_componentSystem = gameContext.Get<ComponentSystem>();
+    m_componentSystem = context[ContextTypes::Game].Get<ComponentSystem>();
     BOOST_ASSERT_MSG(m_componentSystem != nullptr, "Context is missing ComponentSystem instance.");
 
     // Declare required components.

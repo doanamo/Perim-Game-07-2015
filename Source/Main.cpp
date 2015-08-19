@@ -22,55 +22,52 @@ int main(int argc, char* argv[])
     // Initialize the logger.
     Logger::Initialize();
 
-    // Create the core context.
-    Context coreContext;
+    // Create context instance.
+    Context context;
 
     // Initialize the timer.
     System::Timer timer;
     timer.SetMaxDelta(1.0f / 10.0f);
 
-    coreContext.Set(&timer);
+    context[ContextTypes::Main].Set(&timer);
 
     // Initialize the window.
     System::Window window;
     if(!window.Initialize())
         return -1;
 
-    coreContext.Set(&window);
+    context[ContextTypes::Main].Set(&window);
 
     // Initialize the input state.
     System::InputState inputState;
     if(!inputState.Initialize(window))
         return -1;
 
-    coreContext.Set(&inputState);
-
-    // Create the game context.
-    Context gameContext;
+    context[ContextTypes::Main].Set(&inputState);
 
     // Initialize the component system.
     Game::ComponentSystem componentSystem;
-    if(!componentSystem.Initialize(gameContext))
+    if(!componentSystem.Initialize(context))
         return -1;
 
     // Initialize the entity system.
     Game::EntitySystem entitySystem;
-    if(!entitySystem.Initialize(gameContext))
+    if(!entitySystem.Initialize(context))
         return -1;
 
     // Initialize the identity system.
     Game::IdentitySystem identitySystem;
-    if(!identitySystem.Initialize(gameContext))
+    if(!identitySystem.Initialize(context))
         return -1;
 
     // Initialize the script system.
     Game::ScriptSystem scriptSystem;
-    if(!scriptSystem.Initialize(coreContext, gameContext))
+    if(!scriptSystem.Initialize(context))
         return -1;
 
     // Initialize the render system.
     Game::RenderSystem renderSystem;
-    if(!renderSystem.Initialize(coreContext, gameContext))
+    if(!renderSystem.Initialize(context))
         return -1;
 
     // Create an entity.

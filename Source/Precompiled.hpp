@@ -41,3 +41,4 @@
 #include "Common/Build.hpp"
 #include "Common/Logger.hpp"
 #include "Common/Utility.hpp"
+#include "Main.hpp"

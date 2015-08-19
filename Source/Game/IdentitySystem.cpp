@@ -23,10 +23,10 @@ bool IdentitySystem::Initialize(Context& context)
     BOOST_ASSERT(!m_initialized);
 
     // Add system to the context.
-    BOOST_ASSERT(context.Set(this));
+    BOOST_ASSERT(context[ContextTypes::Game].Set(this));
 
     // Get required system.
-    EntitySystem* entitySystem = context.Get<EntitySystem>();
+    EntitySystem* entitySystem = context[ContextTypes::Game].Get<EntitySystem>();
     if(entitySystem == nullptr) return false;
 
     // Connect to a signal.

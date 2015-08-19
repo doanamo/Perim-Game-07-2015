@@ -20,7 +20,7 @@ namespace Game
         ~ScriptSystem();
 
         // Initialized the script system.
-        bool Initialize(Context& coreContext, Context& gameContext);
+        bool Initialize(Context& context);
 
         // Updates all script components.
         void Update(float timeDelta);

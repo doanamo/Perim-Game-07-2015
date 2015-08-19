@@ -16,18 +16,18 @@ ScriptSystem::~ScriptSystem()
 {
 }
 
-bool ScriptSystem::Initialize(Context& coreContext, Context& gameContext)
+bool ScriptSystem::Initialize(Context& context)
 {
     BOOST_ASSERT(!m_initialized);
 
     // Add system to the context.
-    BOOST_ASSERT(gameContext.Set(this));
+    BOOST_ASSERT(context[ContextTypes::Game].Set(this));
 
     // Get required systems.
-    m_entitySystem = gameContext.Get<EntitySystem>();
+    m_entitySystem = context[ContextTypes::Game].Get<EntitySystem>();
     BOOST_ASSERT_MSG(m_entitySystem != nullptr, "Context is missing EntitySystem instance.");
 
-    m_componentSystem = gameContext.Get<ComponentSystem>();
+    m_componentSystem = context[ContextTypes::Game].Get<ComponentSystem>();
     BOOST_ASSERT_MSG(m_componentSystem != nullptr, "Context is missing ComponentSystem instance.");
 
     // Declare required components.

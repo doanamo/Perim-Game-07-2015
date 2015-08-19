@@ -29,7 +29,7 @@ namespace Game
         ~RenderSystem();
 
         // Initializes the render system.
-        bool Initialize(Context& coreContext, Context& gameContext);
+        bool Initialize(Context& context);
 
         // Draws the scene.
         void Draw();
