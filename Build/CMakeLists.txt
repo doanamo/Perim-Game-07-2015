@@ -52,6 +52,8 @@ Set(SourceFiles
     "Graphics/Buffer.cpp"
     "Graphics/VertexInput.hpp"
     "Graphics/VertexInput.cpp"
+    "Graphics/Texture.hpp"
+    "Graphics/Texture.cpp"
     "Graphics/Shader.hpp"
     "Graphics/Shader.cpp"
     "Graphics/ScreenSpace.hpp"
