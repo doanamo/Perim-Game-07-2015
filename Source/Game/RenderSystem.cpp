@@ -132,6 +132,8 @@ void RenderSystem::Draw()
         glm::mat4 vertexTransform = transform->CalculateMatrix(m_screenSpace.GetTransform() * view);
         glUniformMatrix4fv(m_shader.GetUniform("viewTransform"), 1, GL_FALSE, glm::value_ptr(vertexTransform));
         glUniform4fv(m_shader.GetUniform("fragmentDiffuseColor"), 1, glm::value_ptr(render->GetDiffuseColor()));
+        glUniform4fv(m_shader.GetUniform("fragmentEmissiveColor"), 1, glm::value_ptr(render->GetEmissiveColor()));
+        glUniform1f(m_shader.GetUniform("fragmentEmissivePower"), render->GetEmissivePower());
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }

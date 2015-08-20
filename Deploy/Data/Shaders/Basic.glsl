@@ -13,11 +13,13 @@
 
 #if defined(FRAGMENT_SHADER)
     uniform vec4 fragmentDiffuseColor;
+    uniform vec4 fragmentEmissiveColor;
+    uniform float fragmentEmissivePower;
 
     out vec4 finalColor;
 
     void main()
     {
-        finalColor = fragmentDiffuseColor;
+        finalColor = mix(fragmentDiffuseColor, fragmentEmissiveColor, fragmentEmissivePower);
     }
 #endif
