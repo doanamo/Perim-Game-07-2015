@@ -281,3 +281,21 @@ Set_Property(TARGET "glew32s" PROPERTY FOLDER "External")
 # Link library target.
 Add_Dependencies(${TargetName} "glew32s")
 Target_Link_Libraries(${TargetName} "glew32s")
+
+#
+# ZLib
+#
+
+# Add library directory.
+Add_Subdirectory("../External/ZLib-1.2.8" "ZLib" EXCLUDE_FROM_ALL)
+
+# Add include directory.
+Include_Directories("../External/ZLib-1.2.8")
+
+# Move library target to dependencies.
+Set_Property(TARGET "zlibstatic" PROPERTY PROJECT_LABEL "ZLib")
+Set_Property(TARGET "zlibstatic" PROPERTY FOLDER "External")
+
+# Link library target.
+Add_Dependencies(${TargetName} "zlibstatic")
+Target_Link_Libraries(${TargetName} "zlibstatic")

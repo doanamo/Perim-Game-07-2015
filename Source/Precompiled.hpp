@@ -36,6 +36,8 @@
 #include <gl/glew.h>
 #include <glfw/glfw3.h>
 
+#include <zlib.h>
+
 #include "Common/Context.hpp"
 #include "Common/Debug.hpp"
 #include "Common/Build.hpp"
