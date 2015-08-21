@@ -45,7 +45,10 @@ namespace Graphics
         void Update(const void* data, int count = -1);
 
         // Checks if buffer is valid.
-        bool IsValid() const;
+        bool IsValid() const
+        {
+            return m_initialized;
+        }
 
         // Gets the buffer type.
         GLenum GetType() const

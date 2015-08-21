@@ -50,20 +50,23 @@ namespace Graphics
         // Loads the shader from a file.
         bool Load(std::string filename);
 
-        // Gets the shader's program handle.
-        GLuint GetHandle() const
-        {
-            return m_handle;
-        }
-
         // Gets a shader attribute index.
         GLint GetAttribute(std::string name) const;
 
         // Gets a shader uniform index.
         GLint GetUniform(std::string name) const;
 
+        // Gets the shader's program handle.
+        GLuint GetHandle() const
+        {
+            return m_handle;
+        }
+
         // Checks if instance is valid.
-        bool IsValid() const;
+        bool IsValid() const
+        {
+            return m_initialized;
+        }
 
     private:
         // Linked program handle.

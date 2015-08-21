@@ -112,11 +112,6 @@ void Buffer::Update(const void* data, int count)
     glBindBuffer(m_type, 0);
 }
 
-bool Buffer::IsValid() const
-{
-    return m_initialized;
-}
-
 GLenum IndexBuffer::GetElementType() const
 {
     BOOST_ASSERT(m_initialized);

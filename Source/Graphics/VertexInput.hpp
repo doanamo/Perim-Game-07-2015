@@ -64,6 +64,12 @@ namespace Graphics
             return m_handle;
         }
 
+        // Checks if instance is valid.
+        bool IsValid() const
+        {
+            return m_initialized;
+        }
+
     private:
         // Vertex array object.
         GLuint m_handle;

@@ -118,8 +118,3 @@ void Texture::Update(const void* data)
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
-
-bool Texture::IsValid() const
-{
-    return m_initialized;
-}

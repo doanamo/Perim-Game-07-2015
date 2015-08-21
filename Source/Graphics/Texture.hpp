@@ -40,7 +40,10 @@ namespace Graphics
         }
 
         // Checks if instance is valid.
-        bool IsValid() const;
+        bool IsValid() const
+        {
+            return m_initialized;
+        }
 
     private:
         // Texture handle.

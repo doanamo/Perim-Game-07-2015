@@ -243,8 +243,3 @@ GLint Shader::GetUniform(std::string name) const
 
     return glGetUniformLocation(m_handle, name.c_str());
 }
-
-bool Shader::IsValid() const
-{
-    return m_initialized;
-}
