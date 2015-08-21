@@ -32,7 +32,7 @@ public:
     {
     }
 
-    // Sets the unique instance.
+    // Sets an unique instance.
     template<typename Type>
     bool Set(Type* instance)
     {
@@ -60,7 +60,7 @@ public:
         }
     }
 
-    // Gets the unique instance.
+    // Gets an unique instance.
     template<typename Type>
     Type* Get() const
     {
@@ -76,6 +76,15 @@ public:
         {
             return nullptr;
         }
+    }
+
+    // Checks if has an instance of a given type.
+    template<typename Type>
+    bool Has() const
+    {
+        // Find instance by type.
+        auto it = std::find_if(m_instances.begin(), m_instances.end(), SearchInstance<Type>);
+        return it != m_instances.end();
     }
 
     // Clears the uniqe instance handle.
