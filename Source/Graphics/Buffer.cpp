@@ -9,6 +9,7 @@ namespace
 
     // Constant definitions.
     const GLuint InvalidHandle = 0;
+    const GLenum InvalidEnum = 0;
 }
 
 Buffer::Buffer(GLenum type) :
@@ -22,16 +23,38 @@ Buffer::Buffer(GLenum type) :
 
 Buffer::~Buffer()
 {
-    // Destroy the buffer.
+    if(m_initialized)
+        this->Cleanup();
+}
+
+void Buffer::Cleanup()
+{
+    // Release the buffer handle.
     if(m_handle != InvalidHandle)
     {
         glDeleteBuffers(1, &m_handle);
+        m_handle = InvalidHandle;
     }
+
+    // Reset buffer parameters.
+    m_elementSize = 0;
+    m_elementCount = 0;
+
+    // Reset initialization state.
+    m_initialized = false;
 }
 
 bool Buffer::Initialize(unsigned int elementSize, unsigned int elementCount, const void* data, GLenum usage)
 {
-    BOOST_ASSERT(!m_initialized);
+    // Setup initialization routine.
+    if(m_initialized)
+        this->Cleanup();
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(!m_initialized)
+            this->Cleanup();
+    };
 
     // Validate arguments.
     if(elementSize == 0)
@@ -49,15 +72,6 @@ bool Buffer::Initialize(unsigned int elementSize, unsigned int elementCount, con
     m_elementSize = elementSize;
     m_elementCount = elementCount;
 
-    BOOST_SCOPE_EXIT(&)
-    {
-        if(!m_initialized)
-        {
-            m_elementSize = 0;
-            m_elementCount = 0;
-        }
-    };
-
     // Create a buffer.
     glGenBuffers(1, &m_handle);
 
@@ -66,15 +80,6 @@ bool Buffer::Initialize(unsigned int elementSize, unsigned int elementCount, con
         Log() << LogInitializeError() << "Couldn't create a buffer.";
         return false;
     }
-
-    BOOST_SCOPE_EXIT(&)
-    {
-        if(!m_initialized)
-        {
-            glDeleteBuffers(1, &m_handle);
-            m_handle = InvalidHandle;
-        }
-    };
 
     // Copy data to the buffer.
     unsigned int bufferSize = m_elementSize * m_elementCount;
@@ -91,7 +96,8 @@ bool Buffer::Initialize(unsigned int elementSize, unsigned int elementCount, con
 
 void Buffer::Update(const void* data, int count)
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return;
 
     // Validate arguments.
     if(data == nullptr)
@@ -114,7 +120,8 @@ void Buffer::Update(const void* data, int count)
 
 GLenum IndexBuffer::GetElementType() const
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return InvalidEnum;
 
     if(m_type == GL_ELEMENT_ARRAY_BUFFER)
     {
@@ -126,5 +133,5 @@ GLenum IndexBuffer::GetElementType() const
         }
     }
 
-    return GL_INVALID_ENUM;
+    return InvalidEnum;
 }

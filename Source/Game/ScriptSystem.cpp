@@ -5,6 +5,12 @@
 #include "Components/Script.hpp"
 using namespace Game;
 
+namespace
+{
+    // Log error messages.
+    #define LogInitializeError() "Failed to initialize the script system! "
+}
+
 ScriptSystem::ScriptSystem() :
     m_entitySystem(nullptr),
     m_componentSystem(nullptr),
@@ -14,21 +20,58 @@ ScriptSystem::ScriptSystem() :
 
 ScriptSystem::~ScriptSystem()
 {
+    if(m_initialized)
+        this->Cleanup();
+}
+
+void ScriptSystem::Cleanup()
+{
+    // Reset context references.
+    m_entitySystem = nullptr;
+    m_componentSystem = nullptr;
+
+    // Reset initialization state.
+    m_initialized = false;
 }
 
 bool ScriptSystem::Initialize(Context& context)
 {
-    BOOST_ASSERT(!m_initialized);
+    // Setup initialization routine.
+    if(m_initialized)
+        this->Cleanup();
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(!m_initialized)
+            this->Cleanup();
+    };
 
     // Add system to the context.
+    if(context[ContextTypes::Game].Has<ScriptSystem>())
+    {
+        Log() << LogInitializeError() << "Context is invalid.";
+        return false;
+    }
+
     BOOST_ASSERT(context[ContextTypes::Game].Set(this));
 
-    // Get required systems.
+    // Get the entity system.
     m_entitySystem = context[ContextTypes::Game].Get<EntitySystem>();
-    BOOST_ASSERT_MSG(m_entitySystem != nullptr, "Context is missing EntitySystem instance.");
 
+    if(m_entitySystem == nullptr)
+    {
+        Log() << LogInitializeError() << "Context is missing EntitySystem instance.";
+        return false;
+    }
+
+    // Get the component system.
     m_componentSystem = context[ContextTypes::Game].Get<ComponentSystem>();
-    BOOST_ASSERT_MSG(m_componentSystem != nullptr, "Context is missing ComponentSystem instance.");
+
+    if(m_componentSystem == nullptr)
+    {
+        Log() << LogInitializeError() << "Context is missing ComponentSystem instance.";
+        return false;
+    }
 
     // Declare required components.
     m_componentSystem->Declare<Game::Components::Script>();
@@ -39,7 +82,8 @@ bool ScriptSystem::Initialize(Context& context)
 
 void ScriptSystem::Update(float timeDelta)
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return;
 
     // Iterate over all script components.
     auto componentsBegin = m_componentSystem->Begin<Components::Script>();

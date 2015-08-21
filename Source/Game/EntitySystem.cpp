@@ -5,6 +5,9 @@ using namespace Game;
 
 namespace
 {
+    // Log error messages.
+    #define LogInitializeError() "Failed to initialize the entity system! "
+
     // Constant variables.
     const int MaximumIdentifier   = std::numeric_limits<int>::max();
     const int InvalidIdentifier   = 0;
@@ -23,23 +26,68 @@ EntitySystem::EntitySystem() :
 
 EntitySystem::~EntitySystem()
 {
-    // Destroy all remaining entities.
     if(m_initialized)
-    {
-        DestroyAllEntities();
-    }
+        this->Cleanup();
+}
+
+void EntitySystem::Cleanup()
+{
+    // Destroy all remaining entities.
+    this->DestroyAllEntities();
+    this->ProcessCommands();
+
+    // Disconnect event signals.
+    this->entityFinalize.disconnect_all_slots();
+    this->entityCreated.disconnect_all_slots();
+    this->entityDestroyed.disconnect_all_slots();
+
+    // Clear the command list.
+    Utility::ClearContainer(m_commands);
+
+    // Clear the handle list.
+    Utility::ClearContainer(m_handles);
+
+    // Reset the entity counter.
+    m_entityCount = 0;
+
+    // Reset the list of free handles.
+    m_freeListDequeue = InvalidQueueElement;
+    m_freeListEnqueue = InvalidQueueElement;
+    m_freeListIsEmpty = true;
+
+    // Reset initialization state.
+    m_initialized = false;
 }
 
 bool EntitySystem::Initialize(Context& context)
 {
-    BOOST_ASSERT(!m_initialized);
+    // Setup initialization routine.
+    if(m_initialized)
+        this->Cleanup();
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(!m_initialized)
+            this->Cleanup();
+    };
 
     // Add system to the context.
+    if(context[ContextTypes::Game].Has<EntitySystem>())
+    {
+        Log() << LogInitializeError() << "Context is invalid.";
+        return false;
+    }
+
     BOOST_ASSERT(context[ContextTypes::Game].Set(this));
 
     // Get required systems.
     ComponentSystem* componentSystem = context[ContextTypes::Game].Get<ComponentSystem>();
-    if(componentSystem == nullptr) return false;
+
+    if(componentSystem == nullptr)
+    {
+        Log() << LogInitializeError() << "Context is missing ComponentSystem instance.";
+        return false;
+    }
 
     // Connect component system to our signals.
     componentSystem->ConnectSignal(this->entityFinalize);
@@ -51,7 +99,8 @@ bool EntitySystem::Initialize(Context& context)
 
 EntityHandle EntitySystem::CreateEntity()
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return EntityHandle();
 
     // Check if we reached the numerical limits.
     BOOST_ASSERT(m_handles.size() != MaximumIdentifier);
@@ -120,7 +169,8 @@ EntityHandle EntitySystem::CreateEntity()
 
 void EntitySystem::DestroyEntity(const EntityHandle& entity)
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return;
 
     // Check if the handle is valid.
     if(!IsHandleValid(entity))
@@ -143,7 +193,8 @@ void EntitySystem::DestroyEntity(const EntityHandle& entity)
 
 void EntitySystem::DestroyAllEntities()
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return;
 
     // Process entity commands.
     ProcessCommands();
@@ -189,7 +240,8 @@ void EntitySystem::DestroyAllEntities()
 
 void EntitySystem::ProcessCommands()
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return;
 
     // Process entity commands.
     while(!m_commands.empty())
@@ -265,7 +317,8 @@ void EntitySystem::ProcessCommands()
 
 void EntitySystem::FreeHandle(int handleIndex, HandleEntry& handleEntry)
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return;
 
     // Make sure we got the matching index.
     BOOST_ASSERT(&m_handles[handleIndex] == &handleEntry);
@@ -301,7 +354,8 @@ void EntitySystem::FreeHandle(int handleIndex, HandleEntry& handleEntry)
 
 bool EntitySystem::IsHandleValid(const EntityHandle& entity) const
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return false;
 
     // Check if the handle identifier is valid.
     if(entity.identifier <= InvalidIdentifier)
@@ -327,9 +381,4 @@ bool EntitySystem::IsHandleValid(const EntityHandle& entity) const
         return false;
 
     return true;
-}
-
-unsigned int EntitySystem::GetEntityCount() const
-{
-    return m_entityCount;
 }

@@ -38,7 +38,10 @@ namespace Graphics
         virtual ~Buffer();
 
     public:
-        // Initializes the buffer.
+        // Restores instance to it's original state.
+        void Cleanup();
+
+        // Initializes the buffer instance.
         bool Initialize(unsigned int elementSize, unsigned int elementCount, const void* data, GLenum usage = GL_STATIC_DRAW);
 
         // Updates buffer data.
@@ -90,10 +93,13 @@ namespace Graphics
         virtual const char* GetName() const = 0;
 
     protected:
-        // Buffer instance.
+        // Buffer type.
         GLenum m_type;
+
+        // Buffer handle.
         GLuint m_handle;
 
+        // Buffer parameters.
         unsigned int m_elementSize;
         unsigned int m_elementCount;
 

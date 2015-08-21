@@ -29,7 +29,10 @@ namespace Game
         IdentitySystem();
         ~IdentitySystem();
 
-        // Initializes the identity system.
+        // Restores instance to it's original state.
+        void Cleanup();
+
+        // Initializes the identity system instance.
         bool Initialize(Context& context);
 
         // Sets entity name.

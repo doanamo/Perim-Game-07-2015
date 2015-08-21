@@ -15,7 +15,10 @@ namespace System
         Window();
         ~Window();
 
-        // Creates the window.
+        // Restores instance to it's original state.
+        void Cleanup();
+
+        // Initializes the window instance.
         bool Initialize();
 
         // Makes window's context current.

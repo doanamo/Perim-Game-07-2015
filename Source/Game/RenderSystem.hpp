@@ -28,17 +28,18 @@ namespace Game
         RenderSystem();
         ~RenderSystem();
 
-        // Initializes the render system.
+        // Restores instance to it's original state.
+        void Cleanup();
+
+        // Initializes the render system instance.
         bool Initialize(Context& context);
 
         // Draws the scene.
         void Draw();
 
     private:
-        // Window instance.
-        System::Window* m_window;
-
-        // Component system.
+        // Context references.
+        System::Window*  m_window;
         ComponentSystem* m_componentSystem;
 
         // Graphics objects.

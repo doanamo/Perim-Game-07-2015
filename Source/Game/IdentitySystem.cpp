@@ -5,6 +5,9 @@ using namespace Game;
 
 namespace
 {
+    // Log error messages.
+    #define LogInitializeError() "Failed to initialize the identity system! "
+
     // Invalid name constant.
     const char* InvalidName = "";
 }
@@ -16,20 +19,53 @@ IdentitySystem::IdentitySystem() :
 
 IdentitySystem::~IdentitySystem()
 {
+    if(m_initialized)
+        this->Cleanup();
+}
+
+void IdentitySystem::Cleanup()
+{
+    // Clear the container.
+    Utility::ClearContainer(m_names);
+
+    // Disconnect signals.
+    m_entityDestroyed.disconnect();
+
+    // Reset initialization state.
+    m_initialized = false;
 }
 
 bool IdentitySystem::Initialize(Context& context)
 {
-    BOOST_ASSERT(!m_initialized);
+    // Setup initialization routine.
+    if(m_initialized)
+        this->Cleanup();
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(!m_initialized)
+            this->Cleanup();
+    };
 
     // Add system to the context.
+    if(context[ContextTypes::Game].Has<IdentitySystem>())
+    {
+        Log() << LogInitializeError() << "Context is invalid.";
+        return false;
+    }
+
     BOOST_ASSERT(context[ContextTypes::Game].Set(this));
 
-    // Get required system.
+    // Get the entity system.
     EntitySystem* entitySystem = context[ContextTypes::Game].Get<EntitySystem>();
-    if(entitySystem == nullptr) return false;
 
-    // Connect to a signal.
+    if(entitySystem == nullptr)
+    {
+        Log() << LogInitializeError() << "Context is missing EntitySystem instance.";
+        return false;
+    }
+
+    // Connect to an event signal.
     m_entityDestroyed = entitySystem->entityDestroyed.connect(boost::bind(&IdentitySystem::OnEntityDestroyed, this, _1));
 
     // Success!
@@ -38,7 +74,8 @@ bool IdentitySystem::Initialize(Context& context)
 
 bool IdentitySystem::SetEntityName(const EntityHandle& entity, std::string name)
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return false;
 
     // Remove existing entity from the map (make it anonymous). 
     auto it = m_names.right.find(entity);
@@ -65,7 +102,8 @@ bool IdentitySystem::SetEntityName(const EntityHandle& entity, std::string name)
 
 std::string IdentitySystem::GetEntityName(const EntityHandle& entity) const
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return InvalidName;
 
     // Find entity name.
     auto it = m_names.right.find(entity);
@@ -84,7 +122,8 @@ std::string IdentitySystem::GetEntityName(const EntityHandle& entity) const
 
 EntityHandle IdentitySystem::Lookup(std::string name) const
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return EntityHandle();
 
     // Find entity by name.
     auto it = m_names.left.find(name);

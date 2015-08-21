@@ -15,7 +15,10 @@ namespace Graphics
         Texture();
         ~Texture();
 
-        // Initializes the texture.
+        // Restores instance to it's original state.
+        void Cleanup();
+
+        // Initializes the texture instance.
         bool Initialize(int width, int height, GLenum format, const void* data);
 
         // Updates the texture data.

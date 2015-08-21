@@ -11,11 +11,34 @@ InputState::InputState() :
 
 InputState::~InputState()
 {
+    if(m_initialized)
+        this->Cleanup();
+}
+
+void InputState::Cleanup()
+{
+    // Reset input states.
+    this->Reset();
+
+    // Disconnect signals.
+    m_keyboardKey.disconnect();
+    m_windowFocus.disconnect();
+
+    // Reset initialization state.
+    m_initialized = false;
 }
 
 bool InputState::Initialize(Window& window)
 {
-    BOOST_ASSERT(!m_initialized);
+    // Setup initialization routine.
+    if(m_initialized)
+        this->Cleanup();
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(!m_initialized)
+            this->Cleanup();
+    };
 
     // Connect event signals.
     m_keyboardKey = window.events.keyboardKey.connect([&](const Window::Events::KeyboardKey& event)
@@ -47,7 +70,8 @@ bool InputState::Initialize(Window& window)
 
 void InputState::Update()
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return;
 
     for(int i = 0; i < KeyboardKeyCount; ++i)
     {
@@ -75,6 +99,9 @@ void InputState::Reset()
 
 bool InputState::IsKeyDown(int key, bool repeat)
 {
+    if(!m_initialized)
+        return false;
+
     if(key < 0 || key >= KeyboardKeyCount)
         return false;
 
@@ -89,6 +116,9 @@ bool InputState::IsKeyDown(int key, bool repeat)
 
 bool InputState::IsKeyUp(int key, bool repeat)
 {
+    if(!m_initialized)
+        return false;
+
     if(key < 0 || key >= KeyboardKeyCount)
         return false;
 

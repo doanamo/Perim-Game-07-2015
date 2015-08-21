@@ -21,9 +21,6 @@ namespace Game
     class ComponentSystem
     {
     public:
-        // Friend declarations.
-        friend class EntitySystem;
-
         // Type declarations.
         typedef std::unique_ptr<ComponentPoolInterface>               ComponentPoolPtr;
         typedef std::unordered_map<std::type_index, ComponentPoolPtr> ComponentPoolList;
@@ -32,6 +29,9 @@ namespace Game
     public:
         ComponentSystem();
         ~ComponentSystem();
+
+        // Restores instance to it's original state.
+        void Cleanup();
 
         // Initializes the component system.
         bool Initialize(Context& context);
@@ -64,11 +64,11 @@ namespace Game
         template<typename Type>
         ComponentPool<Type>* GetPool();
 
-    private:
         // Connects to a signal.
         void ConnectSignal(EntitySystem::EntityFinalizeSignal& signal);
         void ConnectSignal(EntitySystem::EntityDestroyedSignal& signal);
 
+    private:
         // Called when an entity needs to be finalized.
         bool OnEntityFinalize(const Events::EntityFinalize& event);
 

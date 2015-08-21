@@ -102,16 +102,34 @@ VertexInput::VertexInput() :
 
 VertexInput::~VertexInput()
 {
-    // Destroy the vertex array.
+    if(m_initialized)
+        this->Cleanup();
+}
+
+void VertexInput::Cleanup()
+{
+    // Release the vertex array handle.
     if(m_handle != InvalidHandle)
     {
         glDeleteVertexArrays(1, &m_handle);
+        m_handle = InvalidHandle;
     }
+
+    // Reset initialization state.
+    m_initialized = false;
 }
 
 bool VertexInput::Initialize(int attributeCount, const VertexAttribute* attributes)
 {
-    BOOST_ASSERT(!m_initialized);
+    // Setup initialization routine.
+    if(m_initialized)
+        this->Cleanup();
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(!m_initialized)
+            this->Cleanup();
+    };
 
     // Validate arguments.
     if(attributeCount <= 0)
@@ -163,15 +181,6 @@ bool VertexInput::Initialize(int attributeCount, const VertexAttribute* attribut
         Log() << LogInitializeError() << "Couldn't create a vertex array object.";
         return false;
     }
-
-    BOOST_SCOPE_EXIT(&)
-    {
-        if(!m_initialized)
-        {
-            glDeleteVertexArrays(1, &m_handle);
-            m_handle = InvalidHandle;
-        }
-    };
 
     // Cleanup state after we are done.
     BOOST_SCOPE_EXIT(&)

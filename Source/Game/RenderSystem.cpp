@@ -21,21 +21,64 @@ RenderSystem::RenderSystem() :
 
 RenderSystem::~RenderSystem()
 {
+    if(m_initialized)
+        this->Cleanup();
+}
+
+void RenderSystem::Cleanup()
+{
+    // Reset context references.
+    m_window = nullptr;
+    m_componentSystem = nullptr;
+
+    // Reset graphics objects.
+    m_screenSpace.Cleanup();
+    m_vertexBuffer.Cleanup();
+    m_vertexInput.Cleanup();
+    m_shader.Cleanup();
+
+    // Reset initialization state.
+    m_initialized = false;
 }
 
 bool RenderSystem::Initialize(Context& context)
 {
-    BOOST_ASSERT(!m_initialized);
+    // Setup initialization routine.
+    if(m_initialized)
+        this->Cleanup();
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(!m_initialized)
+            this->Cleanup();
+    };
 
     // Add system to the context.
+    if(context[ContextTypes::Game].Has<RenderSystem>())
+    {
+        Log() << LogInitializeError() << "Context is invalid.";
+        return false;
+    }
+
     BOOST_ASSERT(context[ContextTypes::Game].Set(this));
 
-    // Get required systems.
+    // Get the window.
     m_window = context[ContextTypes::Main].Get<System::Window>();
-    BOOST_ASSERT_MSG(m_window != nullptr, "Context is missing Window instance.");
 
+    if(m_window == nullptr)
+    {
+        Log() << LogInitializeError() << "Context is missing Window instance.";
+        return false;
+    }
+
+    // Get the component system.
     m_componentSystem = context[ContextTypes::Game].Get<ComponentSystem>();
-    BOOST_ASSERT_MSG(m_componentSystem != nullptr, "Context is missing ComponentSystem instance.");
+
+    if(m_componentSystem == nullptr)
+    {
+        Log() << LogInitializeError() << "Context is missing ComponentSystem instance.";
+        return false;
+    }
 
     // Declare required components.
     m_componentSystem->Declare<Game::Components::Transform>();
@@ -87,7 +130,8 @@ bool RenderSystem::Initialize(Context& context)
 
 void RenderSystem::Draw()
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return;
 
     // Get window size.
     int windowWidth = m_window->GetWidth();

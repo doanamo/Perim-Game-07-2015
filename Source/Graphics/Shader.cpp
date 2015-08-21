@@ -6,6 +6,7 @@ namespace
 {
     // Log error message.
     #define LogLoadError(filename) "Failed to load a shader from \"" << filename << "\" file! "
+    #define LogInitializeError() "Failed to initialize a shader! "
 
     // Constant definitions.
     const GLuint InvalidHandle    = 0;
@@ -36,15 +37,65 @@ Shader::Shader() :
 
 Shader::~Shader()
 {
+    if(m_initialized)
+        this->Cleanup();
+}
+
+void Shader::Cleanup()
+{
+    // Release the program handle.
     if(m_handle != InvalidHandle)
     {
         glDeleteProgram(m_handle);
+        m_handle = InvalidHandle;
     }
+
+    // Reset initialization state.
+    m_initialized = false;
 }
 
 bool Shader::Load(std::string filename)
 {
-    BOOST_ASSERT(!m_initialized);
+    // Load the shader code from a file.
+    std::string shaderCode = Utility::GetTextFileContent(filename);
+
+    if(shaderCode.empty())
+    {
+        Log() << LogLoadError(filename) << "Couldn't read the file.";
+        return false;
+    }
+
+    // Call the initialization method.
+    if(this->Initialize(shaderCode))
+    {
+        Log() << "Loaded a shader from \"" << filename << "\" file.";
+        return true;
+    }
+    else
+    {
+        Log() << LogLoadError(filename) << "Initialization failed.";
+        return false;
+    }
+}
+
+bool Shader::Initialize(std::string shaderCode)
+{
+    // Setup initialization routine.
+    if(m_initialized)
+        this->Cleanup();
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(!m_initialized)
+            this->Cleanup();
+    };
+
+    // Validate arguments.
+    if(shaderCode.empty())
+    {
+        Log() << LogInitializeError() << "Invalid argument - \"shaderCode\" is empty.";
+        return false;
+    }
 
     // Create an array of shader objects for each type that can be linked.
     GLuint shaderObjects[ShaderTypeCount] = { 0 };
@@ -56,15 +107,6 @@ bool Shader::Load(std::string filename)
             glDeleteShader(shaderObjects[i]);
         }
     };
-
-    // Load the shader code from a file.
-    std::string shaderCode = Utility::GetTextFileContent(filename);
-
-    if(shaderCode.empty())
-    {
-        Log() << LogLoadError(filename) << "Couldn't read the file.";
-        return false;
-    }
 
     // Extract shader version.
     std::string shaderVersion;
@@ -96,7 +138,7 @@ bool Shader::Load(std::string filename)
 
             if(shaderObject == InvalidHandle)
             {
-                Log() << LogLoadError(filename) << "Couldn't create a shader object.";
+                Log() << LogInitializeError() << "Couldn't create a shader object.";
                 return false;
             }
 
@@ -122,7 +164,7 @@ bool Shader::Load(std::string filename)
 
             if(compileStatus == GL_FALSE)
             {
-                Log() << LogLoadError(filename) << "Couldn't compile a shader object.";
+                Log() << LogInitializeError() << "Couldn't compile a shader object.";
 
                 GLint errorLength = 0;
                 glGetShaderiv(shaderObject, GL_INFO_LOG_LENGTH, &errorLength);
@@ -143,7 +185,7 @@ bool Shader::Load(std::string filename)
     // Check if any shader objects were found.
     if(shaderObjectsFound == false)
     {
-        Log() << LogLoadError(filename) << "Couldn't find any shader objects.";
+        Log() << LogInitializeError() << "Couldn't find any shader objects.";
         return false;
     }
 
@@ -152,7 +194,7 @@ bool Shader::Load(std::string filename)
 
     if(m_handle == InvalidHandle)
     {
-        Log() << LogLoadError(filename) << "Couldn't create a shader program.";
+        Log() << LogInitializeError() << "Couldn't create a shader program.";
         return false;
     }
 
@@ -196,7 +238,7 @@ bool Shader::Load(std::string filename)
 
     if(linkStatus == GL_FALSE)
     {
-        Log() << LogLoadError(filename) << "Couldn't link a shader program.";
+        Log() << LogInitializeError() << "Couldn't link a shader program.";
 
         GLint errorLength = 0;
         glGetProgramiv(m_handle, GL_INFO_LOG_LENGTH, &errorLength);
@@ -213,14 +255,13 @@ bool Shader::Load(std::string filename)
     }
 
     // Success!
-    Log() << "Loaded a shader from \"" << filename << "\" file.";
-
     return m_initialized = true;
 }
 
 GLint Shader::GetAttribute(std::string name) const
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return InvalidAttribute;
 
     if(m_handle == InvalidHandle)
         return InvalidAttribute;
@@ -233,7 +274,8 @@ GLint Shader::GetAttribute(std::string name) const
 
 GLint Shader::GetUniform(std::string name) const
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return InvalidUniform;
 
     if(m_handle == InvalidHandle)
         return InvalidUniform;

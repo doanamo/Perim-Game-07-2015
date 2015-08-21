@@ -32,6 +32,11 @@ ScreenSpace::~ScreenSpace()
 {
 }
 
+void ScreenSpace::Cleanup()
+{
+    *this = ScreenSpace();
+}
+
 void ScreenSpace::SetSourceSize(int width, int height)
 {
     // Floor and make a multiple of 2.

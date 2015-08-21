@@ -55,7 +55,10 @@ namespace Graphics
         VertexInput();
         ~VertexInput();
 
-        // Initializes the vertex input.
+        // Restores instance to it's original state.
+        void Cleanup();
+
+        // Initializes the vertex input instance.
         bool Initialize(int attributeCount, const VertexAttribute* attributes);
 
         // Gets the vertex array object handle.

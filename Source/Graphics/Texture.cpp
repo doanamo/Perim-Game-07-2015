@@ -23,16 +23,39 @@ Texture::Texture() :
 
 Texture::~Texture()
 {
-    // Free the texture handle.
+    if(m_initialized)
+        this->Cleanup();
+}
+
+void Texture::Cleanup()
+{
+    // Destroy the texture handle.
     if(m_handle != InvalidHandle)
     {
         glDeleteTextures(1, &m_handle);
+        m_handle = InvalidHandle;
     }
+
+    // Reset texture parameters.
+    m_width = 0;
+    m_height = 0;
+    m_format = InvalidEnum;
+
+    // Reset initialization state.
+    m_initialized = false;
 }
 
 bool Texture::Initialize(int width, int height, GLenum format, const void* data)
 {
-    BOOST_ASSERT(!m_initialized);
+    // Setup initialization routine.
+    if(m_initialized)
+        this->Cleanup();
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(!m_initialized)
+            this->Cleanup();
+    };
 
     // Validate arguments.
     if(width <= 0)
@@ -51,16 +74,6 @@ bool Texture::Initialize(int width, int height, GLenum format, const void* data)
     m_height = height;
     m_format = format;
 
-    BOOST_SCOPE_EXIT(&)
-    {
-        if(!m_initialized)
-        {
-            m_width = 0;
-            m_height = 0;
-            m_format = InvalidEnum;
-        }
-    };
-
     // Create a texture handle.
     glGenTextures(1, &m_handle);
 
@@ -69,15 +82,6 @@ bool Texture::Initialize(int width, int height, GLenum format, const void* data)
         Log() << LogInitializeError() << "Couldn't create a texture.";
         return false;
     }
-
-    BOOST_SCOPE_EXIT(&)
-    {
-        if(!m_initialized)
-        {
-            glDeleteTextures(1, &m_handle);
-            m_handle = InvalidHandle;
-        }
-    };
 
     // Bind the texture.
     glBindTexture(GL_TEXTURE_2D, m_handle);
@@ -108,7 +112,8 @@ bool Texture::Initialize(int width, int height, GLenum format, const void* data)
 
 void Texture::Update(const void* data)
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return;
 
     // Upload new texture data.
     if(data != nullptr)

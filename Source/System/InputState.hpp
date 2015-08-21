@@ -34,7 +34,10 @@ namespace System
         InputState();
         ~InputState();
 
-        // Initializes the input state.
+        // Restores instance to it's original state.
+        void Cleanup();
+
+        // Initializes the input state instance.
         bool Initialize(Window& window);
 
         // Updates the input state.

@@ -13,6 +13,9 @@ namespace System
         Timer();
         ~Timer();
 
+        // Reset instance to it's original state.
+        void Cleanup();
+
         // Calculates frame delta time.
         void Tick();
 

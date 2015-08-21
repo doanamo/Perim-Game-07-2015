@@ -13,6 +13,11 @@ Timer::~Timer()
 {
 }
 
+void Timer::Cleanup()
+{
+    *this = Timer();
+}
+
 void Timer::Tick()
 {
     // Calculate time delta.

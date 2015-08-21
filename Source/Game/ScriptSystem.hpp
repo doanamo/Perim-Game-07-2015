@@ -19,14 +19,17 @@ namespace Game
         ScriptSystem();
         ~ScriptSystem();
 
-        // Initialized the script system.
+        // Restores instance to it's original state.
+        void Cleanup();
+
+        // Initializes the script system instance.
         bool Initialize(Context& context);
 
         // Updates all script components.
         void Update(float timeDelta);
 
     private:
-        // Game systems.
+        // Context references.
         EntitySystem*    m_entitySystem;
         ComponentSystem* m_componentSystem;
 

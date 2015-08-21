@@ -47,8 +47,14 @@ namespace Graphics
         Shader();
         ~Shader();
 
+        // Restores instance to it's original state.
+        void Cleanup();
+
         // Loads the shader from a file.
         bool Load(std::string filename);
+
+        // Initializes the shader instance.
+        bool Initialize(std::string shaderCode);
 
         // Gets a shader attribute index.
         GLint GetAttribute(std::string name) const;

@@ -55,6 +55,12 @@ namespace Game
         {
         }
 
+        // Restores instance to it's original state.
+        void Cleanup()
+        {
+            *this = ComponentPool<Type>();
+        }
+
         // Creates a component.
         Type* Create(EntityHandle handle)
         {

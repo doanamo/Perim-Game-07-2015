@@ -139,7 +139,10 @@ namespace Game
         EntitySystem();
         ~EntitySystem();
 
-        // Initializes the entity system.
+        // Restores instance to it's original state.
+        void Cleanup();
+
+        // Initializes the entity system instance.
         bool Initialize(Context& context);
 
         // Creates an entity.
@@ -158,7 +161,10 @@ namespace Game
         bool IsHandleValid(const EntityHandle& entity) const;
 
         // Returns the number of active entities.
-        unsigned int GetEntityCount() const;
+        unsigned int GetEntityCount() const
+        {
+            return m_entityCount;
+        }
 
     private:
         // Frees an entity handle.

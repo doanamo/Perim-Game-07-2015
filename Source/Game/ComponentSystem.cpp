@@ -2,6 +2,12 @@
 #include "ComponentSystem.hpp"
 using namespace Game;
 
+namespace
+{
+    // Log error messages.
+    #define LogInitializeError() "Failed to initialize the component system! "
+}
+
 ComponentSystem::ComponentSystem() :
     m_context(nullptr),
     m_initialized(false)
@@ -10,13 +16,45 @@ ComponentSystem::ComponentSystem() :
 
 ComponentSystem::~ComponentSystem()
 {
+    if(m_initialized)
+        this->Cleanup();
+}
+
+void ComponentSystem::Cleanup()
+{
+    // Clear all component pools.
+    Utility::ClearContainer(m_pools);
+
+    // Disconnect event signals.
+    m_entityFinalize.disconnect();
+    m_entityDestroyed.disconnect();
+
+    // Reset context reference.
+    m_context = nullptr;
+
+    // Reset initialization state.
+    m_initialized = false;
 }
 
 bool ComponentSystem::Initialize(Context& context)
 {
-    BOOST_ASSERT(!m_initialized);
+    // Setup initialization routine.
+    if(m_initialized)
+        this->Cleanup();
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(!m_initialized)
+            this->Cleanup();
+    };
 
     // Add system to the context.
+    if(context[ContextTypes::Game].Has<ComponentSystem>())
+    {
+        Log() << LogInitializeError() << "Context is invalid.";
+        return false;
+    }
+
     BOOST_ASSERT(context[ContextTypes::Game].Set(this));
 
     // Save context reference.
@@ -28,14 +66,16 @@ bool ComponentSystem::Initialize(Context& context)
 
 void ComponentSystem::ConnectSignal(EntitySystem::EntityFinalizeSignal& signal)
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return;
 
     m_entityFinalize = signal.connect(boost::bind(&ComponentSystem::OnEntityFinalize, this, _1));
 }
 
 void ComponentSystem::ConnectSignal(EntitySystem::EntityDestroyedSignal& signal)
 {
-    BOOST_ASSERT(m_initialized);
+    if(!m_initialized)
+        return;
 
     m_entityDestroyed = signal.connect(boost::bind(&ComponentSystem::OnEntityDestroyed, this, _1));
 }
