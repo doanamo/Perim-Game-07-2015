@@ -32,6 +32,12 @@ public:
     {
     }
 
+    // Restores instance to it's original state.
+    void Cleanup()
+    {
+        *this = Context();
+    }
+
     // Sets an unique instance.
     template<typename Type>
     bool Set(Type* instance)
