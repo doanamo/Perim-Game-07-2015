@@ -55,7 +55,7 @@ bool ComponentSystem::Initialize(Context& context)
         return false;
     }
 
-    BOOST_ASSERT(context[ContextTypes::Game].Set(this));
+    context[ContextTypes::Game].Set(this);
 
     // Save context reference.
     m_context = &context;

@@ -60,7 +60,7 @@ bool RenderSystem::Initialize(Context& context)
         return false;
     }
 
-    BOOST_ASSERT(context[ContextTypes::Game].Set(this));
+    context[ContextTypes::Game].Set(this);
 
     // Get the window.
     m_window = context[ContextTypes::Main].Get<System::Window>();

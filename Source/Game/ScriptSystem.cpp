@@ -53,7 +53,7 @@ bool ScriptSystem::Initialize(Context& context)
         return false;
     }
 
-    BOOST_ASSERT(context[ContextTypes::Game].Set(this));
+    context[ContextTypes::Game].Set(this);
 
     // Get the entity system.
     m_entitySystem = context[ContextTypes::Game].Get<EntitySystem>();

@@ -78,7 +78,7 @@ bool EntitySystem::Initialize(Context& context)
         return false;
     }
 
-    BOOST_ASSERT(context[ContextTypes::Game].Set(this));
+    context[ContextTypes::Game].Set(this);
 
     // Get required systems.
     ComponentSystem* componentSystem = context[ContextTypes::Game].Get<ComponentSystem>();
