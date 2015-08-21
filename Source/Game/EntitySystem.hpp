@@ -172,9 +172,12 @@ namespace Game
 
     public:
         // Event signals.
-        EntityFinalizeSignal  entityFinalize;
-        EntityCreatedSignal   entityCreated;
-        EntityDestroyedSignal entityDestroyed;
+        struct Events
+        {
+            EntityFinalizeSignal  entityFinalize;
+            EntityCreatedSignal   entityCreated;
+            EntityDestroyedSignal entityDestroyed;
+        } events;
 
     private:
         // List of commands.

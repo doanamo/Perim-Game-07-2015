@@ -37,9 +37,9 @@ void EntitySystem::Cleanup()
     this->ProcessCommands();
 
     // Disconnect event signals.
-    this->entityFinalize.disconnect_all_slots();
-    this->entityCreated.disconnect_all_slots();
-    this->entityDestroyed.disconnect_all_slots();
+    this->events.entityFinalize.disconnect_all_slots();
+    this->events.entityCreated.disconnect_all_slots();
+    this->events.entityDestroyed.disconnect_all_slots();
 
     // Clear the command list.
     Utility::ClearContainer(m_commands);
@@ -90,8 +90,8 @@ bool EntitySystem::Initialize(Context& context)
     }
 
     // Connect component system to our signals.
-    componentSystem->ConnectSignal(this->entityFinalize);
-    componentSystem->ConnectSignal(this->entityDestroyed);
+    componentSystem->ConnectSignal(this->events.entityFinalize);
+    componentSystem->ConnectSignal(this->events.entityDestroyed);
 
     // Success!
     return m_initialized = true;
@@ -211,7 +211,7 @@ void EntitySystem::DestroyAllEntities()
         if(handleEntry.flags & HandleFlags::Valid)
         {
             // Send event about soon to be destroyed entity.
-            this->entityDestroyed(handleEntry.handle);
+            this->events.entityDestroyed(handleEntry.handle);
 
             // Set the handle free flags.
             handleEntry.flags = HandleFlags::Free;
@@ -262,7 +262,7 @@ void EntitySystem::ProcessCommands()
                 BOOST_ASSERT(command.handle == handleEntry.handle);
 
                 // Inform that we want this entity finalized.
-                if(!this->entityFinalize(handleEntry.handle))
+                if(!this->events.entityFinalize(handleEntry.handle))
                 {
                     // Destroy the entity.
                     this->DestroyEntity(handleEntry.handle);
@@ -278,7 +278,7 @@ void EntitySystem::ProcessCommands()
                 m_entityCount += 1;
 
                 // Send event about created entity.
-                this->entityCreated(handleEntry.handle);
+                this->events.entityCreated(handleEntry.handle);
             }
             break;
 
@@ -297,7 +297,7 @@ void EntitySystem::ProcessCommands()
                 }
 
                 // Send event about soon to be destroyed entity.
-                this->entityDestroyed(handleEntry.handle);
+                this->events.entityDestroyed(handleEntry.handle);
 
                 // Decrement the counter of active entities.
                 m_entityCount -= 1;

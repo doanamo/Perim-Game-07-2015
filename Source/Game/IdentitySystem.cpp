@@ -66,7 +66,8 @@ bool IdentitySystem::Initialize(Context& context)
     }
 
     // Connect to an event signal.
-    m_entityDestroyed = entitySystem->entityDestroyed.connect(boost::bind(&IdentitySystem::OnEntityDestroyed, this, _1));
+    m_entityDestroyed = entitySystem->events.entityDestroyed.connect(
+        boost::bind(&IdentitySystem::OnEntityDestroyed, this, _1));
 
     // Success!
     return m_initialized = true;
