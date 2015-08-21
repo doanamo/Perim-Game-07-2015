@@ -45,11 +45,11 @@ namespace Graphics
     private:
         // Texture handle.
         GLuint m_handle;
-        GLenum m_format;
 
         // Texture parameters.
         int m_width;
         int m_height;
+        GLenum m_format;
 
         // Initialization state.
         bool m_initialized;

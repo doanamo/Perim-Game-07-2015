@@ -161,6 +161,7 @@ bool Shader::Load(std::string filename)
         if(!m_initialized)
         {
             glDeleteProgram(m_handle);
+            m_handle = InvalidHandle;
         }
     };
 

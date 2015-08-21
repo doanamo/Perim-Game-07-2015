@@ -9,13 +9,14 @@ namespace
     
     // Invalid types.
     const GLuint InvalidHandle = 0;
+    const GLenum InvalidEnum = 0;
 }
 
 Texture::Texture() :
     m_handle(InvalidHandle),
-    m_format(GL_INVALID_ENUM),
     m_width(0),
     m_height(0),
+    m_format(InvalidEnum),
     m_initialized(false)
 {
 }
@@ -50,6 +51,16 @@ bool Texture::Initialize(int width, int height, GLenum format, const void* data)
     m_height = height;
     m_format = format;
 
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(!m_initialized)
+        {
+            m_width = 0;
+            m_height = 0;
+            m_format = InvalidEnum;
+        }
+    };
+
     // Create a texture handle.
     glGenTextures(1, &m_handle);
 
@@ -58,6 +69,15 @@ bool Texture::Initialize(int width, int height, GLenum format, const void* data)
         Log() << LogInitializeError() << "Couldn't create a texture.";
         return false;
     }
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(!m_initialized)
+        {
+            glDeleteTextures(1, &m_handle);
+            m_handle = InvalidHandle;
+        }
+    };
 
     // Bind the texture.
     glBindTexture(GL_TEXTURE_2D, m_handle);
@@ -89,12 +109,14 @@ bool Texture::Initialize(int width, int height, GLenum format, const void* data)
 void Texture::Update(const void* data)
 {
     BOOST_ASSERT(m_initialized);
-    BOOST_ASSERT(data != nullptr);
 
     // Upload new texture data.
-    glBindTexture(GL_TEXTURE_2D, m_handle);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, m_format, GL_UNSIGNED_BYTE, data);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    if(data != nullptr)
+    {
+        glBindTexture(GL_TEXTURE_2D, m_handle);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, m_format, GL_UNSIGNED_BYTE, data);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
 }
 
 bool Texture::IsValid() const

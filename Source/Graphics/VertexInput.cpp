@@ -173,7 +173,7 @@ bool VertexInput::Initialize(int attributeCount, const VertexAttribute* attribut
         }
     };
 
-    // Cleanup after we are done.
+    // Cleanup state after we are done.
     BOOST_SCOPE_EXIT(&)
     {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
