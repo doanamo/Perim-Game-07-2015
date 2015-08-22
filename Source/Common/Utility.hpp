@@ -22,6 +22,9 @@ namespace Utility
         container.swap(Type());
     }
 
+    // Gets the extension of a file.
+    std::string GetFileExtension(std::string filename);
+
     // Gets the content of a text file.
     std::string GetTextFileContent(std::string filename);
 
