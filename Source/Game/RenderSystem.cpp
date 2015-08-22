@@ -1,9 +1,10 @@
 #include "Precompiled.hpp"
 #include "RenderSystem.hpp"
+#include "System/Window.hpp"
+#include "Graphics/BasicRenderer.hpp"
 #include "ComponentSystem.hpp"
 #include "Components/Transform.hpp"
 #include "Components/Render.hpp"
-#include "System/Window.hpp"
 using namespace Game;
 
 namespace
@@ -14,6 +15,7 @@ namespace
 
 RenderSystem::RenderSystem() :
     m_window(nullptr),
+    m_basicRenderer(nullptr),
     m_componentSystem(nullptr),
     m_initialized(false)
 {
@@ -29,6 +31,7 @@ void RenderSystem::Cleanup()
 {
     // Reset context references.
     m_window = nullptr;
+    m_basicRenderer = nullptr;
     m_componentSystem = nullptr;
 
     // Reset graphics objects.
@@ -68,6 +71,15 @@ bool RenderSystem::Initialize(Context& context)
     if(m_window == nullptr)
     {
         Log() << LogInitializeError() << "Context is missing Window instance.";
+        return false;
+    }
+
+    // Get the basic renderer.
+    m_basicRenderer = context[ContextTypes::Main].Get<Graphics::BasicRenderer>();
+
+    if(m_basicRenderer == nullptr)
+    {
+        Log() << LogInitializeError() << "Context is missing BasicRenderer instance.";
         return false;
     }
 
@@ -147,10 +159,10 @@ void RenderSystem::Draw()
     glm::mat4 view = glm::translate(glm::mat4(1.0f), -glm::vec3(m_screenSpace.GetOffset(), 0.0f));
 
     // Clear the back buffer.
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClearDepth(1.0f);
+    m_basicRenderer->SetClearColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    m_basicRenderer->SetClearDepth(1.0f);
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    m_basicRenderer->Clear(Graphics::ClearFlags::Color | Graphics::ClearFlags::Depth);
 
     // Set render states.
     glBindVertexArray(m_vertexInput.GetHandle());

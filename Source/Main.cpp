@@ -2,6 +2,7 @@
 #include "System/Timer.hpp"
 #include "System/Window.hpp"
 #include "System/InputState.hpp"
+#include "Graphics/BasicRenderer.hpp"
 #include "Game/EntitySystem.hpp"
 #include "Game/ComponentSystem.hpp"
 #include "Game/Components/Transform.hpp"
@@ -45,6 +46,11 @@ int main(int argc, char* argv[])
         return -1;
 
     context[ContextTypes::Main].Set(&inputState);
+
+    // Initialize the basic renderer.
+    Graphics::BasicRenderer basicRenderer;
+    if(!basicRenderer.Initialize(context))
+        return -1;
 
     // Initialize the component system.
     Game::ComponentSystem componentSystem;

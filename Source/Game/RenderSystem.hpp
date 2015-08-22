@@ -12,6 +12,11 @@ namespace System
     class Window;
 }
 
+namespace Graphics
+{
+    class BasicRenderer;
+}
+
 //
 // Render System
 //
@@ -39,8 +44,9 @@ namespace Game
 
     private:
         // Context references.
-        System::Window*  m_window;
-        ComponentSystem* m_componentSystem;
+        System::Window*          m_window;
+        Graphics::BasicRenderer* m_basicRenderer;
+        ComponentSystem*         m_componentSystem;
 
         // Graphics objects.
         Graphics::ScreenSpace  m_screenSpace;
