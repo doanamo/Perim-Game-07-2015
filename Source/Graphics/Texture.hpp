@@ -18,6 +18,9 @@ namespace Graphics
         // Restores instance to it's original state.
         void Cleanup();
 
+        // Loads the texture from a file.
+        bool Load(std::string filename);
+
         // Initializes the texture instance.
         bool Initialize(int width, int height, GLenum format, const void* data);
 
