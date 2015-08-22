@@ -48,7 +48,7 @@ bool ComponentSystem::Initialize(Context& context)
             this->Cleanup();
     };
 
-    // Add system to the context.
+    // Add instance to the context.
     if(context[ContextTypes::Game].Has<ComponentSystem>())
     {
         Log() << LogInitializeError() << "Context is invalid.";

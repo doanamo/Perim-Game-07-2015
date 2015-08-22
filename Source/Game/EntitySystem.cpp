@@ -71,7 +71,7 @@ bool EntitySystem::Initialize(Context& context)
             this->Cleanup();
     };
 
-    // Add system to the context.
+    // Add instance to the context.
     if(context[ContextTypes::Game].Has<EntitySystem>())
     {
         Log() << LogInitializeError() << "Context is invalid.";
