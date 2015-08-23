@@ -336,7 +336,8 @@ bool Texture::Initialize(int width, int height, GLenum format, const void* data)
     // Unbind the texture.
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    return true;
+    // Success!
+    return m_initialized = true;
 }
 
 void Texture::Update(const void* data)
