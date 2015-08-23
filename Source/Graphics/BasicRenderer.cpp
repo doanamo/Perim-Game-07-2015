@@ -1,11 +1,45 @@
 #include "Precompiled.hpp"
 #include "BasicRenderer.hpp"
+#include "Texture.hpp"
 using namespace Graphics;
 
 namespace
 {
     // Log error messages.
     #define LogInitializeError() "Failed to initialize the basic renderer! "
+
+    // Constant variables.
+    const int SpriteBatchSize = 128;
+
+    // Vertex structure.
+    struct Vertex
+    {
+        glm::vec2 position;
+        glm::vec2 texture;
+    };
+}
+
+BasicRenderer::Sprite::Info::Info() :
+    texture(nullptr),
+    transparent(false)
+{
+}
+
+bool BasicRenderer::Sprite::Info::operator==(const Info& right) const
+{
+    return this->texture == right.texture && this->transparent == right.transparent;
+}
+
+bool BasicRenderer::Sprite::Info::operator!=(const Info& right) const
+{
+    return this->texture != right.texture || this->transparent != right.transparent;
+}
+
+BasicRenderer::Sprite::Data::Data() :
+    transform(1.0f),
+    rectangle(0.0f, 0.0f, 1.0f, 1.0f),
+    color(1.0f, 1.0f, 1.0f, 1.0f)
+{
 }
 
 BasicRenderer::BasicRenderer()
@@ -20,6 +54,15 @@ BasicRenderer::~BasicRenderer()
 
 void BasicRenderer::Cleanup()
 {
+    // Cleanup sprite batch.
+    Utility::ClearContainer(m_spriteBatch);
+
+    // Cleanup graphics objects.
+    m_vertexBuffer.Cleanup();
+    m_instanceBuffer.Cleanup();
+    m_vertexInput.Cleanup();
+    m_shader.Cleanup();
+
     // Reset initialization state.
     m_initialized = false;
 }
@@ -45,6 +88,60 @@ bool BasicRenderer::Initialize(Context& context)
 
     context[ContextTypes::Main].Set(this);
 
+    // Create a vertex buffer.
+    const Vertex vertices[4] =
+    {
+        { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) },
+        { glm::vec2(1.0f, 0.0f), glm::vec2(1.0f, 0.0f) },
+        { glm::vec2(0.0f, 1.0f), glm::vec2(0.0f, 1.0f) },
+        { glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 1.0f) },
+    };
+
+    if(!m_vertexBuffer.Initialize(sizeof(Vertex), boost::size(vertices), &vertices[0], GL_STATIC_DRAW))
+    {
+        Log() << LogInitializeError() << "Couldn't create a vertex buffer.";
+        return false;
+    }
+
+    // Create an instance buffer.
+    if(!m_instanceBuffer.Initialize(sizeof(Sprite::Data), SpriteBatchSize, nullptr, GL_DYNAMIC_DRAW))
+    {
+        Log() << LogInitializeError() << "Couldn't create an instance buffer.";
+        return false;
+    }
+
+    // Create a vertex input.
+    const VertexAttribute attributes[] =
+    {
+        { &m_vertexBuffer,   VertexAttributeTypes::Float2   }, // Position
+        { &m_vertexBuffer,   VertexAttributeTypes::Float2   }, // Texture
+        { &m_instanceBuffer, VertexAttributeTypes::Float4x4 }, // Transform
+        { &m_instanceBuffer, VertexAttributeTypes::Float4   }, // Rectangle
+        { &m_instanceBuffer, VertexAttributeTypes::Float4   }, // Color
+    };
+
+    if(!m_vertexInput.Initialize(boost::size(attributes), &attributes[0]))
+    {
+        Log() << LogInitializeError() << "Couldn't create a vertex input.";
+        return false;
+    }
+
+    // Load the shader.
+    if(!m_shader.Load(Build::GetWorkingDir() + "Data/Shaders/Sprite.glsl"))
+    {
+        Log() << LogInitializeError() << "Couldn't load the shader.";
+        return false;
+    }
+
+    // Allocate sprite batch memory.
+    if(SpriteBatchSize < 1)
+    {
+        Log() << LogInitializeError() << "Invalid sprite batch size.";
+        return false;
+    }
+
+    m_spriteBatch.resize(SpriteBatchSize);
+
     // Success!
     return m_initialized = true;
 }
@@ -62,6 +159,158 @@ void BasicRenderer::Clear(uint32_t flags)
     if(flags & ClearFlags::Stencil) mask |= GL_STENCIL_BUFFER_BIT;
 
     glClear(mask);
+}
+
+void BasicRenderer::DrawSprites(const Sprite* sprites, int spriteCount, const glm::mat4& transform)
+{
+    if(!m_initialized)
+        return;
+
+    if(sprites == nullptr)
+        return;
+
+    if(spriteCount == 0)
+        return;
+
+    // Bind the vertex input.
+    glBindVertexArray(m_vertexInput.GetHandle());
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        glBindVertexArray(0);
+    };
+
+    // Bind shader program.
+    glUseProgram(m_shader.GetHandle());
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        glUseProgram(0);
+    };
+
+    glUniformMatrix4fv(m_shader.GetUniform("viewTransform"), 1, GL_FALSE, glm::value_ptr(transform));
+
+    // Current transparency state.
+    bool currentTransparent = false;
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(currentTransparent)
+        {
+            glDisable(GL_BLEND);
+            glDepthMask(GL_TRUE);
+        }
+    };
+
+    // Current texture state.
+    const Texture* currentTexture = nullptr;
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(currentTexture != nullptr)
+        {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+    };
+
+    glUniform1i(m_shader.GetUniform("textureDiffuse"), 0);
+
+    // Render sprites.
+    int spritesDrawn = 0;
+
+    while(spritesDrawn != spriteCount)
+    {
+        // Get the first sprite info that will represent current batch.
+        const Sprite::Info& info = sprites[spritesDrawn].info;
+
+        // Add similar sprites to the current batch.
+        int spritesBatched = 1;
+
+        while(true)
+        {
+            // Check if we reached the maximum batch size.
+            if(spritesBatched == SpriteBatchSize)
+                break;
+
+            // Get the index of the next sprite.
+            int spriteNext = spritesDrawn + spritesBatched;
+
+            // Check if we reached the end of the sprite list.
+            if(spriteNext >= spriteCount)
+                break;
+
+            // Check if the next sprite is similar.
+            if(info == sprites[spriteNext].info)
+                ++spritesBatched;
+        }
+
+        // Copy sprite data to the sprite batch.
+        for(int i = 0; i < spritesBatched; ++i)
+        {
+            m_spriteBatch[i] = sprites[spritesDrawn + i].data;
+        }
+
+        // Update the instance buffer with sprite batch.
+        m_instanceBuffer.Update(&m_spriteBatch[0], spritesBatched);
+
+        // Set transparency state.
+        if(currentTransparent != info.transparent)
+        {
+            if(info.transparent)
+            {
+                // Enable alpha blending.
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+                // Disable depth writing.
+                glDepthMask(GL_FALSE);
+            }
+            else
+            {
+                // Disable alpha blending.
+                glDisable(GL_BLEND);
+
+                // Enable depth writing.
+                glDepthMask(GL_TRUE);
+            }
+
+            currentTransparent = info.transparent;
+        }
+
+        // Set texture state.
+        if(currentTexture != info.texture)
+        {
+            // Set texture uniform.
+            if(info.texture != nullptr)
+            {
+                // Calculate inversed texture size.
+                glm::vec2 textureInvSize;
+                textureInvSize.x = 1.0f / info.texture->GetWidth();
+                textureInvSize.y = 1.0f / info.texture->GetHeight();
+
+                glUniform2fv(m_shader.GetUniform("textureSizeInv"), 1, glm::value_ptr(textureInvSize));
+
+                // Enable texture unit.
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, info.texture->GetHandle());
+            }
+            else
+            {
+                // Disable texture unit.
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, 0);
+            }
+
+            currentTexture = info.texture;
+        }
+
+        // Draw instanced sprite batch.
+        glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, spritesBatched);
+
+        // Update the counter of drawn sprites.
+        spritesDrawn += spritesBatched;
+    }
 }
 
 void BasicRenderer::SetClearColor(const glm::vec4& color)

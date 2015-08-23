@@ -4,6 +4,7 @@
 #include "Graphics/ScreenSpace.hpp"
 #include "Graphics/Buffer.hpp"
 #include "Graphics/VertexInput.hpp"
+#include "Graphics/Texture.hpp"
 #include "Graphics/Shader.hpp"
 
 // Forward declarations.
@@ -52,6 +53,7 @@ namespace Game
         Graphics::ScreenSpace  m_screenSpace;
         Graphics::VertexBuffer m_vertexBuffer;
         Graphics::VertexInput  m_vertexInput;
+        Graphics::Texture      m_texture;
         Graphics::Shader       m_shader;
 
         // Initialization state.

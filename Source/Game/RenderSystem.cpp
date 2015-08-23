@@ -38,6 +38,7 @@ void RenderSystem::Cleanup()
     m_screenSpace.Cleanup();
     m_vertexBuffer.Cleanup();
     m_vertexInput.Cleanup();
+    m_texture.Cleanup();
     m_shader.Cleanup();
 
     // Reset initialization state.
@@ -129,6 +130,13 @@ bool RenderSystem::Initialize(Context& context)
         return false;
     }
 
+    // Load the texture.
+    if(!m_texture.Load(Build::GetWorkingDir() + "Data/Textures/Check.png"))
+    {
+        Log() << LogInitializeError() << "Couldn't load the texture.";
+        return false;
+    }
+
     // Load the shader.
     if(!m_shader.Load(Build::GetWorkingDir() + "Data/Shaders/Basic.glsl"))
     {
@@ -159,7 +167,7 @@ void RenderSystem::Draw()
     glm::mat4 view = glm::translate(glm::mat4(1.0f), -glm::vec3(m_screenSpace.GetOffset(), 0.0f));
 
     // Clear the back buffer.
-    m_basicRenderer->SetClearColor(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+    m_basicRenderer->SetClearColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     m_basicRenderer->SetClearDepth(1.0f);
 
     m_basicRenderer->Clear(Graphics::ClearFlags::Color | Graphics::ClearFlags::Depth);
@@ -193,4 +201,15 @@ void RenderSystem::Draw()
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
+
+    // Draw sprites.
+    Graphics::BasicRenderer::Sprite sprite;
+    sprite.info.texture = &m_texture;
+    sprite.info.transparent = false;
+    sprite.data.transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -3.0f, 0.0f));
+    sprite.data.transform = glm::scale(sprite.data.transform, glm::vec3(1.0 / 128.0f, 1.0 / 128.0f, 1.0f));
+    sprite.data.rectangle = glm::vec4(0.0f, 0.0f, m_texture.GetWidth(), m_texture.GetHeight());
+    sprite.data.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+    m_basicRenderer->DrawSprites(&sprite, 1, m_screenSpace.GetTransform() * view);
 }

@@ -1,6 +1,9 @@
 #pragma once
 
 #include "Precompiled.hpp"
+#include "Buffer.hpp"
+#include "VertexInput.hpp"
+#include "Shader.hpp"
 
 //
 // Basic Renderer
@@ -8,6 +11,9 @@
 
 namespace Graphics
 {
+    // Forward declarations.
+    class Texture;
+
     // Clear flags.
     struct ClearFlags
     {
@@ -24,6 +30,31 @@ namespace Graphics
     class BasicRenderer
     {
     public:
+        // Sprite structure.
+        struct Sprite
+        {
+            struct Info
+            {
+                Info();
+
+                bool operator==(const Info& right) const;
+                bool operator!=(const Info& right) const;
+
+                const Texture* texture;
+                bool transparent;
+            } info;
+            
+            struct Data
+            {
+                Data();
+
+                glm::mat4 transform;
+                glm::vec4 rectangle;
+                glm::vec4 color;
+            } data;
+        };
+
+    public:
         BasicRenderer();
         ~BasicRenderer();
 
@@ -36,6 +67,9 @@ namespace Graphics
         // Clears the frame buffer.
         void Clear(uint32_t flags);
 
+        // Draws sprites.
+        void DrawSprites(const Sprite* sprites, int spriteCount, const glm::mat4& transform);
+
         // Sets the clear color.
         void SetClearColor(const glm::vec4& color);
 
@@ -46,6 +80,15 @@ namespace Graphics
         void SetClearStencil(int stencil);
 
     private:
+        // Sprite batch buffer.
+        std::vector<Sprite::Data> m_spriteBatch;
+
+        // Graphics objects.
+        VertexBuffer   m_vertexBuffer;
+        InstanceBuffer m_instanceBuffer;
+        VertexInput    m_vertexInput;
+        Shader         m_shader;
+
         // Initialization state.
         bool m_initialized;
     };
