@@ -41,6 +41,7 @@ namespace Game
 
             // Sets the texture.
             void SetTexture(TexturePtr& texture);
+            void SetTexture(TexturePtr& texture, const glm::vec4& rectangle);
 
             // Sets the rectangle.
             void SetRectangle(const glm::vec4& rectangle);

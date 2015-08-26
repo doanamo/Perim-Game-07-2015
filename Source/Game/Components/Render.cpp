@@ -41,6 +41,13 @@ glm::vec4 Render::CalculateColor() const
 void Render::SetTexture(TexturePtr& texture)
 {
     m_texture = texture;
+    m_rectangle = glm::vec4(0.0f, 0.0f, texture->GetWidth(), texture->GetHeight());
+}
+
+void Render::SetTexture(TexturePtr& texture, const glm::vec4& rectangle)
+{
+    m_texture = texture;
+    m_rectangle = rectangle;
 }
 
 void Render::SetRectangle(const glm::vec4& rectangle)
