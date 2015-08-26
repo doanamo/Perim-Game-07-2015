@@ -13,22 +13,6 @@ namespace
     const GLenum InvalidEnum = 0;
 }
 
-Texture::View::View(const Texture& texture, const glm::vec4& rectangle) :
-    texture(texture),
-    rectangle(0.0f, 0.0f, texture.GetWidth(), texture.GetHeight())
-{
-}
-
-float Texture::View::GetWidth() const
-{
-    return std::fabsf(rectangle.z - rectangle.x);
-}
-
-float Texture::View::GetHeight() const
-{
-    return std::fabsf(rectangle.w - rectangle.y);
-}
-
 Texture::Texture() :
     m_handle(InvalidHandle),
     m_width(0),
@@ -352,9 +336,4 @@ void Texture::Update(const void* data)
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, m_format, GL_UNSIGNED_BYTE, data);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
-}
-
-Texture::View Texture::GetView(const glm::vec4& rectangle)
-{
-    return View(*this, rectangle);
 }

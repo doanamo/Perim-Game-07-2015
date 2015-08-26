@@ -12,19 +12,6 @@ namespace Graphics
     class Texture
     {
     public:
-        // Texture view structure.
-        struct View
-        {
-            View(const Texture& texture, const glm::vec4& rectangle);
-
-            float GetWidth() const;
-            float GetHeight() const;
-
-            const glm::vec4 rectangle;
-            const Texture& texture;
-        };
-
-    public:
         Texture();
         ~Texture();
 
@@ -39,9 +26,6 @@ namespace Graphics
 
         // Updates the texture data.
         void Update(const void* data);
-
-        // Gets the texture view.
-        View GetView(const glm::vec4& rectangle);
 
         // Gets the texture handle.
         GLuint GetHandle() const
