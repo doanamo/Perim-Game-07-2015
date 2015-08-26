@@ -2,20 +2,12 @@
 
 #include "Precompiled.hpp"
 #include "Graphics/ScreenSpace.hpp"
-#include "Graphics/Buffer.hpp"
-#include "Graphics/VertexInput.hpp"
-#include "Graphics/Texture.hpp"
-#include "Graphics/Shader.hpp"
+#include "Graphics/BasicRenderer.hpp"
 
 // Forward declarations.
 namespace System
 {
     class Window;
-}
-
-namespace Graphics
-{
-    class BasicRenderer;
 }
 
 //
@@ -30,6 +22,11 @@ namespace Game
     // Render system class.
     class RenderSystem
     {
+    public:
+        // Type delcarations.
+        typedef std::vector<Graphics::BasicRenderer::Sprite::Info> SpriteInfoList;
+        typedef std::vector<Graphics::BasicRenderer::Sprite::Data> SpriteDataList;
+
     public:
         RenderSystem();
         ~RenderSystem();
@@ -51,10 +48,10 @@ namespace Game
 
         // Graphics objects.
         Graphics::ScreenSpace  m_screenSpace;
-        Graphics::VertexBuffer m_vertexBuffer;
-        Graphics::VertexInput  m_vertexInput;
-        Graphics::Texture      m_texture;
-        Graphics::Shader       m_shader;
+
+        // Sprite list.
+        SpriteInfoList m_spriteInfo;
+        SpriteDataList m_spriteData;
 
         // Initialization state.
         bool m_initialized;

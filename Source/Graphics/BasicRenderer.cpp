@@ -8,9 +8,6 @@ namespace
     // Log error messages.
     #define LogInitializeError() "Failed to initialize the basic renderer! "
 
-    // Constant variables.
-    const int SpriteBatchSize = 128;
-
     // Vertex structure.
     struct Vertex
     {
@@ -54,9 +51,6 @@ BasicRenderer::~BasicRenderer()
 
 void BasicRenderer::Cleanup()
 {
-    // Cleanup sprite batch.
-    Utility::ClearContainer(m_spriteBatch);
-
     // Cleanup graphics objects.
     m_vertexBuffer.Cleanup();
     m_instanceBuffer.Cleanup();
@@ -133,14 +127,8 @@ bool BasicRenderer::Initialize(Context& context)
         return false;
     }
 
-    // Allocate sprite batch memory.
-    if(SpriteBatchSize < 1)
-    {
-        Log() << LogInitializeError() << "Invalid sprite batch size.";
-        return false;
-    }
-
-    m_spriteBatch.resize(SpriteBatchSize);
+    // Make sure we have a valid sprite batch size.
+    BOOST_STATIC_ASSERT_MSG(SpriteBatchSize >= 1, "Invalid sprite batch size.");
 
     // Success!
     return m_initialized = true;
@@ -161,16 +149,16 @@ void BasicRenderer::Clear(uint32_t flags)
     glClear(mask);
 }
 
-void BasicRenderer::DrawSprites(const Sprite* sprites, int spriteCount, const glm::mat4& transform)
+void BasicRenderer::DrawSprites(const SpriteInfoList& spriteInfo, const SpriteDataList& spriteData, const glm::mat4& transform)
 {
     if(!m_initialized)
         return;
 
-    if(sprites == nullptr)
+    // Make sure both lists have the same size.
+    if(spriteInfo.size() != spriteData.size())
         return;
 
-    if(spriteCount == 0)
-        return;
+    const int spriteCount = spriteInfo.size();
 
     // Bind the vertex input.
     glBindVertexArray(m_vertexInput.GetHandle());
@@ -222,7 +210,7 @@ void BasicRenderer::DrawSprites(const Sprite* sprites, int spriteCount, const gl
     while(spritesDrawn != spriteCount)
     {
         // Get the first sprite info that will represent current batch.
-        const Sprite::Info& info = sprites[spritesDrawn].info;
+        const Sprite::Info& info = spriteInfo[spritesDrawn];
 
         // Add similar sprites to the current batch.
         int spritesBatched = 1;
@@ -241,18 +229,12 @@ void BasicRenderer::DrawSprites(const Sprite* sprites, int spriteCount, const gl
                 break;
 
             // Check if the next sprite is similar.
-            if(info == sprites[spriteNext].info)
+            if(info == spriteInfo[spriteNext])
                 ++spritesBatched;
         }
 
-        // Copy sprite data to the sprite batch.
-        for(int i = 0; i < spritesBatched; ++i)
-        {
-            m_spriteBatch[i] = sprites[spritesDrawn + i].data;
-        }
-
-        // Update the instance buffer with sprite batch.
-        m_instanceBuffer.Update(&m_spriteBatch[0], spritesBatched);
+        // Update the instance buffer with sprite data.
+        m_instanceBuffer.Update(&spriteData[spritesDrawn], spritesBatched);
 
         // Set transparency state.
         if(currentTransparent != info.transparent)

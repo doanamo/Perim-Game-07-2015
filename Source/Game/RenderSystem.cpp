@@ -36,10 +36,10 @@ void RenderSystem::Cleanup()
 
     // Reset graphics objects.
     m_screenSpace.Cleanup();
-    m_vertexBuffer.Cleanup();
-    m_vertexInput.Cleanup();
-    m_texture.Cleanup();
-    m_shader.Cleanup();
+
+    // Cleanup sprite list.
+    Utility::ClearContainer(m_spriteInfo);
+    Utility::ClearContainer(m_spriteData);
 
     // Reset initialization state.
     m_initialized = false;
@@ -100,49 +100,10 @@ bool RenderSystem::Initialize(Context& context)
     // Set screen space target size.
     m_screenSpace.SetTargetSize(10.0f, 10.0f);
 
-    // Initialize the vertex buffer.
-    const glm::vec3 vertices[] =
-    {
-        { 0.0f, 1.0f, 0.0f, },
-        { 1.0f, 0.0f, 0.0f, },
-        { 0.0f, 0.0f, 0.0f, },
-
-        { 0.0f, 1.0f, 0.0f, },
-        { 1.0f, 1.0f, 0.0f, },
-        { 1.0f, 0.0f, 0.0f, },
-    };
-
-    if(!m_vertexBuffer.Initialize(sizeof(glm::vec3), boost::size(vertices), &vertices[0]))
-    {
-        Log() << LogInitializeError() << "Couldn't initialize the vertex buffer.";
-        return false;
-    }
-
-    // Initialize the vertex input.
-    const Graphics::VertexAttribute vertexAttributes[] =
-    {
-        { &m_vertexBuffer, Graphics::VertexAttributeTypes::Float3 },
-    };
-
-    if(!m_vertexInput.Initialize(boost::size(vertexAttributes), &vertexAttributes[0]))
-    {
-        Log() << LogInitializeError() << "Couldn't initialize the vertex input.";
-        return false;
-    }
-
-    // Load the texture.
-    if(!m_texture.Load(Build::GetWorkingDir() + "Data/Textures/Check.png"))
-    {
-        Log() << LogInitializeError() << "Couldn't load the texture.";
-        return false;
-    }
-
-    // Load the shader.
-    if(!m_shader.Load(Build::GetWorkingDir() + "Data/Shaders/Basic.glsl"))
-    {
-        Log() << LogInitializeError() << "Couldn't load the shader.";
-        return false;
-    }
+    // Allocate initial sprite list memory.
+    const int SpriteListSize = 128;
+    m_spriteInfo.reserve(SpriteListSize);
+    m_spriteData.reserve(SpriteListSize);
 
     // Success!
     return m_initialized = true;
@@ -166,18 +127,14 @@ void RenderSystem::Draw()
     // Calculate camera view.
     glm::mat4 view = glm::translate(glm::mat4(1.0f), -glm::vec3(m_screenSpace.GetOffset(), 0.0f));
 
+    // Global rendering scale.
+    glm::vec3 renderScale(1.0 / 128.0f, 1.0 / 128.0f, 1.0f);
+
     // Clear the back buffer.
     m_basicRenderer->SetClearColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     m_basicRenderer->SetClearDepth(1.0f);
 
     m_basicRenderer->Clear(Graphics::ClearFlags::Color | Graphics::ClearFlags::Depth);
-
-    // Set render states.
-    glBindVertexArray(m_vertexInput.GetHandle());
-    BOOST_SCOPE_EXIT(&) { glBindVertexArray(0); };
-
-    glUseProgram(m_shader.GetHandle());
-    BOOST_SCOPE_EXIT(&) { glUseProgram(0); };
 
     // Iterate over all render components.
     auto componentsBegin = m_componentSystem->Begin<Components::Render>();
@@ -192,24 +149,24 @@ void RenderSystem::Draw()
         Components::Transform* transform = render->GetTransform();
         BOOST_ASSERT(transform != nullptr);
 
-        // Draw entity.
-        glm::mat4 vertexTransform = transform->CalculateMatrix(m_screenSpace.GetTransform() * view);
-        glUniformMatrix4fv(m_shader.GetUniform("viewTransform"), 1, GL_FALSE, glm::value_ptr(vertexTransform));
-        glUniform4fv(m_shader.GetUniform("fragmentDiffuseColor"), 1, glm::value_ptr(render->GetDiffuseColor()));
-        glUniform4fv(m_shader.GetUniform("fragmentEmissiveColor"), 1, glm::value_ptr(render->GetEmissiveColor()));
-        glUniform1f(m_shader.GetUniform("fragmentEmissivePower"), render->GetEmissivePower());
+        // Add sprite to the list.
+        Graphics::BasicRenderer::Sprite::Info info;
+        info.texture = render->GetTexture().get();
+        info.transparent = render->IsTransparent();
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        Graphics::BasicRenderer::Sprite::Data data;
+        data.transform = glm::scale(transform->CalculateMatrix(), renderScale);
+        data.rectangle = render->GetRectangle();
+        data.color = render->CalculateColor();
+
+        m_spriteInfo.push_back(info);
+        m_spriteData.push_back(data);
     }
 
-    // Draw sprites.
-    Graphics::BasicRenderer::Sprite sprite;
-    sprite.info.texture = &m_texture;
-    sprite.info.transparent = false;
-    sprite.data.transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -3.0f, 0.0f));
-    sprite.data.transform = glm::scale(sprite.data.transform, glm::vec3(1.0 / 128.0f, 1.0 / 128.0f, 1.0f));
-    sprite.data.rectangle = glm::vec4(0.0f, 0.0f, m_texture.GetWidth(), m_texture.GetHeight());
-    sprite.data.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    // Render sprites.
+    m_basicRenderer->DrawSprites(m_spriteInfo, m_spriteData, m_screenSpace.GetTransform() * view);
 
-    m_basicRenderer->DrawSprites(&sprite, 1, m_screenSpace.GetTransform() * view);
+    // Clear the sprite list.
+    m_spriteInfo.clear();
+    m_spriteData.clear();
 }

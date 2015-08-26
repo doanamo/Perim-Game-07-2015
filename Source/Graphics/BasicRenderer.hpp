@@ -54,6 +54,13 @@ namespace Graphics
             } data;
         };
 
+        // Type declarations.
+        typedef std::vector<Sprite::Info> SpriteInfoList;
+        typedef std::vector<Sprite::Data> SpriteDataList;
+
+        // Constant variables.
+        static const int SpriteBatchSize = 128;
+
     public:
         BasicRenderer();
         ~BasicRenderer();
@@ -68,7 +75,7 @@ namespace Graphics
         void Clear(uint32_t flags);
 
         // Draws sprites.
-        void DrawSprites(const Sprite* sprites, int spriteCount, const glm::mat4& transform);
+        void DrawSprites(const SpriteInfoList& spriteInfo, const SpriteDataList& spriteData, const glm::mat4& transform);
 
         // Sets the clear color.
         void SetClearColor(const glm::vec4& color);
@@ -80,9 +87,6 @@ namespace Graphics
         void SetClearStencil(int stencil);
 
     private:
-        // Sprite batch buffer.
-        std::vector<Sprite::Data> m_spriteBatch;
-
         // Graphics objects.
         VertexBuffer   m_vertexBuffer;
         InstanceBuffer m_instanceBuffer;
