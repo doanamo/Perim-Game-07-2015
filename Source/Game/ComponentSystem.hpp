@@ -79,80 +79,6 @@ namespace Game
         ComponentList m_components;
     };
 
-    // Component system class.
-    class ComponentSystem
-    {
-    public:
-        // Type declarations.
-        typedef std::unique_ptr<ComponentPoolInterface>               ComponentPoolPtr;
-        typedef std::unordered_map<std::type_index, ComponentPoolPtr> ComponentPoolList;
-        typedef ComponentPoolList::value_type                         ComponentPoolPair;
-
-    public:
-        ComponentSystem();
-        ~ComponentSystem();
-
-        // Restores instance to it's original state.
-        void Cleanup();
-
-        // Initializes the component system.
-        bool Initialize(Context& context);
-
-        // Declares a component type.
-        template<typename Type>
-        void Declare();
-
-        // Creates a component.
-        template<typename Type>
-        Type* Create(EntityHandle handle);
-
-        // Lookups a component.
-        template<typename Type>
-        Type* Lookup(EntityHandle handle);
-
-        // Removes a component.
-        template<typename Type>
-        bool Remove(EntityHandle handle);
-
-        // Gets the begin iterator.
-        template<typename Type>
-        typename ComponentPool<Type>::ComponentIterator Begin();
-
-        // Gets the end iterator.
-        template<typename Type>
-        typename ComponentPool<Type>::ComponentIterator End();
-
-        // Gets a component pool.
-        template<typename Type>
-        ComponentPool<Type>* GetPool();
-
-        // Connects to a signal.
-        void ConnectSignal(EntitySystem::EntityFinalizeSignal& signal);
-        void ConnectSignal(EntitySystem::EntityDestroyedSignal& signal);
-
-    private:
-        // Called when an entity needs to be finalized.
-        bool OnEntityFinalize(const Events::EntityFinalize& event);
-
-        // Called when an entity gets destroyed.
-        void OnEntityDestroyed(const Events::EntityDestroyed& event);
-
-    private:
-        // Component pools.
-        ComponentPoolList m_pools;
-
-        // Signal connections.
-        boost::signals2::scoped_connection m_entityFinalize;
-        boost::signals2::scoped_connection m_entityDestroyed;
-
-        // Context reference.
-        Context* m_context;
-
-        // Initialization state.
-        bool m_initialized;
-    };
-
-    // Inline method definitions.
     template<typename Type>
     ComponentPool<Type>::ComponentPool()
     {
@@ -239,6 +165,79 @@ namespace Game
     {
         return m_components.end();
     }
+
+    // Component system class.
+    class ComponentSystem
+    {
+    public:
+        // Type declarations.
+        typedef std::unique_ptr<ComponentPoolInterface>               ComponentPoolPtr;
+        typedef std::unordered_map<std::type_index, ComponentPoolPtr> ComponentPoolList;
+        typedef ComponentPoolList::value_type                         ComponentPoolPair;
+
+    public:
+        ComponentSystem();
+        ~ComponentSystem();
+
+        // Restores instance to it's original state.
+        void Cleanup();
+
+        // Initializes the component system.
+        bool Initialize(Context& context);
+
+        // Declares a component type.
+        template<typename Type>
+        void Declare();
+
+        // Creates a component.
+        template<typename Type>
+        Type* Create(EntityHandle handle);
+
+        // Lookups a component.
+        template<typename Type>
+        Type* Lookup(EntityHandle handle);
+
+        // Removes a component.
+        template<typename Type>
+        bool Remove(EntityHandle handle);
+
+        // Gets the begin iterator.
+        template<typename Type>
+        typename ComponentPool<Type>::ComponentIterator Begin();
+
+        // Gets the end iterator.
+        template<typename Type>
+        typename ComponentPool<Type>::ComponentIterator End();
+
+        // Gets a component pool.
+        template<typename Type>
+        ComponentPool<Type>* GetPool();
+
+        // Connects to a signal.
+        void ConnectSignal(EntitySystem::EntityFinalizeSignal& signal);
+        void ConnectSignal(EntitySystem::EntityDestroyedSignal& signal);
+
+    private:
+        // Called when an entity needs to be finalized.
+        bool OnEntityFinalize(const Events::EntityFinalize& event);
+
+        // Called when an entity gets destroyed.
+        void OnEntityDestroyed(const Events::EntityDestroyed& event);
+
+    private:
+        // Component pools.
+        ComponentPoolList m_pools;
+
+        // Signal connections.
+        boost::signals2::scoped_connection m_entityFinalize;
+        boost::signals2::scoped_connection m_entityDestroyed;
+
+        // Context reference.
+        Context* m_context;
+
+        // Initialization state.
+        bool m_initialized;
+    };
 
     template<typename Type>
     void ComponentSystem::Declare()
