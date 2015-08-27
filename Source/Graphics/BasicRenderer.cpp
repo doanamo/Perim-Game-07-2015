@@ -1,6 +1,7 @@
 #include "Precompiled.hpp"
 #include "BasicRenderer.hpp"
-#include "Texture.hpp"
+#include "System/ResourceManager.hpp"
+#include "Graphics/Texture.hpp"
 using namespace Graphics;
 
 namespace
@@ -81,6 +82,19 @@ bool BasicRenderer::Initialize(Context& context)
     }
 
     context[ContextTypes::Main].Set(this);
+
+    // Get the resource manager.
+    System::ResourceManager* resourceManager = context[ContextTypes::Main].Get<System::ResourceManager>();
+
+    if(resourceManager == nullptr)
+    {
+        Log() << LogInitializeError() << "Context is missing ResourceManager instance.";
+        return false;
+    }
+
+    // Declare resource types.
+    resourceManager->Declare<Texture>();
+    resourceManager->Declare<Shader>();
 
     // Create a vertex buffer.
     const Vertex vertices[4] =

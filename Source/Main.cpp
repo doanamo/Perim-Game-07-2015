@@ -2,6 +2,7 @@
 #include "System/Timer.hpp"
 #include "System/Window.hpp"
 #include "System/InputState.hpp"
+#include "System/ResourceManager.hpp"
 #include "Graphics/BasicRenderer.hpp"
 #include "Game/EntitySystem.hpp"
 #include "Game/ComponentSystem.hpp"
@@ -48,6 +49,11 @@ int main(int argc, char* argv[])
         return -1;
 
     context[ContextTypes::Main].Set(&inputState);
+
+    // Initialize the resource manager.
+    System::ResourceManager resourceManager;
+    if(!resourceManager.Initialize(context))
+        return -1;
 
     // Initialize the basic renderer.
     Graphics::BasicRenderer basicRenderer;
