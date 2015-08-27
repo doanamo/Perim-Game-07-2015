@@ -51,3 +51,16 @@ bool ResourceManager::Initialize(Context& context)
     // Success!
     return m_initialized = true;
 }
+
+void ResourceManager::ReleaseUnused()
+{
+    if(!m_initialized)
+        return;
+
+    // Release all unused resources.
+    for(auto& pair : m_pools)
+    {
+        auto& pool = pair.second;
+        pool->ReleaseUnused();
+    }
+}

@@ -130,6 +130,9 @@ int main(int argc, char* argv[])
     // Main loop.
     while(window.IsOpen())
     {
+        // Release unused resources.
+        resourceManager.ReleaseUnused();
+
         // Update input state before processing events.
         inputState.Update();
 

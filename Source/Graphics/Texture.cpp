@@ -63,7 +63,7 @@ bool Texture::Load(std::string filename)
     }
 
     // Open the file stream.
-    std::ifstream file(filename, std::ios::binary);
+    std::ifstream file(Build::GetWorkingDir() + filename, std::ios::binary);
 
     if(!file.is_open())
     {
@@ -243,16 +243,16 @@ bool Texture::Load(std::string filename)
     }
 
     // Call the initialization method.
-    if(this->Initialize(width, height, textureFormat, png_data_ptr))
-    {
-        Log() << "Loaded a texture from \"" << filename << "\" file.";
-        return true;
-    }
-    else
+    if(!this->Initialize(width, height, textureFormat, png_data_ptr))
     {
         Log() << LogLoadError(filename) << "Initialization failed.";
         return false;
     }
+
+    // Success!
+    Log() << "Loaded a texture from \"" << filename << "\" file.";
+
+    return true;
 }
 
 bool Texture::Initialize(int width, int height, GLenum format, const void* data)
@@ -337,3 +337,9 @@ void Texture::Update(const void* data)
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
+
+void Texture::OnRelease(const std::string& filename)
+{
+    Log() << "Released \"" << filename << "\" texture.";
+}
+

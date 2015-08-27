@@ -47,6 +47,7 @@ Set(SourceFiles
     "System/Window.cpp"
     "System/InputState.hpp"
     "System/InputState.cpp"
+    "System/Resource.hpp"
     "System/ResourceManager.hpp"
     "System/ResourceManager.cpp"
 

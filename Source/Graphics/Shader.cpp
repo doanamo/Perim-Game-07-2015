@@ -57,7 +57,7 @@ void Shader::Cleanup()
 bool Shader::Load(std::string filename)
 {
     // Load the shader code from a file.
-    std::string shaderCode = Utility::GetTextFileContent(filename);
+    std::string shaderCode = Utility::GetTextFileContent(Build::GetWorkingDir() + filename);
 
     if(shaderCode.empty())
     {
@@ -66,16 +66,16 @@ bool Shader::Load(std::string filename)
     }
 
     // Call the initialization method.
-    if(this->Initialize(shaderCode))
-    {
-        Log() << "Loaded a shader from \"" << filename << "\" file.";
-        return true;
-    }
-    else
+    if(!this->Initialize(shaderCode))
     {
         Log() << LogLoadError(filename) << "Initialization failed.";
         return false;
     }
+
+    // Success!
+    Log() << "Loaded a shader from \"" << filename << "\" file.";
+
+    return true;
 }
 
 bool Shader::Initialize(std::string shaderCode)
@@ -284,4 +284,9 @@ GLint Shader::GetUniform(std::string name) const
         return InvalidUniform;
 
     return glGetUniformLocation(m_handle, name.c_str());
+}
+
+void Shader::OnRelease(const std::string& filename)
+{
+    Log() << "Released \"" << filename << "\" shader.";
 }

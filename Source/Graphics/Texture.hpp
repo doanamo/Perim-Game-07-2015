@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Precompiled.hpp"
+#include "System/Resource.hpp"
 
 //
 // Texture
@@ -9,7 +10,7 @@
 namespace Graphics
 {
     // Texture class.
-    class Texture
+    class Texture : public System::Resource
     {
     public:
         Texture();
@@ -50,6 +51,9 @@ namespace Graphics
         {
             return m_initialized;
         }
+
+    public:
+        void OnRelease(const std::string& filename) override;
 
     private:
         // Texture handle.

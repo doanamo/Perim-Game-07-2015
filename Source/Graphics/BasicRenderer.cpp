@@ -56,7 +56,8 @@ void BasicRenderer::Cleanup()
     m_vertexBuffer.Cleanup();
     m_instanceBuffer.Cleanup();
     m_vertexInput.Cleanup();
-    m_shader.Cleanup();
+
+    m_shader = nullptr;
 
     // Reset initialization state.
     m_initialized = false;
@@ -135,7 +136,9 @@ bool BasicRenderer::Initialize(Context& context)
     }
 
     // Load the shader.
-    if(!m_shader.Load(Build::GetWorkingDir() + "Data/Shaders/Sprite.glsl"))
+    m_shader = resourceManager->Load<Shader>("Data/Shaders/Sprite.glsl");
+
+    if(m_shader == nullptr)
     {
         Log() << LogInitializeError() << "Couldn't load the shader.";
         return false;
@@ -183,14 +186,14 @@ void BasicRenderer::DrawSprites(const SpriteInfoList& spriteInfo, const SpriteDa
     };
 
     // Bind shader program.
-    glUseProgram(m_shader.GetHandle());
+    glUseProgram(m_shader->GetHandle());
 
     BOOST_SCOPE_EXIT(&)
     {
         glUseProgram(0);
     };
 
-    glUniformMatrix4fv(m_shader.GetUniform("viewTransform"), 1, GL_FALSE, glm::value_ptr(transform));
+    glUniformMatrix4fv(m_shader->GetUniform("viewTransform"), 1, GL_FALSE, glm::value_ptr(transform));
 
     // Current transparency state.
     bool currentTransparent = false;
@@ -216,7 +219,7 @@ void BasicRenderer::DrawSprites(const SpriteInfoList& spriteInfo, const SpriteDa
         }
     };
 
-    glUniform1i(m_shader.GetUniform("textureDiffuse"), 0);
+    glUniform1i(m_shader->GetUniform("textureDiffuse"), 0);
 
     // Render sprites.
     int spritesDrawn = 0;
@@ -285,7 +288,7 @@ void BasicRenderer::DrawSprites(const SpriteInfoList& spriteInfo, const SpriteDa
                 textureInvSize.x = 1.0f / info.texture->GetWidth();
                 textureInvSize.y = 1.0f / info.texture->GetHeight();
 
-                glUniform2fv(m_shader.GetUniform("textureSizeInv"), 1, glm::value_ptr(textureInvSize));
+                glUniform2fv(m_shader->GetUniform("textureSizeInv"), 1, glm::value_ptr(textureInvSize));
 
                 // Enable texture unit.
                 glActiveTexture(GL_TEXTURE0);

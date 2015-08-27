@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Precompiled.hpp"
+#include "System/Resource.hpp"
 
 //
 // Shader
@@ -41,7 +42,7 @@
 namespace Graphics
 {
     // Shader class.
-    class Shader
+    class Shader : public System::Resource
     {
     public:
         Shader();
@@ -73,6 +74,9 @@ namespace Graphics
         {
             return m_initialized;
         }
+
+    public:
+        void OnRelease(const std::string& filename) override;
 
     private:
         // Linked program handle.

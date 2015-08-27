@@ -91,7 +91,8 @@ namespace Graphics
         VertexBuffer   m_vertexBuffer;
         InstanceBuffer m_instanceBuffer;
         VertexInput    m_vertexInput;
-        Shader         m_shader;
+
+        std::shared_ptr<const Shader> m_shader;
 
         // Initialization state.
         bool m_initialized;

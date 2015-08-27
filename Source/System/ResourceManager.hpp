@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Precompiled.hpp"
+#include "Resource.hpp"
 
 //
 // Resource Manager
@@ -20,6 +21,8 @@ namespace System
         virtual ~ResourcePoolInterface()
         {
         }
+
+        virtual void ReleaseUnused() = 0;
     };
 
     // Resource pool class.
@@ -27,17 +30,17 @@ namespace System
     class ResourcePool : public ResourcePoolInterface
     {
     public:
+        // Validate resource type.
+        BOOST_STATIC_ASSERT_MSG(std::is_base_of<Resource, Type>::value, "Not a resource type.");
+
         // Type declarations.
-        typedef std::shared_ptr<const Type>                       ConstResourcePtr;
-        typedef std::unordered_map<std::string, ConstResourcePtr> ResourceList;
-        typedef typename ResourceList::value_type                 ResourceListPair;
+        typedef std::shared_ptr<Type>                        ResourcePtr;
+        typedef std::unordered_map<std::string, ResourcePtr> ResourceList;
+        typedef typename ResourceList::value_type            ResourceListPair;
         
     public:
         ResourcePool(std::shared_ptr<const Type> default = nullptr);
         ~ResourcePool();
-
-        // Restores instance to it's original state.
-        void Cleanup();
 
         // Sets the default resource.
         void SetDefault(std::shared_ptr<const Type> resource);
@@ -45,8 +48,11 @@ namespace System
         // Loads a resource.
         std::shared_ptr<const Type> Load(std::string filename);
 
-        // Clears all resources.
-        void Clear();
+        // Releases unused resources.
+        void ReleaseUnused();
+
+        // Releases all resources.
+        void ReleaseAll();
 
     private:
         // List of resources.
@@ -55,6 +61,88 @@ namespace System
         // Default resource.
         std::shared_ptr<const Type> m_default;
     };
+
+    template<typename Type>
+    ResourcePool<Type>::ResourcePool(std::shared_ptr<const Type> default) :
+        m_default(default)
+    {
+    }
+
+    template<typename Type>
+    ResourcePool<Type>::~ResourcePool()
+    {
+        // Release all resources.
+        this->ReleaseAll();
+    }
+
+    template<typename Type>
+    void ResourcePool<Type>::SetDefault(std::shared_ptr<const Type> resource)
+    {
+        m_default = resource;
+    }
+
+    template<typename Type>
+    std::shared_ptr<const Type> ResourcePool<Type>::Load(std::string filename)
+    {
+        // Find the resource.
+        auto it = m_resources.find(filename);
+
+        if(it != m_resources.end())
+            return it->second;
+
+        // Load a new resource.
+        std::shared_ptr<Type> resource = std::make_shared<Type>();
+
+        if(!resource->Load(filename))
+            return m_default;
+
+        // Add resource to the list.
+        auto result = m_resources.emplace(filename, std::move(resource));
+
+        BOOST_ASSERT(result.second == true);
+
+        // Return resource pointer.
+        return result.first->second;
+    }
+
+    template<typename Type>
+    void ResourcePool<Type>::ReleaseUnused()
+    {
+        // Release unused resources.
+        auto it = m_resources.begin();
+
+        while(it != m_resources.end())
+        {
+            auto& resource = it->second;
+
+            if(resource.unique())
+            {
+                resource->Cleanup();
+                resource->OnRelease(it->first);
+
+                it = m_resources.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
+
+    template<typename Type>
+    void ResourcePool<Type>::ReleaseAll()
+    {
+        // Release all resources.
+        for(auto& pair : m_resources)
+        {
+            auto& resource = pair.second;
+
+            resource->Cleanup();
+            resource->OnRelease(pair.first);
+        }
+
+        m_resources.clear();
+    }
 
     // Resource manager class.
     class ResourceManager
@@ -74,6 +162,9 @@ namespace System
 
         // Initializes the component system.
         bool Initialize(Context& context);
+
+        // Releases unused resources.
+        void ReleaseUnused();
 
         // Declares a resource type.
         template<typename Type>
@@ -95,65 +186,14 @@ namespace System
         bool m_initialized;
     };
 
-    // Inline method definitions.
-    template<typename Type>
-    ResourcePool<Type>::ResourcePool(std::shared_ptr<const Type> default) :
-        m_default(default)
-    {
-    }
-
-    template<typename Type>
-    ResourcePool<Type>::~ResourcePool()
-    {
-    }
-
-    template<typename Type>
-    void ResourcePool<Type>::Cleanup()
-    {
-        *this = ResourcePool<Type>();
-    }
-
-    template<typename Type>
-    void ResourcePool<Type>::SetDefault(std::shared_ptr<const Type> resource)
-    {
-        m_default = resource;
-    }
-
-    template<typename Type>
-    std::shared_ptr<const Type> ResourcePool<Type>::Load(std::string filename)
-    {
-        // Find the resource.
-        auto it = m_resources.find(filename);
-
-        if(it != m_resources.end())
-            return it->second;
-
-        // Load a new resource.
-        std::shared_ptr<Type> resource = std::make_shared<Type>();
-
-        if(!resource->Load(Build::GetWorkingDir() + filename))
-            return m_default;
-
-        // Add resource to the list.
-        auto result = m_resources.emplace(filename, std::move(resource));
-
-        BOOST_ASSERT(result.second == true);
-
-        // Return resource pointer.
-        return result.first->second;
-    }
-
-    template<typename Type>
-    void ResourcePool<Type>::Clear()
-    {
-        m_resources.clear();
-    }
-
     template<typename Type>
     void ResourceManager::Declare(std::shared_ptr<const Type> default)
     {
         if(!m_initialized)
             return;
+
+        // Validate resource type.
+        BOOST_STATIC_ASSERT_MSG(std::is_base_of<Resource, Type>::value, "Not a resource type.");
 
         // Check if resource type was already declared.
         auto it = m_pools.find(typeid(Type));
@@ -173,7 +213,10 @@ namespace System
     std::shared_ptr<const Type> ResourceManager::Load(std::string filename)
     {
         if(!m_initialized)
-            return;
+            return nullptr;
+
+        // Validate resource type.
+        BOOST_STATIC_ASSERT_MSG(std::is_base_of<Resource, Type>::value, "Not a resource type.");
 
         // Get the resource pool.
         ResourcePool<Type>* pool = this->GetPool<Type>();
@@ -190,6 +233,9 @@ namespace System
     {
         if(!m_initialized)
             return nullptr;
+
+        // Validate resource type.
+        BOOST_STATIC_ASSERT_MSG(std::is_base_of<Resource, Type>::value, "Not a resource type.");
 
         // Find pool by resource type.
         auto it = m_pools.find(typeid(Type));
