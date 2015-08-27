@@ -26,8 +26,7 @@ namespace Game
         {
         public:
             // Type declarations.
-            typedef std::shared_ptr<Graphics::Texture> TexturePtr;
-            typedef std::shared_ptr<const Graphics::Texture> ConstTexturePtr;
+            typedef std::shared_ptr<const Graphics::Texture> TexturePtr;
 
         public:
             Render();
@@ -40,8 +39,8 @@ namespace Game
             glm::vec4 CalculateColor() const;
 
             // Sets the texture.
-            void SetTexture(TexturePtr& texture);
-            void SetTexture(TexturePtr& texture, const glm::vec4& rectangle);
+            void SetTexture(TexturePtr texture);
+            void SetTexture(TexturePtr texture, const glm::vec4& rectangle);
 
             // Sets the rectangle.
             void SetRectangle(const glm::vec4& rectangle);
@@ -62,7 +61,7 @@ namespace Game
             Transform* GetTransform();
 
             // Gets the texture.
-            const ConstTexturePtr& GetTexture() const;
+            const TexturePtr& GetTexture() const;
 
             // Gets the rectangle.
             const glm::vec4& GetRectangle() const;
@@ -81,7 +80,7 @@ namespace Game
 
         private:
             // Texture resource.
-            ConstTexturePtr m_texture;
+            TexturePtr m_texture;
             glm::vec4 m_rectangle;
 
             // Render parameters.

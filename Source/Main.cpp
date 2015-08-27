@@ -85,11 +85,6 @@ int main(int argc, char* argv[])
     if(!renderSystem.Initialize(context))
         return -1;
 
-    // Load the texture.
-    std::shared_ptr<Graphics::Texture> texture = std::make_shared<Graphics::Texture>();
-    if(!texture->Load(Build::GetWorkingDir() + "Data/Textures/Check.png"))
-        return false;
-
     // Create entities.
     {
         Game::EntityHandle entity = entitySystem.CreateEntity();
@@ -103,7 +98,7 @@ int main(int argc, char* argv[])
 
         auto render = componentSystem.Create<Game::Components::Render>(entity);
         render->SetDiffuseColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-        render->SetTexture(texture);
+        render->SetTexture(resourceManager.Load<Graphics::Texture>("Data/Textures/Check.png"));
     }
 
     {
@@ -114,7 +109,7 @@ int main(int argc, char* argv[])
 
         auto render = componentSystem.Create<Game::Components::Render>(entity);
         render->SetDiffuseColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-        render->SetTexture(texture);
+        render->SetTexture(resourceManager.Load<Graphics::Texture>("Data/Textures/Check.png"));
     }
 
     {
@@ -125,7 +120,7 @@ int main(int argc, char* argv[])
 
         auto render = componentSystem.Create<Game::Components::Render>(entity);
         render->SetDiffuseColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-        render->SetTexture(texture);
+        render->SetTexture(resourceManager.Load<Graphics::Texture>("Data/Textures/Check.png"));
     }
 
     // Tick timer once after the initialization to avoid big

@@ -38,13 +38,13 @@ glm::vec4 Render::CalculateColor() const
     return glm::mix(m_diffuseColor, m_emissiveColor, m_emissivePower);
 }
 
-void Render::SetTexture(TexturePtr& texture)
+void Render::SetTexture(TexturePtr texture)
 {
     m_texture = texture;
     m_rectangle = glm::vec4(0.0f, 0.0f, texture->GetWidth(), texture->GetHeight());
 }
 
-void Render::SetTexture(TexturePtr& texture, const glm::vec4& rectangle)
+void Render::SetTexture(TexturePtr texture, const glm::vec4& rectangle)
 {
     m_texture = texture;
     m_rectangle = rectangle;
@@ -80,7 +80,7 @@ Transform* Render::GetTransform()
     return m_transform;
 }
 
-const Render::ConstTexturePtr& Render::GetTexture() const
+const Render::TexturePtr& Render::GetTexture() const
 {
     return m_texture;
 }
