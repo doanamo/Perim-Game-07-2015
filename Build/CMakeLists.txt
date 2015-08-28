@@ -334,3 +334,27 @@ Set_Property(TARGET "png16_static" PROPERTY FOLDER "External")
 # Link library target.
 Add_Dependencies(${TargetName} "png16_static")
 Target_Link_Libraries(${TargetName} "png16_static")
+
+#
+# LuaJIT
+#
+
+# Add library directory.
+Add_Subdirectory("../External/LuaJIT-2.0.4" "LuaJIT" EXCLUDE_FROM_ALL)
+
+# Add include directory.
+Include_Directories("../External/LuaJIT-2.0.4/src")
+
+# Move library targets to dependencies.
+Set_Property(TARGET "libluajit" PROPERTY PROJECT_LABEL "LuaJIT")
+Set_Property(TARGET "libluajit" PROPERTY FOLDER "External")
+
+Set_Property(TARGET "buildvm" PROPERTY PROJECT_LABEL "LuaJIT-BuildVM")
+Set_Property(TARGET "buildvm" PROPERTY FOLDER "External")
+
+Set_Property(TARGET "minilua" PROPERTY PROJECT_LABEL "LuaJIT-MiniLua")
+Set_Property(TARGET "minilua" PROPERTY FOLDER "External")
+
+# Link library target.
+Add_Dependencies(${TargetName} "libluajit")
+Target_Link_Libraries(${TargetName} "libluajit")

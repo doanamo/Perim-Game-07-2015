@@ -39,6 +39,8 @@
 #include <zlib.h>
 #include <png.h>
 
+#include <lua.hpp>
+
 #include "Common/Context.hpp"
 #include "Common/Debug.hpp"
 #include "Common/Build.hpp"
