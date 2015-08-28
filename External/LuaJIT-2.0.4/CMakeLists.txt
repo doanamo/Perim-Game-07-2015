@@ -4,7 +4,7 @@
 # Redistribution and use of this file is allowed according to the terms of the MIT license.
 # Debugged and (now seriously) modified by Ronan Collobert, for Torch7
 
-project(LuaJIT C)
+project(LuaJIT CXX)
 
 IF(APPLE)
   CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12 FATAL_ERROR)
