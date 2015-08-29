@@ -379,7 +379,7 @@ struct LuaTypeMapping <std::basic_string<CH>>
  */
 struct LuaString
 {
-    LUA_CONSTEXPR LuaString()
+    LUA_CONSTEXPR_CTOR LuaString()
         : data(nullptr)
         , size(0)
         {}

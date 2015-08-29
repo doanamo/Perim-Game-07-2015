@@ -29,10 +29,10 @@ class LuaException : public std::exception
 public:
     explicit LuaException(lua_State* L) LUA_NOEXCEPT
     {
-        if (lua_gettop(L) > 0) {
+        if (L != nullptr && lua_gettop(L) > 0) {
             m_what = lua_tostring(L, -1);
         } else {
-            m_what = "unknown error";
+            m_what = "Unknown error";
         }
     }
 
@@ -51,20 +51,25 @@ public:
 
     static int traceback(lua_State* L)
     {
-        if (!lua_isstring(L, 1)) return 1;
-        lua_getglobal(L, "debug");
-        if (!lua_istable(L, -1)) {
-            lua_pop(L, 1);
+        if(L)
+        {
+            if (!lua_isstring(L, 1)) return 1;
+            lua_getglobal(L, "debug");
+            if (!lua_istable(L, -1)) {
+                lua_pop(L, 1);
+                return 1;
+            }
+            lua_getfield(L, -1, "traceback");
+            if (!lua_isfunction(L, -1)) {
+                lua_pop(L, 2);
+                return 1;
+            }
+            lua_pushvalue(L, 1);    // pass error message
+            lua_call(L, 1, 1);      // call debug.traceback
             return 1;
         }
-        lua_getfield(L, -1, "traceback");
-        if (!lua_isfunction(L, -1)) {
-            lua_pop(L, 2);
-            return 1;
-        }
-        lua_pushvalue(L, 1);    // pass error message
-        lua_call(L, 1, 1);      // call debug.traceback
-        return 1;
+
+        return 0;
     }
 
 private:

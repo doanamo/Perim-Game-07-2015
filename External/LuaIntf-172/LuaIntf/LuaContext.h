@@ -99,6 +99,27 @@ public:
     LuaContext& operator = (const LuaContext&) = delete;
 
     /**
+     * Move assignment operator
+     */
+    LuaContext& operator = (LuaContext&& right)
+    {
+        // Release current Lua state.
+        if (m_own)
+        {
+            lua_close(L);
+        }
+
+        // Move members.
+        L = right.L;
+        right.L = nullptr;
+
+        m_own = right.m_own;
+        right.m_own = false;
+
+        return *this;
+    }
+
+    /**
      * Implicit conversion for lua_State*
      */
     operator lua_State* () const

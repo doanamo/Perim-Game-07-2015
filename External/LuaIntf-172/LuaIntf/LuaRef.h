@@ -153,7 +153,7 @@ public:
     /**
      * Create empty LuaTableIterator, it must be assigned to other LuaTableIterator before using.
      */
-    LUA_CONSTEXPR LuaTableIterator()
+    LUA_CONSTEXPR_CTOR LuaTableIterator()
         : L(nullptr)
         , m_table(LUA_NOREF)
         , m_key(LUA_NOREF)
@@ -411,10 +411,16 @@ public:
     /**
      * Create empty reference.
      */
-    LUA_CONSTEXPR LuaRef()
+    LUA_CONSTEXPR_CTOR LuaRef()
         : L(nullptr)
         , m_ref(LUA_NOREF)
         {}
+
+    LUA_CONSTEXPR_CTOR LuaRef(std::nullptr_t)
+        : L(nullptr)
+        , m_ref(LUA_NOREF)
+    {
+    }
 
     /**
      * Create reference to Lua nil.
@@ -670,7 +676,11 @@ public:
      */
     void pushToStack() const
     {
-        assert(L);
+        if(L == nullptr)
+        {
+            throw LuaException(L);
+        }
+
         lua_rawgeti(L, LUA_REGISTRYINDEX, m_ref);
     }
 

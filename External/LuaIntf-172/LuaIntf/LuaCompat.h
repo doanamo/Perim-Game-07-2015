@@ -118,11 +118,13 @@
 #if defined(_MSC_VER) && _MSC_VER < 1900
     #define LUA_NOEXCEPT _NOEXCEPT
     #define LUA_CONSTEXPR const
+    #define LUA_CONSTEXPR_CTOR
     #define LUA_ALIGNOF(x) __alignof(x)
     #define LUA_ALIGNAS(x) __declspec(align(x))
 #else
     #define LUA_NOEXCEPT noexcept
     #define LUA_CONSTEXPR constexpr
+    #define LUA_CONSTEXPR_CTOR constexpr
     #define LUA_ALIGNOF alignof
     #define LUA_ALIGNAS alignas
 #endif

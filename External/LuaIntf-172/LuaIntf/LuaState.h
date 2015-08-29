@@ -244,7 +244,7 @@ namespace Lua
 class LuaState
 {
 public:
-    LUA_CONSTEXPR LuaState()
+    LUA_CONSTEXPR_CTOR LuaState()
         : L(nullptr) {}
 
     LuaState(lua_State* that)
