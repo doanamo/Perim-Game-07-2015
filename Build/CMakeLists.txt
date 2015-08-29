@@ -41,6 +41,8 @@ Set(SourceFiles
     "Common/Utility.hpp"
     "Common/Utility.cpp"
 
+    "System/Config.hpp"
+    "System/Config.cpp"
     "System/Timer.hpp"
     "System/Timer.cpp"
     "System/Window.hpp"

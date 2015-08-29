@@ -209,7 +209,7 @@ void Window::Cleanup()
     m_initialized = false;
 }
 
-bool Window::Initialize()
+bool Window::Initialize(int width, int height)
 {
     // Setup initialization routine.
     if(m_initialized)
@@ -241,7 +241,7 @@ bool Window::Initialize()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    m_window = glfwCreateWindow(1024, 576, "Game", nullptr, nullptr);
+    m_window = glfwCreateWindow(width, height, "Game", nullptr, nullptr);
 
     if(m_window == nullptr)
     {

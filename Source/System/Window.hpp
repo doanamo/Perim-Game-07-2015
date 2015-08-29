@@ -19,7 +19,7 @@ namespace System
         void Cleanup();
 
         // Initializes the window instance.
-        bool Initialize();
+        bool Initialize(int width, int height);
 
         // Makes window's context current.
         void MakeContextCurrent();

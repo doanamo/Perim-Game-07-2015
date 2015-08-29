@@ -43,6 +43,7 @@
 
 #define LUAINTF_HEADERS_ONLY
 #include <LuaIntf.h>
+using LuaIntf::LuaException;
 using LuaIntf::LuaContext;
 using LuaIntf::LuaRef;
 

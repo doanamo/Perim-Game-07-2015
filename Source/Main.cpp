@@ -1,4 +1,5 @@
 #include "Precompiled.hpp"
+#include "System/Config.hpp"
 #include "System/Timer.hpp"
 #include "System/Window.hpp"
 #include "System/InputState.hpp"
@@ -29,6 +30,12 @@ int main(int argc, char* argv[])
 
     // Create context instance.
     Context context;
+    
+    // Load the config file.
+    System::Config config;
+    config.Load("Game.cfg");
+
+    context[ContextTypes::Main].Set(&config);
 
     // Initialize the timer.
     System::Timer timer;
@@ -37,8 +44,12 @@ int main(int argc, char* argv[])
     context[ContextTypes::Main].Set(&timer);
 
     // Initialize the window.
+    int windowWidth = config.Get<int>("Graphics.Width", 1024);
+    int windowHeight = config.Get<int>("Graphics.Height", 576);
+    bool verticalSync = config.Get<bool>("Graphics.VSync", true);
+
     System::Window window;
-    if(!window.Initialize())
+    if(!window.Initialize(windowWidth, windowHeight))
         return -1;
 
     context[ContextTypes::Main].Set(&window);
@@ -152,7 +163,7 @@ int main(int argc, char* argv[])
         renderSystem.Draw();
 
         // Present backbuffer to the window.
-        window.Present(true);
+        window.Present(verticalSync);
 
         // Tick the timer.
         timer.Tick();
