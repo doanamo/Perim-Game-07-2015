@@ -74,7 +74,7 @@ bool Config::Load(std::string filename)
     // Load the config file.
     try
     {
-        m_context.doFile((Build::GetWorkingDir() + filename).c_str());
+        m_context.doFile(Build::GetWorkingDir() + filename);
     }
     catch(const LuaException& exception)
     {

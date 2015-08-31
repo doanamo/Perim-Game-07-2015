@@ -163,6 +163,11 @@ public:
      * @param path Path to script file to execute
      * @throw LuaException for syntax errors and uncaught runtime errors
      */
+    void doFile(const std::string& path)
+    {
+        this->doFile(path.c_str());
+    }
+
     void doFile(const char* path)
     {
         int err = luaL_dofile(L, path);
