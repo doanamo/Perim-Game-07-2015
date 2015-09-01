@@ -360,10 +360,3 @@ Set_Property(TARGET "minilua" PROPERTY FOLDER "External")
 # Link library target.
 Add_Dependencies(${TargetName} "libluajit")
 Target_Link_Libraries(${TargetName} "libluajit")
-
-#
-# LuaIntf
-#
-
-# Add include directory.
-Include_Directories("../External/LuaIntf-172/LuaIntf")

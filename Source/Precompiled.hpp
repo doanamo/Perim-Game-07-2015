@@ -41,12 +41,6 @@
 
 #include <lua.hpp>
 
-#define LUAINTF_HEADERS_ONLY
-#include <LuaIntf.h>
-using LuaIntf::LuaException;
-using LuaIntf::LuaContext;
-using LuaIntf::LuaRef;
-
 #include "Common/Context.hpp"
 #include "Common/Debug.hpp"
 #include "Common/Build.hpp"

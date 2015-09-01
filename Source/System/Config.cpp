@@ -10,7 +10,6 @@ namespace
 }
 
 Config::Config() :
-    m_context(nullptr),
     m_initialized(false)
 {
 }
@@ -23,9 +22,6 @@ Config::~Config()
 
 void Config::Cleanup()
 {
-    // Clean config state.
-    m_context = LuaContext(nullptr);
-
     // Reset initialization state.
     m_initialized = false;
 }
@@ -42,6 +38,7 @@ bool Config::Initialize()
             this->Cleanup();
     };
 
+    /*
     // Create Lua state.
     try
     {
@@ -53,6 +50,7 @@ bool Config::Initialize()
         Log() << "Lua Error: " << exception.what();
         return false;
     }
+    */
 
     // Success!
     return m_initialized = true;
@@ -76,6 +74,7 @@ bool Config::Load(std::string filename)
             this->Cleanup();
     };
 
+    /*
     // Load the config file.
     try
     {
@@ -97,6 +96,7 @@ bool Config::Load(std::string filename)
         Log() << "Lua Error: " << exception.what();
         return false;
     }
+    */
     
     // Success!
     Log() << "Loaded a config from \"" << filename << "\" file.";
@@ -104,6 +104,7 @@ bool Config::Load(std::string filename)
     return success = true;
 }
 
+/*
 LuaRef Config::Resolve(std::string name)
 {
     if(!m_initialized)
@@ -142,3 +143,4 @@ LuaRef Config::Resolve(std::string name)
     // Return resolved reference.
     return token;
 }
+*/

@@ -33,13 +33,12 @@ namespace System
         Type Get(std::string name, const Type& default);
 
     private:
+        /*
         // Resolves a reference name.
         LuaRef Resolve(std::string name);
+        */
 
     private:
-        // Config state.
-        LuaContext m_context;
-
         // Initialization state.
         bool m_initialized;
     };
@@ -50,11 +49,13 @@ namespace System
         if(!m_initialized)
             return;
 
+        /*
         // Resolve reference.
         LuaRef reference = this->Resolve(name);
 
         // Set new value.
         reference = value;
+        */
     }
 
     template<typename Type>
@@ -63,6 +64,7 @@ namespace System
         if(!m_initialized)
             return default;
 
+        /*
         // Resolve reference.
         LuaRef reference = this->Resolve(name);
 
@@ -75,5 +77,8 @@ namespace System
         {
             return default;
         }
+        */
+
+        return default;
     }
 };
