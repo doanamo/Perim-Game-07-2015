@@ -42,14 +42,10 @@ bool Config::Initialize()
             this->Cleanup();
     };
 
-    // Create base config state.
+    // Create Lua state.
     try
     {
-        // Create a Lua state.
         m_context = LuaContext(false);
-        
-        // Create a config table.
-        m_context.setGlobal("Config", LuaRef::createTable(m_context));
     }
     catch(const LuaException& exception)
     {
@@ -71,23 +67,41 @@ bool Config::Load(std::string filename)
         return false;
     }
 
+    // Setup the cleanup scope guard.
+    bool success = false;
+
+    BOOST_SCOPE_EXIT(&)
+    {
+        if(!success)
+            this->Cleanup();
+    };
+
     // Load the config file.
     try
     {
+        // Parse the config file.
         m_context.doFile(Build::GetWorkingDir() + filename);
+
+        // Make sure config table is present.
+        LuaRef reference = m_context.getGlobal("Config");
+
+        if(reference == nullptr)
+        {
+            Log() << LogLoadError(filename) << "Missing \"Config\" table.";
+            return false;
+        }
     }
     catch(const LuaException& exception)
     {
         Log() << LogLoadError(filename) << "An exception occured.";
         Log() << "Lua Error: " << exception.what();
-        this->Cleanup();
         return false;
     }
     
     // Success!
     Log() << "Loaded a config from \"" << filename << "\" file.";
 
-    return true;
+    return success = true;
 }
 
 LuaRef Config::Resolve(std::string name)

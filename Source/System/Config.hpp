@@ -15,7 +15,7 @@ namespace System
         Config();
         ~Config();
 
-        // Restores class instance to it's original state.
+        // Restores instance to it's original state.
         void Cleanup();
 
         // Initializes the class instance.

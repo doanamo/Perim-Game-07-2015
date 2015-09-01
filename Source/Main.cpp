@@ -44,8 +44,8 @@ int main(int argc, char* argv[])
     context[ContextTypes::Main].Set(&timer);
 
     // Initialize the window.
-    int windowWidth = config.Get<int>("Graphics.Width", 1024);
-    int windowHeight = config.Get<int>("Graphics.Height", 576);
+    int windowWidth = config.Get<int>("Graphics.Width", 800);
+    int windowHeight = config.Get<int>("Graphics.Height", 600);
     bool verticalSync = config.Get<bool>("Graphics.VSync", true);
 
     System::Window window;
