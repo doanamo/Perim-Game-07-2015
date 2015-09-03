@@ -9,7 +9,7 @@
 namespace System
 {
     // Resource base class.
-    class Resource : private boost::noncopyable
+    class Resource : private NonCopyable
     {
     protected:
         Resource()
