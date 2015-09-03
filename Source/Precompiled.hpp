@@ -18,7 +18,6 @@
 
 #define BOOST_SCOPE_EXIT_CONFIG_USE_LAMBDAS
 #include <boost/scope_exit.hpp>
-#include <boost/range.hpp>
 #include <boost/any.hpp>
 #include <boost/variant.hpp>
 #include <boost/signals2.hpp>

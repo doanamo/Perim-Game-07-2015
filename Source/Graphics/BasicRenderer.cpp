@@ -106,7 +106,7 @@ bool BasicRenderer::Initialize(Context& context)
         { glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 1.0f) },
     };
 
-    if(!m_vertexBuffer.Initialize(sizeof(Vertex), boost::size(vertices), &vertices[0], GL_STATIC_DRAW))
+    if(!m_vertexBuffer.Initialize(sizeof(Vertex), Utility::ArraySize(vertices), &vertices[0], GL_STATIC_DRAW))
     {
         Log() << LogInitializeError() << "Couldn't create a vertex buffer.";
         return false;
@@ -129,7 +129,7 @@ bool BasicRenderer::Initialize(Context& context)
         { &m_instanceBuffer, VertexAttributeTypes::Float4   }, // Color
     };
 
-    if(!m_vertexInput.Initialize(boost::size(attributes), &attributes[0]))
+    if(!m_vertexInput.Initialize(Utility::ArraySize(attributes), &attributes[0]))
     {
         Log() << LogInitializeError() << "Couldn't create a vertex input.";
         return false;

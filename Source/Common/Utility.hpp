@@ -15,6 +15,13 @@ namespace Utility
         return std::max(lower, std::min(value, upper));
     }
 
+    // Gets the size of a static array.
+    template<typename Type, size_t Size>
+    size_t ArraySize(const Type(&)[Size])
+    {
+        return Size;
+    }
+
     // Frees a container's memory (for STL implementations only).
     template<typename Type>
     void ClearContainer(Type& container)
