@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <typeinfo>
 #include <typeindex>
 #include <limits>
@@ -16,8 +17,6 @@
 #include <unordered_map>
 
 #define BOOST_SCOPE_EXIT_CONFIG_USE_LAMBDAS
-#include <boost/assert.hpp>
-#include <boost/static_assert.hpp>
 #include <boost/core/noncopyable.hpp>
 #include <boost/serialization/strong_typedef.hpp>
 #include <boost/scope_exit.hpp>

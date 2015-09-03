@@ -99,7 +99,7 @@ namespace System
         // Add resource to the list.
         auto result = m_resources.emplace(filename, std::move(resource));
 
-        BOOST_ASSERT(result.second == true);
+        assert(result.second == true);
 
         // Return resource pointer.
         return result.first->second;
@@ -206,7 +206,7 @@ namespace System
         auto pair = ResourcePoolPair(typeid(Type), std::move(pool));
         auto result = m_pools.insert(std::move(pair));
 
-        BOOST_ASSERT(result.second == true);
+        assert(result.second == true);
     }
 
     template<typename Type>

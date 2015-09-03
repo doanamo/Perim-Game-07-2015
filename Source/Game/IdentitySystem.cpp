@@ -143,7 +143,7 @@ EntityHandle IdentitySystem::Lookup(std::string name) const
 
 void IdentitySystem::OnEntityDestroyed(const Events::EntityDestroyed& event)
 {
-    BOOST_ASSERT(m_initialized);
+    assert(m_initialized);
 
     // Remove entity from the name map.
     auto result = m_names.right.erase(event.handle);

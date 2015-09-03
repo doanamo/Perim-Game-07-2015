@@ -103,7 +103,7 @@ EntityHandle EntitySystem::CreateEntity()
         return EntityHandle();
 
     // Check if we reached the numerical limits.
-    BOOST_ASSERT(m_handles.size() != MaximumIdentifier);
+    assert(m_handles.size() != MaximumIdentifier);
 
     // Create a new handle if the free list queue is empty.
     if(m_freeListIsEmpty)
@@ -259,7 +259,7 @@ void EntitySystem::ProcessCommands()
                 HandleEntry& handleEntry = m_handles[handleIndex];
 
                 // Make sure handles match.
-                BOOST_ASSERT(command.handle == handleEntry.handle);
+                assert(command.handle == handleEntry.handle);
 
                 // Inform that we want this entity finalized.
                 if(!this->events.entityFinalize(handleEntry.handle))
@@ -270,7 +270,7 @@ void EntitySystem::ProcessCommands()
                 }
 
                 // Mark handle as active.
-                BOOST_ASSERT(!(handleEntry.flags & HandleFlags::Active));
+                assert(!(handleEntry.flags & HandleFlags::Active));
 
                 handleEntry.flags |= HandleFlags::Active;
 
@@ -292,7 +292,7 @@ void EntitySystem::ProcessCommands()
                 if(command.handle != handleEntry.handle)
                 {
                     // Trying to destroy an entity twice.
-                    BOOST_ASSERT(false);
+                    assert(false);
                     continue;
                 }
 
@@ -303,7 +303,7 @@ void EntitySystem::ProcessCommands()
                 m_entityCount -= 1;
 
                 // Free entity handle.
-                BOOST_ASSERT(handleEntry.flags & HandleFlags::Destroy);
+                assert(handleEntry.flags & HandleFlags::Destroy);
 
                 this->FreeHandle(handleIndex, handleEntry);
             }
@@ -321,11 +321,11 @@ void EntitySystem::FreeHandle(int handleIndex, HandleEntry& handleEntry)
         return;
 
     // Make sure we got the matching index.
-    BOOST_ASSERT(&m_handles[handleIndex] == &handleEntry);
+    assert(&m_handles[handleIndex] == &handleEntry);
 
     // Mark handle as free.
-    BOOST_ASSERT(handleEntry.flags & HandleFlags::Valid);
-    BOOST_ASSERT(!(handleEntry.flags & HandleFlags::Free));
+    assert(handleEntry.flags & HandleFlags::Valid);
+    assert(!(handleEntry.flags & HandleFlags::Free));
 
     handleEntry.flags = HandleFlags::Free;
 
@@ -343,7 +343,7 @@ void EntitySystem::FreeHandle(int handleIndex, HandleEntry& handleEntry)
     }
     else
     {
-        BOOST_ASSERT(m_handles[m_freeListEnqueue].nextFree == InvalidNextFree);
+        assert(m_handles[m_freeListEnqueue].nextFree == InvalidNextFree);
 
         // If there are already other elements in the queue,
         // add the element to the end of the queue chain.

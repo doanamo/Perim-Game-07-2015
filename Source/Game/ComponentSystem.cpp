@@ -82,8 +82,8 @@ void ComponentSystem::ConnectSignal(EntitySystem::EntityDestroyedSignal& signal)
 
 bool ComponentSystem::OnEntityFinalize(const Events::EntityFinalize& event)
 {
-    BOOST_ASSERT(m_initialized);
-    BOOST_ASSERT(m_context != nullptr);
+    assert(m_initialized);
+    assert(m_context != nullptr);
 
     // Finalize entity components from every pool.
     for(auto& pair : m_pools)
@@ -99,7 +99,7 @@ bool ComponentSystem::OnEntityFinalize(const Events::EntityFinalize& event)
 
 void ComponentSystem::OnEntityDestroyed(const Events::EntityDestroyed& event)
 {
-    BOOST_ASSERT(m_initialized);
+    assert(m_initialized);
 
     // Remove entity components from every pool.
     for(auto& pair : m_pools)

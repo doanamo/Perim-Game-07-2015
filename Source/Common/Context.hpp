@@ -104,7 +104,7 @@ public:
     // Gets a subcontext.
     Context& operator[](int index)
     {
-        BOOST_ASSERT(index >= 0);
+        assert(index >= 0);
 
         // Return self at zero index.
         if(index == 0)
@@ -125,7 +125,7 @@ public:
 
     const Context& operator[](int index) const
     {
-        BOOST_ASSERT(index >= 0);
+        assert(index >= 0);
 
         // Return self at zero index.
         if(index == 0)

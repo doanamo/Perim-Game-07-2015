@@ -40,7 +40,7 @@ namespace Game
     {
     public:
         // Check template type.
-        BOOST_STATIC_ASSERT_MSG(std::is_base_of<Component, Type>::value, "Not a component type.");
+        static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
 
         // Type declarations.
         typedef std::unordered_map<EntityHandle, Type> ComponentList;
@@ -118,7 +118,7 @@ namespace Game
             return nullptr;
 
         // Make sure handles match.
-        BOOST_ASSERT(result->first == handle);
+        assert(result->first == handle);
 
         // Return a pointer to the component.
         return &result->second;
@@ -259,7 +259,7 @@ namespace Game
         auto pair = ComponentPoolPair(typeid(Type), std::move(pool));
         auto result = m_pools.insert(std::move(pair));
 
-        BOOST_ASSERT(result.second == true);
+        assert(result.second == true);
     }
 
     template<typename Type>
@@ -326,7 +326,7 @@ namespace Game
             return ComponentPool<Type>::ComponentIterator();
 
         // Validate component type.
-        BOOST_STATIC_ASSERT_MSG(std::is_base_of<Component, Type>::value, "Not a component type.");
+        static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
 
         // Get the component pool.
         ComponentPool<Type>* pool = this->GetPool<Type>();
@@ -345,7 +345,7 @@ namespace Game
             return ComponentPool<Type>::ComponentIterator();
 
         // Validate component type.
-        BOOST_STATIC_ASSERT_MSG(std::is_base_of<Component, Type>::value, "Not a component type.");
+        static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
 
         // Get the component pool.
         ComponentPool<Type>* pool = this->GetPool<Type>();
@@ -364,7 +364,7 @@ namespace Game
             return nullptr;
 
         // Validate component type.
-        BOOST_STATIC_ASSERT_MSG(std::is_base_of<Component, Type>::value, "Not a component type.");
+        static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
 
         // Find pool by component type.
         auto it = m_pools.find(typeid(Type));

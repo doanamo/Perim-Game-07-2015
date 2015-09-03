@@ -144,10 +144,10 @@ void RenderSystem::Draw()
     {
         // Get the components.
         Components::Render* render = &it->second;
-        BOOST_ASSERT(render != nullptr);
+        assert(render != nullptr);
 
         Components::Transform* transform = render->GetTransform();
-        BOOST_ASSERT(transform != nullptr);
+        assert(transform != nullptr);
 
         // Add sprite to the list.
         Graphics::BasicRenderer::Sprite::Info info;

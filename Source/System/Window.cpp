@@ -21,7 +21,7 @@ namespace
     {
         // Get window instance.
         Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        BOOST_ASSERT(instance != nullptr);
+        assert(instance != nullptr);
 
         // Send an event.
         Window::Events::Move event;
@@ -35,7 +35,7 @@ namespace
     {
         // Get window instance.
         Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        BOOST_ASSERT(instance != nullptr);
+        assert(instance != nullptr);
 
         // Send an event.
         Window::Events::Resize event;
@@ -49,7 +49,7 @@ namespace
     {
         // Get window instance.
         Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        BOOST_ASSERT(instance != nullptr);
+        assert(instance != nullptr);
 
         // Send and event.
         Window::Events::Focus event;
@@ -62,7 +62,7 @@ namespace
     {
         // Get window instance.
         Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        BOOST_ASSERT(instance != nullptr);
+        assert(instance != nullptr);
 
         // Send and event.
         Window::Events::Close event;
@@ -74,7 +74,7 @@ namespace
     {
         // Get window instance.
         Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        BOOST_ASSERT(instance != nullptr);
+        assert(instance != nullptr);
 
         // Send an event.
         Window::Events::KeyboardKey event;
@@ -90,7 +90,7 @@ namespace
     {
         // Get window instance.
         Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        BOOST_ASSERT(instance != nullptr);
+        assert(instance != nullptr);
 
         // Send an event.
         Window::Events::TextInput event;
@@ -103,7 +103,7 @@ namespace
     {
         // Get window instance.
         Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        BOOST_ASSERT(instance != nullptr);
+        assert(instance != nullptr);
 
         // Send an event.
         Window::Events::MouseButton event;
@@ -118,7 +118,7 @@ namespace
     {
         // Get window instance.
         Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        BOOST_ASSERT(instance != nullptr);
+        assert(instance != nullptr);
 
         // Send an event.
         Window::Events::MouseScroll event;
@@ -131,7 +131,7 @@ namespace
     {
         // Get window instance.
         Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        BOOST_ASSERT(instance != nullptr);
+        assert(instance != nullptr);
 
         // Send an event.
         Window::Events::CursorPosition event;
@@ -145,7 +145,7 @@ namespace
     {
         // Get window instance.
         Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        BOOST_ASSERT(instance != nullptr);
+        assert(instance != nullptr);
 
         // Send an event.
         Window::Events::CursorEnter event;

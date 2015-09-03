@@ -43,7 +43,7 @@ bool InputState::Initialize(Window& window)
     // Connect event signals.
     m_keyboardKey = window.events.keyboardKey.connect([&](const Window::Events::KeyboardKey& event)
     {
-        BOOST_ASSERT(0 <= event.key && event.key < KeyboardKeyCount);
+        assert(0 <= event.key && event.key < KeyboardKeyCount);
 
         if(event.action == GLFW_PRESS)
         {
