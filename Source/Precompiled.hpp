@@ -17,7 +17,6 @@
 #include <unordered_map>
 
 #define BOOST_SCOPE_EXIT_CONFIG_USE_LAMBDAS
-#include <boost/serialization/strong_typedef.hpp>
 #include <boost/scope_exit.hpp>
 #include <boost/range.hpp>
 #include <boost/any.hpp>
