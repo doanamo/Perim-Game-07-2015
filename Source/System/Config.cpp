@@ -40,11 +40,11 @@ bool Config::Initialize()
     if(m_initialized)
         this->Cleanup();
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         if(!m_initialized)
             this->Cleanup();
-    };
+    );
 
     // Create Lua state.
     m_lua = luaL_newstate();
@@ -65,11 +65,11 @@ bool Config::Load(std::string filename)
     // Setup the cleanup scope guard.
     bool success = false;
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         if(!success)
             this->Cleanup();
-    };
+    );
 
     // Load the config file
     if(luaL_dofile(m_lua, (Build::GetWorkingDir() + filename).c_str()) != 0)

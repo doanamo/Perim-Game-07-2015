@@ -50,11 +50,11 @@ bool Buffer::Initialize(unsigned int elementSize, unsigned int elementCount, con
     if(m_initialized)
         this->Cleanup();
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         if(!m_initialized)
             this->Cleanup();
-    };
+    );
 
     // Validate arguments.
     if(elementSize == 0)

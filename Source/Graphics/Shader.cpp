@@ -84,11 +84,11 @@ bool Shader::Initialize(std::string shaderCode)
     if(m_initialized)
         this->Cleanup();
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         if(!m_initialized)
             this->Cleanup();
-    };
+    );
 
     // Validate arguments.
     if(shaderCode.empty())
@@ -100,13 +100,13 @@ bool Shader::Initialize(std::string shaderCode)
     // Create an array of shader objects for each type that can be linked.
     GLuint shaderObjects[ShaderTypeCount] = { 0 };
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         for(int i = 0; i < ShaderTypeCount; ++i)
         {
             glDeleteShader(shaderObjects[i]);
         }
-    };
+    );
 
     // Extract shader version.
     std::string shaderVersion;
@@ -198,14 +198,14 @@ bool Shader::Initialize(std::string shaderCode)
         return false;
     }
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         if(!m_initialized)
         {
             glDeleteProgram(m_handle);
             m_handle = InvalidHandle;
         }
-    };
+    );
 
     // Attach compiled shader objects.
     for(unsigned int i = 0; i < ShaderTypeCount; ++i)

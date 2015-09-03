@@ -51,11 +51,11 @@ bool RenderSystem::Initialize(Context& context)
     if(m_initialized)
         this->Cleanup();
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         if(!m_initialized)
             this->Cleanup();
-    };
+    );
 
     // Add instance to the context.
     if(context[ContextTypes::Game].Has<RenderSystem>())

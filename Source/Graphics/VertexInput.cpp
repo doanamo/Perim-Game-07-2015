@@ -125,11 +125,11 @@ bool VertexInput::Initialize(int attributeCount, const VertexAttribute* attribut
     if(m_initialized)
         this->Cleanup();
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         if(!m_initialized)
             this->Cleanup();
-    };
+    );
 
     // Validate arguments.
     if(attributeCount <= 0)
@@ -183,11 +183,11 @@ bool VertexInput::Initialize(int attributeCount, const VertexAttribute* attribut
     }
 
     // Cleanup state after we are done.
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
-    };
+    );
 
     // Bind the vertex array.
     glBindVertexArray(m_handle);

@@ -215,11 +215,11 @@ bool Window::Initialize(int width, int height)
     if(m_initialized)
         this->Cleanup();
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         if(!m_initialized)
             this->Cleanup();
-    };
+    );
 
     // Initialize GLFW library.
     if(!LibraryInitialized)

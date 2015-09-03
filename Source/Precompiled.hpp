@@ -17,7 +17,6 @@
 #include <unordered_map>
 
 #define BOOST_SCOPE_EXIT_CONFIG_USE_LAMBDAS
-#include <boost/scope_exit.hpp>
 #include <boost/any.hpp>
 #include <boost/variant.hpp>
 #include <boost/signals2.hpp>
@@ -38,6 +37,7 @@
 #include <lua.hpp>
 
 #include "Common/NonCopyable.hpp"
+#include "Common/ScopeGuard.hpp"
 #include "Common/Context.hpp"
 #include "Common/Debug.hpp"
 #include "Common/Build.hpp"

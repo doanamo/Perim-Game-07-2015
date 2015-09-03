@@ -69,11 +69,11 @@ bool BasicRenderer::Initialize(Context& context)
     if(m_initialized)
         this->Cleanup();
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         if(!m_initialized)
             this->Cleanup();
-    };
+    );
 
     // Add instance to the context.
     if(context[ContextTypes::Main].Has<BasicRenderer>())
@@ -180,44 +180,44 @@ void BasicRenderer::DrawSprites(const SpriteInfoList& spriteInfo, const SpriteDa
     // Bind the vertex input.
     glBindVertexArray(m_vertexInput.GetHandle());
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         glBindVertexArray(0);
-    };
+    );
 
     // Bind shader program.
     glUseProgram(m_shader->GetHandle());
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         glUseProgram(0);
-    };
+    );
 
     glUniformMatrix4fv(m_shader->GetUniform("viewTransform"), 1, GL_FALSE, glm::value_ptr(transform));
 
     // Current transparency state.
     bool currentTransparent = false;
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         if(currentTransparent)
         {
             glDisable(GL_BLEND);
             glDepthMask(GL_TRUE);
         }
-    };
+    );
 
     // Current texture state.
     const Texture* currentTexture = nullptr;
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         if(currentTexture != nullptr)
         {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
-    };
+    );
 
     glUniform1i(m_shader->GetUniform("textureDiffuse"), 0);
 

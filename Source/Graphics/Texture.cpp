@@ -100,10 +100,10 @@ bool Texture::Load(std::string filename)
         return false;
     }
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         png_destroy_read_struct(&png_read_ptr, &png_info_ptr, nullptr);
-    };
+    );
 
     // Declare file read function.
     auto png_read_function = [](png_structp png_ptr, png_bytep data, png_size_t length) -> void
@@ -116,11 +116,11 @@ bool Texture::Load(std::string filename)
     png_bytep* png_row_ptrs = nullptr;
     png_byte* png_data_ptr = nullptr;
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         delete [] png_row_ptrs;
         delete [] png_data_ptr;
-    };
+    );
 
     // Setup the error handling routine.
     // This is apparently a standard way to handle errors with libpng and some
@@ -261,11 +261,11 @@ bool Texture::Initialize(int width, int height, GLenum format, const void* data)
     if(m_initialized)
         this->Cleanup();
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         if(!m_initialized)
             this->Cleanup();
-    };
+    );
 
     // Validate arguments.
     if(width <= 0)

@@ -34,11 +34,11 @@ bool InputState::Initialize(Window& window)
     if(m_initialized)
         this->Cleanup();
 
-    BOOST_SCOPE_EXIT(&)
-    {
+    SCOPE_GUARD
+    (
         if(!m_initialized)
             this->Cleanup();
-    };
+    );
 
     // Connect event signals.
     m_keyboardKey = window.events.keyboardKey.connect([&](const Window::Events::KeyboardKey& event)
