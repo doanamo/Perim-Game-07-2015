@@ -23,7 +23,7 @@ namespace Utility
     }
 
     // Splits a string into tokens.
-    std::vector<std::string> Split(std::string text, char character = ' ');
+    std::vector<std::string> SplitString(std::string text, char character = ' ');
 
     // Gets the extension of a file.
     std::string GetFileExtension(std::string filename);

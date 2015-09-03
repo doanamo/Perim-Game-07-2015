@@ -101,7 +101,7 @@ void Config::PushReference(std::string name)
     assert(m_initialized);
 
     // Parse name tokens.
-    auto tokens = Utility::Split(name, '.');
+    auto tokens = Utility::SplitString(name, '.');
 
     if(tokens.empty())
     {

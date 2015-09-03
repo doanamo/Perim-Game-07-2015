@@ -1,7 +1,7 @@
 #include "Precompiled.hpp"
 #include "Utility.hpp"
 
-std::vector<std::string> Utility::Split(std::string text, char character)
+std::vector<std::string> Utility::SplitString(std::string text, char character)
 {
     std::vector<std::string> result;
 
