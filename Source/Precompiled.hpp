@@ -17,7 +17,6 @@
 #include <unordered_map>
 
 #define BOOST_SCOPE_EXIT_CONFIG_USE_LAMBDAS
-#include <boost/any.hpp>
 #include <boost/variant.hpp>
 #include <boost/signals2.hpp>
 #include <boost/bimap.hpp>

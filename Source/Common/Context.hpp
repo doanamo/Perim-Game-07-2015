@@ -13,14 +13,15 @@ class Context
 {
 public:
     // Type declarations.
-    typedef std::vector<boost::any> InstanceList;
+    typedef std::pair<std::type_index, void*> InstancePtr;
+    typedef std::vector<InstancePtr> InstanceList;
     typedef std::vector<Context> ContextList;
 
     // Search function definition.
     template<typename Type>
-    static bool SearchInstance(const boost::any& instance)
+    static bool SearchInstance(const InstancePtr& instance)
     {
-        return instance.type() == typeid(Type*);
+        return instance.first == typeid(Type*);
     }
 
 public:
@@ -55,13 +56,13 @@ public:
         if(it != m_instances.end())
         {
             // Replace value at existing handle.
-            *it = instance;
+            it->second = instance;
             return false;
         }
         else
         {
             // Add a new instance handle.
-            m_instances.push_back(instance);
+            m_instances.emplace_back(typeid(Type*), instance);
             return true;
         }
     }
@@ -76,7 +77,7 @@ public:
         // Return instance reference.
         if(it != m_instances.end())
         {
-            return boost::any_cast<Type*>(*it);
+            return reinterpret_cast<Type*>(it->second);
         }
         else
         {
