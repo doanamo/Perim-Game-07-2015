@@ -19,6 +19,17 @@ namespace Game
         }
 
         // Comparison operators.
+        bool operator<(const EntityHandle& other) const
+        {
+            if(identifier < other.identifier)
+                return true;
+            
+            if(identifier == other.identifier)
+                return version < other.version;
+            
+            return false;
+        }
+
         bool operator==(const EntityHandle& other) const
         {
             return identifier == other.identifier && version == other.version;

@@ -19,11 +19,22 @@ namespace Game
     class IdentitySystem
     {
     private:
+        // Comparison functor.
+        template<typename Type>
+        struct CompareDerefernced
+        {
+            bool operator()(const Type* left, const Type* right)
+            {
+                return *left < *right;
+            }
+        };
+
         // Type definitions.
-        typedef boost::bimap<
-            boost::bimaps::unordered_set_of<std::string>,
-            boost::bimaps::unordered_set_of<EntityHandle>
-        > EntityNameList;
+        typedef std::pair<EntityHandle, std::string> EntityNamePair;
+        typedef std::deque<EntityNamePair> EntityNameStorage;
+
+        typedef std::map<const EntityHandle*, std::size_t, CompareDerefernced<EntityHandle>> EntityLookupList;
+        typedef std::map<const std::string*, std::size_t, CompareDerefernced<std::string>> NameLookupList;
 
     public:
         IdentitySystem();
@@ -45,12 +56,17 @@ namespace Game
         EntityHandle Lookup(std::string name) const;
 
     private:
+        // Removes an element by index.
+        void RemoveElement(std::size_t index);
+
         // Called when an entity gets destroyed.
         void OnEntityDestroyed(const Events::EntityDestroyed& event);
 
     private:
-        // List of named entities.
-        EntityNameList m_names;
+        // Registry of named entities.
+        EntityNameStorage m_storage;
+        EntityLookupList m_entities;
+        NameLookupList m_names;
 
         // Signal connections.
         boost::signals2::scoped_connection m_entityDestroyed;

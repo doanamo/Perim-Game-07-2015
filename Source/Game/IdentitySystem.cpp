@@ -25,7 +25,9 @@ IdentitySystem::~IdentitySystem()
 
 void IdentitySystem::Cleanup()
 {
-    // Clear the container.
+    // Clear named entities lists.
+    Utility::ClearContainer(m_storage);
+    Utility::ClearContainer(m_entities);
     Utility::ClearContainer(m_names);
 
     // Disconnect signals.
@@ -78,24 +80,34 @@ bool IdentitySystem::SetEntityName(const EntityHandle& entity, std::string name)
     if(!m_initialized)
         return false;
 
-    // Remove existing entity from the map (make it anonymous). 
-    auto it = m_names.right.find(entity);
+    // Find out if we already have this entity named.
+    auto it = m_entities.find(&entity);
 
-    if(it != m_names.right.end())
+    if(it != m_entities.end())
     {
-        // Check if it already has the same name.
-        if(it->second == name)
-            return true;
+        std::size_t index = it->second;
 
-        // Remove entity from the map.
-        m_names.right.erase(it);
+        // If name is not empty, rename entity.
+        // If name is empty, remove entity from registry.
+        if(!name.empty())
+        {
+            // Replace entity name.
+            m_storage[index].second = name;
+        }
+        else
+        {
+            // Remove named entity.
+            this->RemoveElement(index);
+        }
     }
-
-    // Insert entity with a new name.
-    if(!name.empty())
+    else
     {
-        auto result = m_names.left.insert(std::make_pair(name, entity));
-        return result.second;
+        // Create new element in the storage.
+        m_storage.emplace_back(entity, name);
+
+        // Create lookup references.
+        m_entities.emplace(&m_storage.back().first, m_storage.size() - 1);
+        m_names.emplace(&m_storage.back().second, m_storage.size() - 1);
     }
 
     return true;
@@ -106,17 +118,18 @@ std::string IdentitySystem::GetEntityName(const EntityHandle& entity) const
     if(!m_initialized)
         return InvalidName;
 
-    // Find entity name.
-    auto it = m_names.right.find(entity);
+    // Find the entity.
+    auto it = m_entities.find(&entity);
 
-    if(it != m_names.right.end())
+    if(it != m_entities.end())
     {
         // Return entity name.
-        return it->second;
+        std::size_t index = it->second;
+        return m_storage[index].second;
     }
     else
     {
-        // Entity doesn't have a name.
+        // Entity is annonymous.
         return InvalidName;
     }
 }
@@ -126,13 +139,14 @@ EntityHandle IdentitySystem::Lookup(std::string name) const
     if(!m_initialized)
         return EntityHandle();
 
-    // Find entity by name.
-    auto it = m_names.left.find(name);
+    // Find the name.
+    auto it = m_names.find(&name);
 
-    if(it != m_names.left.end())
+    if(it != m_names.end())
     {
-        // Return entity refered by this name.
-        return it->second;
+        // Return named entity.
+        std::size_t index = it->second;
+        return m_storage[index].first;
     }
     else
     {
@@ -141,11 +155,34 @@ EntityHandle IdentitySystem::Lookup(std::string name) const
     }
 }
 
+void IdentitySystem::RemoveElement(std::size_t index)
+{
+    assert(m_initialized);
+
+    // Move storage element to the end of the queue before erasing it to 
+    // avoid invalidating pointers/indices referencing the container.
+    m_entities[&m_storage.back().first] = index;
+    m_names[&m_storage.back().second] = index;
+
+    std::swap(m_storage[index], m_storage.back());
+
+    // Remove the element we moved that's at the back now.
+    m_entities.erase(&m_storage.back().first);
+    m_names.erase(&m_storage.back().second);
+
+    m_storage.pop_back();
+}
+
 void IdentitySystem::OnEntityDestroyed(const Events::EntityDestroyed& event)
 {
     assert(m_initialized);
 
-    // Remove entity from the name map.
-    auto result = m_names.right.erase(event.handle);
-    assert(result == 0 || result == 1);
+    // Remove entity if it was registered.
+    auto it = m_entities.find(&event.handle);
+    
+    if(it != m_entities.end())
+    {
+        std::size_t index = it->second;
+        this->RemoveElement(index);
+    }
 }

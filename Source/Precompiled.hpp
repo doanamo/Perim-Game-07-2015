@@ -17,8 +17,6 @@
 #include <unordered_map>
 
 #include <boost/signals2.hpp>
-#include <boost/bimap.hpp>
-#include <boost/bimap/unordered_set_of.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
