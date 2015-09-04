@@ -16,8 +16,6 @@
 #include <queue>
 #include <unordered_map>
 
-#define BOOST_SCOPE_EXIT_CONFIG_USE_LAMBDAS
-#include <boost/variant.hpp>
 #include <boost/signals2.hpp>
 #include <boost/bimap.hpp>
 #include <boost/bimap/unordered_set_of.hpp>
