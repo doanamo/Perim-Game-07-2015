@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Precompiled.hpp"
+#include "Lua/State.hpp"
 
 //
 // Config
@@ -45,7 +46,7 @@ namespace System
 
     private:
         // Lua state.
-        lua_State* m_lua;
+        Lua::State m_lua;
         
         // Initialization state.
         bool m_initialized;

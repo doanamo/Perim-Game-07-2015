@@ -10,7 +10,6 @@ namespace
 }
 
 Config::Config() :
-    m_lua(nullptr),
     m_initialized(false)
 {
 }
@@ -24,11 +23,7 @@ Config::~Config()
 void Config::Cleanup()
 {
     // Cleanup Lua state.
-    if(m_lua != nullptr)
-    {
-        lua_close(m_lua);
-        m_lua = nullptr;
-    }
+    m_lua.Cleanup();
 
     // Reset initialization state.
     m_initialized = false;
@@ -40,14 +35,12 @@ bool Config::Initialize()
     if(m_initialized)
         this->Cleanup();
 
-    SCOPE_GUARD
-    (
-        if(!m_initialized)
-            this->Cleanup();
-    );
+    SCOPE_GUARD_IF(!m_initialized,
+        this->Cleanup());
 
-    // Create Lua state.
-    m_lua = luaL_newstate();
+    // Initialize Lua state.
+    if(!m_lua.Initialize())
+        return false;
 
     // Success!
     return m_initialized = true;
@@ -65,17 +58,13 @@ bool Config::Load(std::string filename)
     // Setup the cleanup scope guard.
     bool success = false;
 
-    SCOPE_GUARD
-    (
-        if(!success)
-            this->Cleanup();
-    );
+    SCOPE_GUARD_IF(!success,
+        this->Cleanup());
 
     // Load the config file
-    if(luaL_dofile(m_lua, (Build::GetWorkingDir() + filename).c_str()) != 0)
+    if(!m_lua.Load(filename))
     {
-        Log() << LogLoadError(filename) << "Couldn't parse the file.";
-        Log() << "Lua Error: " << lua_tostring(m_lua, -1);
+        Log() << LogLoadError(filename) << "Couldn't load the file.";
         return false;
     }
 

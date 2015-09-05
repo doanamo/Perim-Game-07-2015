@@ -59,6 +59,9 @@ Set(SourceFiles
     "Logger/DebuggerOutput.hpp"
     "Logger/DebuggerOutput.cpp"
 
+    "Lua/State.hpp"
+    "Lua/State.cpp"
+
     "System/Config.hpp"
     "System/Config.cpp"
     "System/Timer.hpp"
