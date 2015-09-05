@@ -22,6 +22,12 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#ifdef WIN32
+    #define WIN32_LEAN_AND_MEAN
+    #define NOMINMAX
+    #include <windows.h>
+#endif
+
 #define GLEW_STATIC
 #include <gl/glew.h>
 #include <glfw/glfw3.h>
@@ -34,8 +40,8 @@
 #include "Common/NonCopyable.hpp"
 #include "Common/ScopeGuard.hpp"
 #include "Common/Context.hpp"
+#include "Common/Utility.hpp"
 #include "Common/Debug.hpp"
 #include "Common/Build.hpp"
-#include "Common/Logger.hpp"
-#include "Common/Utility.hpp"
+#include "Logger/Logger.hpp"
 #include "Main.hpp"
