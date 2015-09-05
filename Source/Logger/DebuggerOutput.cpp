@@ -13,7 +13,7 @@ DebuggerOutput::~DebuggerOutput()
 void DebuggerOutput::Write(const Logger::Message& message)
 {
     // Clear string stream.
-    m_stream.clear();
+    m_stream.str("");
 
     // Write message prefix.
     time_t timeData = time(nullptr);
