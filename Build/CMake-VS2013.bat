@@ -1,7 +1,7 @@
 @echo off
 
-rem Cleanup first.
-call CMake-Cleanup.bat
+rem Remove existing directory.
+rd /s /q "CMake-VS2013"
 
 rem Create an empty directory.
 mkdir "CMake-VS2013"
