@@ -48,6 +48,11 @@ public:
     {
     }
 
+    ScopeGuard(ScopeGuard<Type>&& other)
+    {
+        m_function = std::move(other.m_function);
+    }
+
     ~ScopeGuard()
     {
         m_function();

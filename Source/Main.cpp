@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
         // Draw the scene.
         renderSystem.Draw();
 
-        // Present backbuffer to the window.
+        // Present back buffer to the window.
         window.Present(verticalSync);
 
         // Tick the timer.

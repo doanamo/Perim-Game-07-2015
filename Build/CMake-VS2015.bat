@@ -1,14 +1,14 @@
 @echo off
 
 rem Remove existing directory.
-rd /s /q "CMake-VS2013"
+rd /s /q "CMake-VS2015"
 
 rem Create an empty directory.
-mkdir "CMake-VS2013"
-cd "CMake-VS2013"
+mkdir "CMake-VS2015"
+cd "CMake-VS2015"
 
 rem Generate solution files.
-cmake -G "Visual Studio 12" ./..
+cmake -G "Visual Studio 14" ./..
 
 rem Prevent console from closing.
 pause

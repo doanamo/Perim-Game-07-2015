@@ -23,7 +23,7 @@ namespace Game
         template<typename Type>
         struct CompareDerefernced
         {
-            bool operator()(const Type* left, const Type* right)
+            bool operator()(const Type* left, const Type* right) const
             {
                 return *left < *right;
             }
