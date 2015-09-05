@@ -93,9 +93,11 @@ namespace System
         if(!m_initialized)
             return;
 
+        assert("Not implemented!");
+
         /*
-        // Resolve reference.
-        LuaRef reference = this->Resolve(name);
+        // Push value reference.
+        this->PushReference(name);
 
         // Set new value.
         reference = value;
