@@ -7,6 +7,7 @@
 #include <memory>
 #include <chrono>
 #include <algorithm>
+#include <functional>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -14,9 +15,8 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <map>
 #include <unordered_map>
-
-#include <boost/signals2.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -39,6 +39,9 @@
 
 #include "Common/NonCopyable.hpp"
 #include "Common/ScopeGuard.hpp"
+#include "Common/Delegate.hpp"
+#include "Common/Dispatcher.hpp"
+#include "Common/Receiver.hpp"
 #include "Common/Context.hpp"
 #include "Common/Utility.hpp"
 #include "Common/Debug.hpp"

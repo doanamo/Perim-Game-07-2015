@@ -105,35 +105,9 @@ namespace Game
         };
 
     private:
-        // Signal combiner.
-        class FailureAbort
-        {
-        public:
-            typedef bool result_type;
-
-            template<typename Type>
-            result_type operator()(Type begin, Type end) const
-            {
-                // Abort when first listener return false.
-                for(auto it = begin; it != end; ++it)
-                {
-                    if(*it == false)
-                        return false;
-                }
-
-                return true;
-            }
-        };
-
         // Type declarations.
         typedef std::vector<HandleEntry>  HandleList;
         typedef std::queue<EntityCommand> CommandList;
-
-    public:
-        // Signal type declarations.
-        typedef boost::signals2::signal<bool(const Events::EntityFinalize&), FailureAbort> EntityFinalizeSignal;
-        typedef boost::signals2::signal<void(const Events::EntityCreated&)> EntityCreatedSignal;
-        typedef boost::signals2::signal<void(const Events::EntityDestroyed&)> EntityDestroyedSignal;
 
     public:
         EntitySystem();
@@ -171,13 +145,25 @@ namespace Game
         void FreeHandle(int handleIndex, HandleEntry& handleEntry);
 
     public:
-        // Event signals.
+        // Public event dispatchers.
+        struct EventDispatchers;
+
         struct Events
         {
-            EntityFinalizeSignal  entityFinalize;
-            EntityCreatedSignal   entityCreated;
-            EntityDestroyedSignal entityDestroyed;
+            Events(EventDispatchers& dispatchers);
+
+            DispatcherBase<bool(const Game::Events::EntityFinalize&)>& entityFinalize;
+            DispatcherBase<void(const Game::Events::EntityCreated&)>& entityCreated;
+            DispatcherBase<void(const Game::Events::EntityDestroyed&)>& entityDestroyed;
         } events;
+
+        // Private event dispatchers.
+        struct EventDispatchers
+        {
+            Dispatcher<bool(const Game::Events::EntityFinalize&), CollectWhileTrue<bool>> entityFinalize;
+            Dispatcher<void(const Game::Events::EntityCreated&)> entityCreated;
+            Dispatcher<void(const Game::Events::EntityDestroyed&)> entityDestroyed;
+        };
 
     private:
         // List of commands.
@@ -193,6 +179,9 @@ namespace Game
         int  m_freeListDequeue;
         int  m_freeListEnqueue;
         bool m_freeListIsEmpty;
+
+        // Event dispatchers.
+        EventDispatchers m_dispatchers;
 
         // Initialization state.
         bool m_initialized;

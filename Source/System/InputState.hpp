@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Precompiled.hpp"
+#include "Window.hpp"
 
 //
 // Input State
@@ -53,12 +54,19 @@ namespace System
         bool IsKeyUp(int key, bool repeat = true);
 
     private:
+        // Called when a keyboard key is pressed.
+        void OnKeyboardKey(const Window::Events::KeyboardKey& event);
+
+        // Called when the window changes focus.
+        void OnWindowFocus(const Window::Events::Focus& event);
+
+    private:
         // Table of keyboard key states.
         KeyboardKeyStates::Type m_keyboardState[KeyboardKeyCount];
 
-        // Signal connections.
-        boost::signals2::scoped_connection m_keyboardKey;
-        boost::signals2::scoped_connection m_windowFocus;
+        // Event receivers.
+        Receiver<void(const Window::Events::KeyboardKey&)> m_keyboardKey;
+        Receiver<void(const Window::Events::Focus&)>       m_windowFocus;
 
         // Initialization state.
         bool m_initialized;

@@ -68,8 +68,8 @@ namespace Game
         EntityLookupList m_entities;
         NameLookupList m_names;
 
-        // Signal connections.
-        boost::signals2::scoped_connection m_entityDestroyed;
+        // Event receivers.
+        Receiver<void(const Events::EntityDestroyed&)> m_entityDestroyed;
 
         // Initialization state.
         bool m_initialized;

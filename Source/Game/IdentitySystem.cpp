@@ -15,6 +15,8 @@ namespace
 IdentitySystem::IdentitySystem() :
     m_initialized(false)
 {
+    // Bind event receivers.
+    m_entityDestroyed.Bind<IdentitySystem, &IdentitySystem::OnEntityDestroyed>(this);
 }
 
 IdentitySystem::~IdentitySystem()
@@ -30,8 +32,8 @@ void IdentitySystem::Cleanup()
     Utility::ClearContainer(m_entities);
     Utility::ClearContainer(m_names);
 
-    // Disconnect signals.
-    m_entityDestroyed.disconnect();
+    // Unsubscribe receivers.
+    m_entityDestroyed.Unsubscribe();
 
     // Reset initialization state.
     m_initialized = false;
@@ -67,9 +69,8 @@ bool IdentitySystem::Initialize(Context& context)
         return false;
     }
 
-    // Connect to an event signal.
-    m_entityDestroyed = entitySystem->events.entityDestroyed.connect(
-        boost::bind(&IdentitySystem::OnEntityDestroyed, this, _1));
+    // Subscribe receivers.
+    entitySystem->events.entityDestroyed.Subscribe(m_entityDestroyed);
 
     // Success!
     return m_initialized = true;

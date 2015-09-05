@@ -19,62 +19,62 @@ namespace
 
     void MoveCallback(GLFWwindow* window, int x, int y)
     {
-        // Get window instance.
-        Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        assert(instance != nullptr);
+        // Get event dispatchers.
+        Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
+        assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::Move event;
         event.x = x;
         event.y = y;
 
-        instance->events.move(event);
+        dispatchers->move(event);
     }
 
     void ResizeCallback(GLFWwindow* window, int width, int height)
     {
-        // Get window instance.
-        Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        assert(instance != nullptr);
+        // Get event dispatchers.
+        Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
+        assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::Resize event;
         event.width = width;
         event.height = height;
 
-        instance->events.resize(event);
+        dispatchers->resize(event);
     }
 
     void FocusCallback(GLFWwindow* window, int focused)
     {
-        // Get window instance.
-        Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        assert(instance != nullptr);
+        // Get event dispatchers.
+        Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
+        assert(dispatchers != nullptr);
 
         // Send and event.
         Window::Events::Focus event;
         event.focused = focused > 0;
         
-        instance->events.focus(event);
+        dispatchers->focus(event);
     }
 
     void CloseCallback(GLFWwindow* window)
     {
-        // Get window instance.
-        Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        assert(instance != nullptr);
+        // Get event dispatchers.
+        Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
+        assert(dispatchers != nullptr);
 
         // Send and event.
         Window::Events::Close event;
         
-        instance->events.close(event);
+        dispatchers->close(event);
     }
 
     void KeyboardKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
-        // Get window instance.
-        Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        assert(instance != nullptr);
+        // Get event dispatchers.
+        Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
+        assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::KeyboardKey event;
@@ -83,27 +83,27 @@ namespace
         event.action = action;
         event.mods = mods;
 
-        instance->events.keyboardKey(event);
+        dispatchers->keyboardKey(event);
     }
 
     void TextInputCallback(GLFWwindow* window, unsigned int character)
     {
-        // Get window instance.
-        Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        assert(instance != nullptr);
+        // Get event dispatchers.
+        Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
+        assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::TextInput event;
         event.character = character;
 
-        instance->events.textInput(event);
+        dispatchers->textInput(event);
     }
 
     void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     {
-        // Get window instance.
-        Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        assert(instance != nullptr);
+        // Get event dispatchers.
+        Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
+        assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::MouseButton event;
@@ -111,56 +111,71 @@ namespace
         event.action = action;
         event.mods = mods;
 
-        instance->events.mouseButton(event);
+        dispatchers->mouseButton(event);
     }
 
     void MouseScrollCallback(GLFWwindow* window, double offsetx, double offsety)
     {
-        // Get window instance.
-        Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        assert(instance != nullptr);
+        // Get event dispatchers.
+        Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
+        assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::MouseScroll event;
         event.offset = offsety;
 
-        instance->events.mouseScroll(event);
+        dispatchers->mouseScroll(event);
     }
 
     void CursorPositionCallback(GLFWwindow* window, double x, double y)
     {
-        // Get window instance.
-        Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        assert(instance != nullptr);
+        // Get event dispatchers.
+        Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
+        assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::CursorPosition event;
         event.x = x;
         event.y = y;
 
-        instance->events.cursorPosition(event);
+        dispatchers->cursorPosition(event);
     }
 
     void CursorEnterCallback(GLFWwindow* window, int entered)
     {
-        // Get window instance.
-        Window* instance = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
-        assert(instance != nullptr);
+        // Get event dispatchers.
+        Window::EventDispatchers* dispatchers = reinterpret_cast<Window::EventDispatchers*>(glfwGetWindowUserPointer(window));
+        assert(dispatchers != nullptr);
 
         // Send an event.
         Window::Events::CursorEnter event;
         event.entered = entered != 0;
 
-        instance->events.cursorEnter(event);
+        dispatchers->cursorEnter(event);
     }
 }
 
 Window::Window() :
+    events(m_dispatchers),
     m_window(nullptr),
     m_initialized(false)
 {
     // Increase instance count.
     ++InstanceCount;
+}
+
+Window::Events::Events(Window::EventDispatchers& dispatchers) :
+    move(dispatchers.move), 
+    resize(dispatchers.resize),
+    focus(dispatchers.focus),
+    close(dispatchers.close),
+    keyboardKey(dispatchers.keyboardKey),
+    textInput(dispatchers.textInput),
+    mouseButton(dispatchers.mouseButton),
+    mouseScroll(dispatchers.mouseScroll),
+    cursorPosition(dispatchers.cursorPosition),
+    cursorEnter(dispatchers.cursorEnter)
+{
 }
 
 Window::~Window()
@@ -193,17 +208,17 @@ void Window::Cleanup()
         m_window = nullptr;
     }
 
-    // Reset event signals.
-    this->events.move.disconnect_all_slots();
-    this->events.resize.disconnect_all_slots();
-    this->events.focus.disconnect_all_slots();
-    this->events.close.disconnect_all_slots();
-    this->events.keyboardKey.disconnect_all_slots();
-    this->events.textInput.disconnect_all_slots();
-    this->events.mouseButton.disconnect_all_slots();
-    this->events.mouseScroll.disconnect_all_slots();
-    this->events.cursorPosition.disconnect_all_slots();
-    this->events.cursorEnter.disconnect_all_slots();
+    // Cleanup event dispatchers.
+    m_dispatchers.move.Cleanup();
+    m_dispatchers.resize.Cleanup();
+    m_dispatchers.focus.Cleanup();
+    m_dispatchers.close.Cleanup();
+    m_dispatchers.keyboardKey.Cleanup();
+    m_dispatchers.textInput.Cleanup();
+    m_dispatchers.mouseButton.Cleanup();
+    m_dispatchers.mouseScroll.Cleanup();
+    m_dispatchers.cursorPosition.Cleanup();
+    m_dispatchers.cursorEnter.Cleanup();
 
     // Reset initialization state.
     m_initialized = false;
@@ -250,7 +265,7 @@ bool Window::Initialize(int width, int height)
     }
 
     // Set window user data.
-    glfwSetWindowUserPointer(m_window, this);
+    glfwSetWindowUserPointer(m_window, &m_dispatchers);
 
     // Add event callbacks.
     glfwSetWindowPosCallback(m_window, MoveCallback);

@@ -16,11 +16,19 @@ namespace
 }
 
 EntitySystem::EntitySystem() :
+    events(m_dispatchers),
     m_entityCount(0),
     m_freeListDequeue(InvalidQueueElement),
     m_freeListEnqueue(InvalidQueueElement),
     m_freeListIsEmpty(true),
     m_initialized(false)
+{
+}
+
+EntitySystem::Events::Events(EventDispatchers& dispatchers) :
+    entityFinalize(dispatchers.entityFinalize),
+    entityCreated(dispatchers.entityCreated),
+    entityDestroyed(dispatchers.entityDestroyed)
 {
 }
 
@@ -36,10 +44,10 @@ void EntitySystem::Cleanup()
     this->DestroyAllEntities();
     this->ProcessCommands();
 
-    // Disconnect event signals.
-    this->events.entityFinalize.disconnect_all_slots();
-    this->events.entityCreated.disconnect_all_slots();
-    this->events.entityDestroyed.disconnect_all_slots();
+    // Cleanup event dispatchers.
+    m_dispatchers.entityFinalize.Cleanup();
+    m_dispatchers.entityCreated.Cleanup();
+    m_dispatchers.entityDestroyed.Cleanup();
 
     // Clear the command list.
     Utility::ClearContainer(m_commands);
@@ -89,9 +97,9 @@ bool EntitySystem::Initialize(Context& context)
         return false;
     }
 
-    // Connect component system to our signals.
-    componentSystem->ConnectSignal(this->events.entityFinalize);
-    componentSystem->ConnectSignal(this->events.entityDestroyed);
+    // Subscribe component system receivers to our dispatchers.
+    componentSystem->Subscribe(m_dispatchers.entityFinalize);
+    componentSystem->Subscribe(m_dispatchers.entityDestroyed);
 
     // Success!
     return m_initialized = true;
@@ -211,7 +219,7 @@ void EntitySystem::DestroyAllEntities()
         if(handleEntry.flags & HandleFlags::Valid)
         {
             // Send event about soon to be destroyed entity.
-            this->events.entityDestroyed(handleEntry.handle);
+            m_dispatchers.entityDestroyed(handleEntry.handle);
 
             // Set the handle free flags.
             handleEntry.flags = HandleFlags::Free;
@@ -262,7 +270,7 @@ void EntitySystem::ProcessCommands()
                 assert(command.handle == handleEntry.handle);
 
                 // Inform that we want this entity finalized.
-                if(!this->events.entityFinalize(handleEntry.handle))
+                if(!m_dispatchers.entityFinalize(handleEntry.handle))
                 {
                     // Destroy the entity.
                     this->DestroyEntity(handleEntry.handle);
@@ -278,7 +286,7 @@ void EntitySystem::ProcessCommands()
                 m_entityCount += 1;
 
                 // Send event about created entity.
-                this->events.entityCreated(handleEntry.handle);
+                m_dispatchers.entityCreated(handleEntry.handle);
             }
             break;
 
@@ -297,7 +305,7 @@ void EntitySystem::ProcessCommands()
                 }
 
                 // Send event about soon to be destroyed entity.
-                this->events.entityDestroyed(handleEntry.handle);
+                m_dispatchers.entityDestroyed(handleEntry.handle);
 
                 // Decrement the counter of active entities.
                 m_entityCount -= 1;

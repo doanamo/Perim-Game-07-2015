@@ -49,9 +49,14 @@ namespace System
         GLFWwindow* GetPrivate();
 
     public:
-        // Event signals.
+        // Public event dispatchers.
+        struct EventDispatchers;
+
         struct Events
         {
+            // Constructor.
+            Events(EventDispatchers& dispatchers);
+
             // Move signal.
             struct Move
             {
@@ -59,7 +64,7 @@ namespace System
                 int y;
             };
 
-            boost::signals2::signal<void(const Move&)> move;
+            DispatcherBase<void(const Move&)>& move;
 
             // Resize signal.
             struct Resize
@@ -68,7 +73,7 @@ namespace System
                 int height;
             };
 
-            boost::signals2::signal<void(const Resize&)> resize;
+            DispatcherBase<void(const Resize&)>& resize;
 
             // Focus signal.
             struct Focus
@@ -76,14 +81,14 @@ namespace System
                 bool focused;
             };
 
-            boost::signals2::signal<void(const Focus&)> focus;
+            DispatcherBase<void(const Focus&)>& focus;
 
             // Close signal.
             struct Close
             {
             };
 
-            boost::signals2::signal<void(const Close&)> close;
+            DispatcherBase<void(const Close&)>& close;
 
             // Keyboard key signal.
             struct KeyboardKey
@@ -94,7 +99,7 @@ namespace System
                 int mods;
             };
 
-            boost::signals2::signal<void(const KeyboardKey&)> keyboardKey;
+            DispatcherBase<void(const KeyboardKey&)>& keyboardKey;
 
             // Text input signal.
             struct TextInput
@@ -102,7 +107,7 @@ namespace System
                 unsigned int character;
             };
 
-            boost::signals2::signal<void(const TextInput&)> textInput;
+            DispatcherBase<void(const TextInput&)>& textInput;
 
             // Mouse button signal.
             struct MouseButton
@@ -112,7 +117,7 @@ namespace System
                 int mods;
             };
 
-            boost::signals2::signal<void(const MouseButton&)> mouseButton;
+            DispatcherBase<void(const MouseButton&)>& mouseButton;
 
             // Mouse scroll signal.
             struct MouseScroll
@@ -120,7 +125,7 @@ namespace System
                 double offset;
             };
 
-            boost::signals2::signal<void(const MouseScroll&)> mouseScroll;
+            DispatcherBase<void(const MouseScroll&)>& mouseScroll;
 
             // Cursor position signal.
             struct CursorPosition
@@ -129,7 +134,7 @@ namespace System
                 double y;
             };
 
-            boost::signals2::signal<void(const CursorPosition&)> cursorPosition;
+            DispatcherBase<void(const CursorPosition&)>& cursorPosition;
 
             // Cursor enter signal.
             struct CursorEnter
@@ -137,12 +142,30 @@ namespace System
                 bool entered;
             };
 
-            boost::signals2::signal<void(const CursorEnter&)> cursorEnter;
+            DispatcherBase<void(const CursorEnter&)>& cursorEnter;
         } events;
+
+        // Private event dispatchers.
+        struct EventDispatchers
+        {
+            Dispatcher<void(const Events::Move&)>           move;
+            Dispatcher<void(const Events::Resize&)>         resize;
+            Dispatcher<void(const Events::Focus&)>          focus;
+            Dispatcher<void(const Events::Close&)>          close;
+            Dispatcher<void(const Events::KeyboardKey&)>    keyboardKey;
+            Dispatcher<void(const Events::TextInput&)>      textInput;
+            Dispatcher<void(const Events::MouseButton&)>    mouseButton;
+            Dispatcher<void(const Events::MouseScroll&)>    mouseScroll;
+            Dispatcher<void(const Events::CursorPosition&)> cursorPosition;
+            Dispatcher<void(const Events::CursorEnter&)>    cursorEnter;
+        };
 
     private:
         // Window implementation.
         GLFWwindow* m_window;
+
+        // Event dispatchers.
+        EventDispatchers m_dispatchers;
 
         // Initialization state.
         bool m_initialized;

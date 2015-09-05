@@ -145,7 +145,7 @@ bool BasicRenderer::Initialize(Context& context)
     }
 
     // Make sure we have a valid sprite batch size.
-    BOOST_STATIC_ASSERT_MSG(SpriteBatchSize >= 1, "Invalid sprite batch size.");
+    static_assert(SpriteBatchSize >= 1, "Invalid sprite batch size.");
 
     // Success!
     return m_initialized = true;

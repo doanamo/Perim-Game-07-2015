@@ -213,9 +213,9 @@ namespace Game
         template<typename Type>
         ComponentPool<Type>* GetPool();
 
-        // Connects to a signal.
-        void ConnectSignal(EntitySystem::EntityFinalizeSignal& signal);
-        void ConnectSignal(EntitySystem::EntityDestroyedSignal& signal);
+        // Subscribe to dispatchers.
+        void Subscribe(DispatcherBase<bool(const Game::Events::EntityFinalize&)>& dispatcher);
+        void Subscribe(DispatcherBase<void(const Game::Events::EntityDestroyed&)>& dispatcher);
 
     private:
         // Called when an entity needs to be finalized.
@@ -228,9 +228,9 @@ namespace Game
         // Component pools.
         ComponentPoolList m_pools;
 
-        // Signal connections.
-        boost::signals2::scoped_connection m_entityFinalize;
-        boost::signals2::scoped_connection m_entityDestroyed;
+        // Event receivers.
+        Receiver<bool(const Game::Events::EntityFinalize&)> m_entityFinalize;
+        Receiver<void(const Game::Events::EntityDestroyed&)> m_entityDestroyed;
 
         // Context reference.
         Context* m_context;

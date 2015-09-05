@@ -12,6 +12,9 @@ ComponentSystem::ComponentSystem() :
     m_context(nullptr),
     m_initialized(false)
 {
+    // Bind event receivers.
+    m_entityFinalize.Bind<ComponentSystem, &ComponentSystem::OnEntityFinalize>(this);
+    m_entityDestroyed.Bind<ComponentSystem, &ComponentSystem::OnEntityDestroyed>(this);
 }
 
 ComponentSystem::~ComponentSystem()
@@ -25,9 +28,9 @@ void ComponentSystem::Cleanup()
     // Clear all component pools.
     Utility::ClearContainer(m_pools);
 
-    // Disconnect event signals.
-    m_entityFinalize.disconnect();
-    m_entityDestroyed.disconnect();
+    // Unsubscribe event signals.
+    m_entityFinalize.Unsubscribe();
+    m_entityDestroyed.Unsubscribe();
 
     // Reset context reference.
     m_context = nullptr;
@@ -64,20 +67,20 @@ bool ComponentSystem::Initialize(Context& context)
     return m_initialized = true;
 }
 
-void ComponentSystem::ConnectSignal(EntitySystem::EntityFinalizeSignal& signal)
+void ComponentSystem::Subscribe(DispatcherBase<bool(const Game::Events::EntityFinalize&)>& dispatcher)
 {
     if(!m_initialized)
         return;
 
-    m_entityFinalize = signal.connect(boost::bind(&ComponentSystem::OnEntityFinalize, this, _1));
+    dispatcher.Subscribe(m_entityFinalize);
 }
 
-void ComponentSystem::ConnectSignal(EntitySystem::EntityDestroyedSignal& signal)
+void ComponentSystem::Subscribe(DispatcherBase<void(const Game::Events::EntityDestroyed&)>& dispatcher)
 {
     if(!m_initialized)
         return;
 
-    m_entityDestroyed = signal.connect(boost::bind(&ComponentSystem::OnEntityDestroyed, this, _1));
+    dispatcher.Subscribe(m_entityDestroyed);
 }
 
 bool ComponentSystem::OnEntityFinalize(const Events::EntityFinalize& event)

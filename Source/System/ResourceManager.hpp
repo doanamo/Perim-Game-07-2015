@@ -31,7 +31,7 @@ namespace System
     {
     public:
         // Validate resource type.
-        BOOST_STATIC_ASSERT_MSG(std::is_base_of<Resource, Type>::value, "Not a resource type.");
+        static_assert(std::is_base_of<Resource, Type>::value, "Not a resource type.");
 
         // Type declarations.
         typedef std::shared_ptr<Type>                        ResourcePtr;
@@ -193,7 +193,7 @@ namespace System
             return;
 
         // Validate resource type.
-        BOOST_STATIC_ASSERT_MSG(std::is_base_of<Resource, Type>::value, "Not a resource type.");
+        static_assert(std::is_base_of<Resource, Type>::value, "Not a resource type.");
 
         // Check if resource type was already declared.
         auto it = m_pools.find(typeid(Type));
@@ -216,7 +216,7 @@ namespace System
             return nullptr;
 
         // Validate resource type.
-        BOOST_STATIC_ASSERT_MSG(std::is_base_of<Resource, Type>::value, "Not a resource type.");
+        static_assert(std::is_base_of<Resource, Type>::value, "Not a resource type.");
 
         // Get the resource pool.
         ResourcePool<Type>* pool = this->GetPool<Type>();
@@ -235,7 +235,7 @@ namespace System
             return nullptr;
 
         // Validate resource type.
-        BOOST_STATIC_ASSERT_MSG(std::is_base_of<Resource, Type>::value, "Not a resource type.");
+        static_assert(std::is_base_of<Resource, Type>::value, "Not a resource type.");
 
         // Find pool by resource type.
         auto it = m_pools.find(typeid(Type));

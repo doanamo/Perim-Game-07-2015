@@ -31,7 +31,7 @@ namespace Game
             template<class Type, typename... Arguments>
             Type* Add(Arguments&&... arguments)
             {
-                BOOST_STATIC_ASSERT_MSG(std::is_base_of<ScriptInterface, Type>::value, "Not a script type.");
+                static_assert(std::is_base_of<ScriptInterface, Type>::value, "Not a script type.");
                 m_scripts.emplace_back(new Type(std::forward<Arguments>(arguments)...));
                 return reinterpret_cast<Type*>(m_scripts.back().get());
             }
