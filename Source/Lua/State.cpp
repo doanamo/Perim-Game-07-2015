@@ -45,13 +45,18 @@ bool State::Initialize()
 
 bool State::Load(std::string filename)
 {
+    // Initialize if needed.
     if(!m_initialized)
-        return false;
+    {
+        if(!this->Initialize())
+            return false;
+    }
 
     // Parse the file.
     if(luaL_dofile(m_state, (Build::GetWorkingDir() + filename).c_str()) != 0)
     {
         Log() << "Lua Error: " << lua_tostring(m_state, -1);
+        lua_pop(m_state, 1);
         return false;
     }
 
