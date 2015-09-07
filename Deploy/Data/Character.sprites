@@ -1,0 +1,11 @@
+SpriteSheet =
+{
+    -- Sprite sheet texture.
+    Texture = "Data/Textures/Check.png",
+
+    -- Sprite sheet data.
+    Sprites =
+    {
+        ["default"] = { 0, 0, 128, 128 },
+    }
+}

@@ -16,6 +16,7 @@
 #include "Game/RenderSystem.hpp"
 
 #include "Graphics/Texture.hpp"
+#include "Graphics/SpriteSheet.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -98,6 +99,8 @@ int main(int argc, char* argv[])
 
     // Create entities.
     {
+        auto spriteSheet = resourceManager.Load<Graphics::SpriteSheet>("Data/Character.sprites");
+
         Game::EntityHandle entity = entitySystem.CreateEntity();
         identitySystem.SetEntityName(entity, "Player");
 
@@ -108,8 +111,9 @@ int main(int argc, char* argv[])
         script->Add<Game::Scripts::Player>();
 
         auto render = componentSystem.Create<Game::Components::Render>(entity);
-        render->SetDiffuseColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
-        render->SetTexture(resourceManager.Load<Graphics::Texture>("Data/Textures/Check.png"));
+        render->SetDiffuseColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        render->SetTexture(spriteSheet->GetTexture());
+        render->SetRectangle(spriteSheet->GetSprite("default"));
     }
 
     {
