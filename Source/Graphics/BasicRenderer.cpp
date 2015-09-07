@@ -93,10 +93,6 @@ bool BasicRenderer::Initialize(Context& context)
         return false;
     }
 
-    // Declare resource types.
-    resourceManager->Declare<Texture>();
-    resourceManager->Declare<Shader>();
-
     // Create a vertex buffer.
     const Vertex vertices[4] =
     {

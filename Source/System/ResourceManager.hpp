@@ -45,6 +45,9 @@ namespace System
         // Sets the default resource.
         void SetDefault(std::shared_ptr<const Type> resource);
 
+        // Gets the default resource.
+        std::shared_ptr<const Type> GetDefault() const;
+
         // Loads a resource.
         std::shared_ptr<const Type> Load(std::string filename);
 
@@ -67,7 +70,8 @@ namespace System
 
     template<typename Type>
     ResourcePool<Type>::ResourcePool(ResourceManager& resourceManager) :
-        m_resourceManager(resourceManager)
+        m_resourceManager(resourceManager),
+        m_default(std::make_shared<Type>(&m_resourceManager))
     {
     }
 
@@ -82,6 +86,12 @@ namespace System
     void ResourcePool<Type>::SetDefault(std::shared_ptr<const Type> resource)
     {
         m_default = resource;
+    }
+
+    template<typename Type>
+    std::shared_ptr<const Type>  ResourcePool<Type>::GetDefault() const
+    {
+        return m_default;
     }
 
     template<typename Type>
@@ -177,17 +187,26 @@ namespace System
         // Releases unused resources.
         void ReleaseUnused();
 
-        // Declares a resource type.
-        template<typename Type>
-        void Declare(std::shared_ptr<const Type> default = nullptr);
-
         // Loads a resource.
         template<typename Type>
         std::shared_ptr<const Type> Load(std::string filename);
 
+        // Sets the default resource.
+        template<typename Type>
+        void SetDefault(std::shared_ptr<const Type> default);
+
+        // Gets the default resource.
+        template<typename Type>
+        std::shared_ptr<const Type> GetDefault() const;
+
         // Gets a resource pool.
         template<typename Type>
         ResourcePool<Type>* GetPool();
+
+    private:
+        // Creates a resource pool.
+        template<typename Type>
+        ResourcePool<Type>* CreatePool();
 
     private:
         // Resource pools.
@@ -196,31 +215,6 @@ namespace System
         // Initialization state.
         bool m_initialized;
     };
-
-    template<typename Type>
-    void ResourceManager::Declare(std::shared_ptr<const Type> default)
-    {
-        if(!m_initialized)
-            return;
-
-        // Validate resource type.
-        static_assert(std::is_base_of<Resource, Type>::value, "Not a resource type.");
-
-        // Check if resource type was already declared.
-        auto it = m_pools.find(typeid(Type));
-        if(it != m_pools.end())
-            return;
-
-        // Create a resource pool.
-        auto pool = std::make_unique<ResourcePool<Type>>(*this);
-        pool->SetDefault(default);
-
-        // Add pool to the collection.
-        auto pair = ResourcePoolPair(typeid(Type), std::move(pool));
-        auto result = m_pools.insert(std::move(pair));
-
-        assert(result.second == true);
-    }
 
     template<typename Type>
     std::shared_ptr<const Type> ResourceManager::Load(std::string filename)
@@ -233,12 +227,63 @@ namespace System
 
         // Get the resource pool.
         ResourcePool<Type>* pool = this->GetPool<Type>();
-
-        if(pool == nullptr)
-            return nullptr;
+        assert(pool != nullptr);
 
         // Delegate to the resource pool.
         return pool->Load(filename);
+    }
+
+    template<typename Type>
+    void ResourceManager::SetDefault(std::shared_ptr<const Type> default)
+    {
+        if(!m_initialized)
+            return;
+
+        // Validate resource type.
+        static_assert(std::is_base_of<Resource, Type>::value, "Not a resource type.");
+
+        // Get the resource pool.
+        ResourcePool<Type>* pool = this->GetPool<Type>();
+        assert(pool != nullptr);
+
+        // Set the default resource.
+        pool->SetDefault(default);
+    }
+
+    template<typename Type>
+    std::shared_ptr<const Type> ResourceManager::GetDefault() const
+    {
+        if(!m_initialized)
+            return nullptr;
+
+        // Validate resource type.
+        static_assert(std::is_base_of<Resource, Type>::value, "Not a resource type.");
+
+        // Get the resource pool.
+        ResourcePool<Type>* pool = this->GetPool<Type>();
+        assert(pool != nullptr);
+
+        // Return the default resource.
+        return pool->GetDefault();
+    }
+
+    template<typename Type>
+    ResourcePool<Type>* ResourceManager::CreatePool()
+    {
+        assert(m_initialized);
+
+        // Validate resource type.
+        static_assert(std::is_base_of<Resource, Type>::value, "Not a resource type.");
+
+        // Create and add a pool to the collection.
+        auto pool = std::make_unique<ResourcePool<Type>>(*this);
+        auto pair = ResourcePoolPair(typeid(Type), std::move(pool));
+        auto result = m_pools.insert(std::move(pair));
+
+        assert(result.second == true);
+
+        // Return created pool.
+        return reinterpret_cast<ResourcePool<Type>*>(result.first->second.get());
     }
 
     template<typename Type>
@@ -254,7 +299,10 @@ namespace System
         auto it = m_pools.find(typeid(Type));
 
         if(it == m_pools.end())
-            return nullptr;
+        {
+            // Create a new resource pool.
+            return this->CreatePool<Type>();
+        }
 
         // Cast and return the pointer that we already know is a resource pool.
         return reinterpret_cast<ResourcePool<Type>*>(it->second.get());
