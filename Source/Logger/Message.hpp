@@ -34,6 +34,9 @@ namespace Logger
         // Gets message line.
         int GetLine() const;
 
+        // Checks if message is empty.
+        bool IsEmpty() const;
+
     private:
         // Message state.
         std::stringbuf m_text;
@@ -49,18 +52,18 @@ namespace Logger
 namespace Logger
 {
     // Forward declarations.
-    class Sink;
+    class SinkBase;
 
     // Scoped message class.
     class ScopedMessage : public Message
     {
     public:
-        ScopedMessage(Logger::Sink* sink);
+        ScopedMessage(Logger::SinkBase* sink);
         ScopedMessage(ScopedMessage&& other);
         ~ScopedMessage();
 
     private:
         // Message sink output.
-        Logger::Sink* m_sink;
+        Logger::SinkBase* m_sink;
     };
 }

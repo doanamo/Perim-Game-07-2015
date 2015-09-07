@@ -2,6 +2,7 @@
 
 #include "Precompiled.hpp"
 #include "Logger/Message.hpp"
+#include "Logger/Sink.hpp"
 
 //
 // Logger
@@ -15,8 +16,11 @@ namespace Logger
     // Initializes the logger.
     void Initialize();
 
+    // Writes to the global logger.
+    void Write(const Logger::Message& message);
+
     // Gets the global logger sink.
-    Sink* GetGlobal();
+    SinkBase* GetGlobal();
 }
 
 // Log macro.

@@ -12,8 +12,15 @@ namespace Logger
     class Output;
     class Message;
 
+    // Sink interface.
+    class SinkBase
+    {
+    public:
+        virtual void Write(const Logger::Message& message) = 0;
+    };
+
     // Sink class.
-    class Sink : private NonCopyable
+    class Sink : public SinkBase, private NonCopyable
     {
     public:
         // Type declarations.

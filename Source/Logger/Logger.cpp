@@ -31,7 +31,12 @@ void Logger::Initialize()
     sink.AddOutput(&debuggerOutput);
 }
 
-Logger::Sink* Logger::GetGlobal()
+void Logger::Write(const Logger::Message& message)
+{
+    sink.Write(message);
+}
+
+Logger::SinkBase* Logger::GetGlobal()
 {
     return &sink;
 }
