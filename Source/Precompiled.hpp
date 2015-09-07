@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <cctype>
 #include <typeinfo>
 #include <typeindex>
 #include <limits>

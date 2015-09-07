@@ -49,11 +49,16 @@ Message& Message::SetSource(const char* source)
         std::replace(m_source.begin(), m_source.end(), '\\', '/');
 
         // Remove base path to source directory.
-        std::size_t position = m_source.find(Build::GetSourceDir());
+        std::string sourceDir = Build::GetSourceDir();
 
-        if(position != std::string::npos)
+        auto it = std::search(m_source.begin(), m_source.end(), sourceDir.begin(), sourceDir.end(), [](char a, char b)
         {
-            m_source.erase(position, Build::GetSourceDir().size());
+            return std::toupper(a) == std::toupper(b);
+        });
+
+        if(it != m_source.end())
+        {
+            m_source.erase(it, it + sourceDir.size());
         }
     }
 
