@@ -28,14 +28,6 @@ namespace System
         {
         }
 
-        // Restores instance to it's original state.
-        virtual void Cleanup() = 0;
-
-        // Called after a resource has been released.
-        virtual void OnRelease(const std::string& filename)
-        {
-        }
-
         // Gets the resource manager.
         // Can return nullptr, which means resource
         // is not bound to any resource manager.

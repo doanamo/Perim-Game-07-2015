@@ -116,14 +116,16 @@ namespace System
 
         while(it != m_resources.end())
         {
-            auto& resource = it->second;
-
-            if(resource.unique())
+            if(it->second.unique())
             {
-                resource->Cleanup();
-                resource->OnRelease(it->first);
+                // Take out filename string to print it later.
+                std::string filename = std::move(it->first);
 
+                // Release the resource.
                 it = m_resources.erase(it);
+
+                // Print log message.
+                Log() << "Released a resource loaded from \"" << filename << "\" file.";
             }
             else
             {
@@ -136,15 +138,21 @@ namespace System
     void ResourcePool<Type>::ReleaseAll()
     {
         // Release all resources.
-        for(auto& pair : m_resources)
-        {
-            auto& resource = pair.second;
+        auto it = m_resources.begin();
 
-            resource->Cleanup();
-            resource->OnRelease(pair.first);
+        while(it != m_resources.end())
+        {
+            // Take out filename string to print it later.
+            std::string filename = std::move(it->first);
+
+            // Release the resource.
+            it = m_resources.erase(it);
+
+            // Print log message.
+            Log() << "Released a resource loaded from \"" << filename << "\" file.";
         }
 
-        m_resources.clear();
+        assert(m_resources.empty());
     }
 
     // Resource manager class.

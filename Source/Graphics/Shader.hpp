@@ -75,9 +75,6 @@ namespace Graphics
             return m_initialized;
         }
 
-    public:
-        void OnRelease(const std::string& filename) override;
-
     private:
         // Linked program handle.
         GLuint m_handle;

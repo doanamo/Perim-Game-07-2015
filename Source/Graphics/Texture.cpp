@@ -338,9 +338,3 @@ void Texture::Update(const void* data)
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
-
-void Texture::OnRelease(const std::string& filename)
-{
-    Log() << "Released \"" << filename << "\" texture.";
-}
-
