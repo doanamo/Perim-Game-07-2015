@@ -73,9 +73,6 @@ bool ScriptSystem::Initialize(Context& context)
         return false;
     }
 
-    // Declare required components.
-    m_componentSystem->Declare<Game::Components::Script>();
-
     // Success!
     return m_initialized = true;
 }

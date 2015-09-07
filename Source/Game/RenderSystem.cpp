@@ -93,10 +93,6 @@ bool RenderSystem::Initialize(Context& context)
         return false;
     }
 
-    // Declare required components.
-    m_componentSystem->Declare<Game::Components::Transform>();
-    m_componentSystem->Declare<Game::Components::Render>();
-
     // Set screen space target size.
     m_screenSpace.SetTargetSize(10.0f, 10.0f);
 

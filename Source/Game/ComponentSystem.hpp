@@ -185,10 +185,6 @@ namespace Game
         // Initializes the component system.
         bool Initialize(Context& context);
 
-        // Declares a component type.
-        template<typename Type>
-        void Declare();
-
         // Creates a component.
         template<typename Type>
         Type* Create(EntityHandle handle);
@@ -218,6 +214,11 @@ namespace Game
         void Subscribe(DispatcherBase<void(const Game::Events::EntityDestroyed&)>& dispatcher);
 
     private:
+        // Creates a component type.
+        template<typename Type>
+        ComponentPool<Type>* CreatePool();
+
+    private:
         // Called when an entity needs to be finalized.
         bool OnEntityFinalize(const Events::EntityFinalize& event);
 
@@ -240,29 +241,6 @@ namespace Game
     };
 
     template<typename Type>
-    void ComponentSystem::Declare()
-    {
-        if(!m_initialized)
-            return;
-
-        // Validate component type.
-        static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
-
-        // Check if component type was already declared.
-        auto it = m_pools.find(typeid(Type));
-
-        if(it != m_pools.end())
-            return;
-
-        // Create and add pool to the collection.
-        auto pool = std::make_unique<ComponentPool<Type>>();
-        auto pair = ComponentPoolPair(typeid(Type), std::move(pool));
-        auto result = m_pools.insert(std::move(pair));
-
-        assert(result.second == true);
-    }
-
-    template<typename Type>
     Type* ComponentSystem::Create(EntityHandle handle)
     {
         if(!m_initialized)
@@ -273,9 +251,7 @@ namespace Game
 
         // Get the component pool.
         ComponentPool<Type>* pool = this->GetPool<Type>();
-
-        if(pool == nullptr)
-            return nullptr;
+        assert(pool != nullptr);
 
         // Create and return the component.
         return pool->Create(handle);
@@ -292,9 +268,7 @@ namespace Game
 
         // Get the component pool.
         ComponentPool<Type>* pool = this->GetPool<Type>();
-
-        if(pool == nullptr)
-            return nullptr;
+        assert(pool != nullptr);
 
         // Lookup and return the component.
         return pool->Lookup(handle);
@@ -311,9 +285,7 @@ namespace Game
 
         // Get the component pool.
         ComponentPool<Type>* pool = this->GetPool<Type>();
-
-        if(pool == nullptr)
-            return false;
+        assert(pool != nullptr);
 
         // Remove a component.
         return pool->Remove(handle);
@@ -330,9 +302,7 @@ namespace Game
 
         // Get the component pool.
         ComponentPool<Type>* pool = this->GetPool<Type>();
-
-        if(pool == nullptr)
-            return ComponentPool<Type>::ComponentIterator();
+        assert(pool != nullptr);
 
         // Return the iterator.
         return pool->Begin();
@@ -349,12 +319,29 @@ namespace Game
 
         // Get the component pool.
         ComponentPool<Type>* pool = this->GetPool<Type>();
-
-        if(pool == nullptr)
-            return ComponentPool<Type>::ComponentIterator();
+        assert(pool != nullptr);
 
         // Return the iterator.
         return pool->End();
+    }
+
+    template<typename Type>
+    ComponentPool<Type>* ComponentSystem::CreatePool()
+    {
+        assert(m_initialized);
+
+        // Validate component type.
+        static_assert(std::is_base_of<Component, Type>::value, "Not a component type.");
+
+        // Create and add pool to the collection.
+        auto pool = std::make_unique<ComponentPool<Type>>();
+        auto pair = ComponentPoolPair(typeid(Type), std::move(pool));
+        auto result = m_pools.insert(std::move(pair));
+
+        assert(result.second == true);
+
+        // Return created pool.
+        return reinterpret_cast<ComponentPool<Type>*>(result.first->second.get());
     }
 
     template<typename Type>
@@ -370,7 +357,9 @@ namespace Game
         auto it = m_pools.find(typeid(Type));
 
         if(it == m_pools.end())
-            return nullptr;
+        {
+            return this->CreatePool<Type>();
+        }
 
         // Cast and return the pointer that we already know is a component pool.
         return reinterpret_cast<ComponentPool<Type>*>(it->second.get());
