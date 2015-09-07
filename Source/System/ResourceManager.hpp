@@ -39,7 +39,7 @@ namespace System
         typedef typename ResourceList::value_type            ResourceListPair;
         
     public:
-        ResourcePool(std::shared_ptr<const Type> default = nullptr);
+        ResourcePool(ResourceManager& resourceManager);
         ~ResourcePool();
 
         // Sets the default resource.
@@ -55,6 +55,9 @@ namespace System
         void ReleaseAll();
 
     private:
+        // Resource manager reference.
+        ResourceManager& m_resourceManager;
+
         // List of resources.
         ResourceList m_resources;
 
@@ -63,8 +66,8 @@ namespace System
     };
 
     template<typename Type>
-    ResourcePool<Type>::ResourcePool(std::shared_ptr<const Type> default) :
-        m_default(default)
+    ResourcePool<Type>::ResourcePool(ResourceManager& resourceManager) :
+        m_resourceManager(resourceManager)
     {
     }
 
@@ -90,8 +93,8 @@ namespace System
         if(it != m_resources.end())
             return it->second;
 
-        // Load a new resource.
-        std::shared_ptr<Type> resource = std::make_shared<Type>();
+        // Create and load the new resource instance.
+        std::shared_ptr<Type> resource = std::make_shared<Type>(&m_resourceManager);
 
         if(!resource->Load(filename))
             return m_default;
@@ -197,12 +200,14 @@ namespace System
 
         // Check if resource type was already declared.
         auto it = m_pools.find(typeid(Type));
-
         if(it != m_pools.end())
             return;
 
-        // Create and add pool to the collection.
-        auto pool = std::make_unique<ResourcePool<Type>>(default);
+        // Create a resource pool.
+        auto pool = std::make_unique<ResourcePool<Type>>(*this);
+        pool->SetDefault(default);
+
+        // Add pool to the collection.
         auto pair = ResourcePoolPair(typeid(Type), std::move(pool));
         auto result = m_pools.insert(std::move(pair));
 

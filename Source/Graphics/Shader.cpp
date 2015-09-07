@@ -29,7 +29,8 @@ namespace
     };
 }
 
-Shader::Shader() :
+Shader::Shader(System::ResourceManager* resourceManager) :
+    Resource(resourceManager),
     m_handle(InvalidHandle),
     m_initialized(false)
 {

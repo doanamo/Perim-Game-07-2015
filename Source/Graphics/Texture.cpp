@@ -13,7 +13,8 @@ namespace
     const GLenum InvalidEnum = 0;
 }
 
-Texture::Texture() :
+Texture::Texture(System::ResourceManager* resourceManager) :
+    Resource(resourceManager),
     m_handle(InvalidHandle),
     m_width(0),
     m_height(0),

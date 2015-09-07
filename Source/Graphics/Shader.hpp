@@ -45,7 +45,7 @@ namespace Graphics
     class Shader : public System::Resource
     {
     public:
-        Shader();
+        Shader(System::ResourceManager* resourceManager = nullptr);
         ~Shader();
 
         // Restores instance to it's original state.

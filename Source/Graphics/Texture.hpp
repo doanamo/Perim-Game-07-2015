@@ -13,7 +13,7 @@ namespace Graphics
     class Texture : public System::Resource
     {
     public:
-        Texture();
+        Texture(System::ResourceManager* resourceManager = nullptr);
         ~Texture();
 
         // Restores instance to it's original state.
