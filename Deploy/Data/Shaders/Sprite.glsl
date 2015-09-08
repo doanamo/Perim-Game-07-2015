@@ -19,7 +19,8 @@
         vec2 texture = vertexTexture;
     
         // Scale vertex position by sprite size.
-        position.xy *= instanceRectangle.zw;
+        // Size can be negative for mirrored sprites.
+        position.xy *= abs(instanceRectangle.zw);
         
         // Apply transformation.
         position = instanceTransform * position;
