@@ -27,6 +27,9 @@ namespace Lua
         // Conversion operator.
         operator lua_State*();
 
+        // Prints stack trace for debugging.
+        void PrintStack() const;
+
     private:
         // Lua state.
         lua_State* m_state;

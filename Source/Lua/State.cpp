@@ -67,3 +67,44 @@ State::operator lua_State*()
 {
     return m_state;
 }
+
+void State::PrintStack() const
+{
+    if(!m_initialized)
+        return;
+
+    Log() << "Lua stack:";
+
+    // Get the index of the top.
+    int top = lua_gettop(m_state);
+
+    if(top == 0)
+    {
+        Log() << "  0: Empty";
+    }
+
+    // Print every stack element.
+    for(int i = 1; i <= top; ++i)
+    {
+        int type = lua_type(m_state, i);
+
+        switch(type)
+        {
+        case LUA_TSTRING:
+            Log() << "  " << i << ": \"" << lua_tostring(m_state, i) << "\" (" << lua_typename(m_state, type) << ")";
+            break;
+
+        case LUA_TBOOLEAN:
+            Log() << "  " << i << ": " << (lua_toboolean(m_state, i) ? "true" : "false") << " (" << lua_typename(m_state, type) << ")";
+            break;
+
+        case LUA_TNUMBER:
+            Log() << "  " << i << ": " << lua_tonumber(m_state, i) << " (" << lua_typename(m_state, type) << ")";
+            break;
+
+        default:
+            Log() << "  " << i << ": n/a (" << lua_typename(m_state, type) << ")";
+            break;
+        }
+    }
+}
