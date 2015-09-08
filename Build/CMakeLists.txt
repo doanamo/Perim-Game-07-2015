@@ -88,6 +88,8 @@ Set(SourceFiles
     "Graphics/BasicRenderer.cpp"
     "Graphics/SpriteSheet.hpp"
     "Graphics/SpriteSheet.cpp"
+    "Graphics/AnimationList.hpp"
+    "Graphics/AnimationList.cpp"
 
     "Game/EntityHandle.hpp"
     "Game/EntitySystem.hpp"
