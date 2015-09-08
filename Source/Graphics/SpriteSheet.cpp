@@ -96,7 +96,7 @@ bool SpriteSheet::Load(std::string filename)
     // Iterate over the sprite table.
     for(lua_pushnil(lua); lua_next(lua, -2); lua_pop(lua, 1))
     {
-        // Check if a key is a string.
+        // Check if the key is a string.
         if(!lua_isstring(lua, -2))
         {
             Log() << LogLoadError(filename) << "One of \"SpriteSheet.Sprites\" keys is not a string.";
@@ -117,7 +117,11 @@ bool SpriteSheet::Load(std::string filename)
         }
 
         // Add sprite.
-        this->AddSprite(lua_tostring(lua, -2), rectangle);
+        if(!this->AddSprite(lua_tostring(lua, -2), rectangle))
+        {
+            Log() << LogLoadError(filename) << "Couldn't add a sprite.";
+            return false;
+        }
     }
 
     lua_pop(lua, 1);
@@ -148,7 +152,7 @@ bool SpriteSheet::AddSprite(std::string name, const glm::vec4& rectangle)
 
     if(!result.second)
     {
-        Log() << "Sprite with \"" << name << "\" already exists within this sprite sheet!";
+        Log() << "Sprite with \"" << name << "\" name already exists within this sprite sheet!";
         return false;
     }
 
