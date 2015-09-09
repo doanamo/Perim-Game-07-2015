@@ -131,7 +131,7 @@ namespace Game
             return true;
 
         // Find the component.
-        Type* component = this->Lookup(handle);
+        Component* component = this->Lookup(handle);
 
         // Call the finalizing function.
         if(component != nullptr)

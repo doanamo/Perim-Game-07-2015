@@ -32,9 +32,6 @@ namespace Game
             Render();
             ~Render();
 
-            // Finalizes the render component.
-            bool Finalize(EntityHandle self, const Context& context) override;
-
             // Calculates the final color.
             glm::vec4 CalculateColor() const;
 
@@ -77,6 +74,10 @@ namespace Game
 
             // Checks if is transparent.
             bool IsTransparent() const;
+
+        protected:
+            // Finalizes the render component.
+            bool Finalize(EntityHandle self, const Context& context) override;
 
         private:
             // Texture resource.

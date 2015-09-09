@@ -36,11 +36,12 @@ namespace Game
                 return reinterpret_cast<Type*>(m_scripts.back().get());
             }
 
-            // Finalizes scripts.
-            bool Finalize(EntityHandle self, const Context& context) override;
-
             // Updates scripts.
             void Update(EntityHandle self, float timeDelta);
+
+        protected:
+            // Finalizes scripts.
+            bool Finalize(EntityHandle self, const Context& context) override;
 
         private:
             // List of scripts.
