@@ -96,10 +96,11 @@ bool BasicRenderer::Initialize(Context& context)
     // Create a vertex buffer.
     const Vertex vertices[4] =
     {
-        { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f) },
-        { glm::vec2(1.0f, 0.0f), glm::vec2(1.0f, 0.0f) },
-        { glm::vec2(0.0f, 1.0f), glm::vec2(0.0f, 1.0f) },
-        { glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 1.0f) },
+        // Sprite quad with flipped along y axis texture coordinates.
+        { glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 1.0f) }, // Bottom-Left
+        { glm::vec2(1.0f, 0.0f), glm::vec2(1.0f, 1.0f) }, // Bottom-Right
+        { glm::vec2(0.0f, 1.0f), glm::vec2(0.0f, 0.0f) }, // Top-Left
+        { glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 0.0f) }, // Top-Right
     };
 
     if(!m_vertexBuffer.Initialize(sizeof(Vertex), Utility::ArraySize(vertices), &vertices[0], GL_STATIC_DRAW))

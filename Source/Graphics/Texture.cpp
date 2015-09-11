@@ -205,12 +205,11 @@ bool Texture::Load(std::string filename)
     png_data_ptr = new png_byte[width * height * channels];
 
     // Setup an array of row pointers to the actual data buffer.
-    // For the purpose of OpenGL we flip image rows.
     png_uint_32 png_stride = width * channels;
 
     for(png_uint_32 i = 0; i < height; ++i)
     {
-        png_uint_32 png_offset = (height - i - 1) * png_stride;
+        png_uint_32 png_offset = i * png_stride;
         png_row_ptrs[i] = png_data_ptr + png_offset;
     }
 

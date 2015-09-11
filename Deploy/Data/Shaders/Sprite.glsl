@@ -17,19 +17,22 @@
     {
         vec4 position = vec4(vertexPosition, 0.0f, 1.0f);
         vec2 texture = vertexTexture;
-    
+
         // Scale vertex position by sprite size.
         // Size can be negative for mirrored sprites.
         position.xy *= abs(instanceRectangle.zw);
-        
+
         // Apply transformation.
         position = instanceTransform * position;
         position = viewTransform * position;
-        
+
         // Normalize texture coordinate.
         texture *= instanceRectangle.zw * textureSizeInv;
         texture += instanceRectangle.xy * textureSizeInv;
-     
+
+        // Move texture origin from top left corner to bottom left.
+        texture.y -= instanceRectangle.w * textureSizeInv.y;
+
         // Output vertex.
         gl_Position     = position;
         fragmentTexture = texture;
