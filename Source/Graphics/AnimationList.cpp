@@ -152,20 +152,17 @@ bool AnimationList::Load(std::string filename)
             // Read frame offset.
             lua_getfield(lua, -1, "Offset");
 
-            if(!lua_istable(lua, -1))
+            if(lua_istable(lua, -1))
             {
-                Log() << LogLoadError(filename) << "Field \"Animation.Offset\" is missing or invalid.";
-                return false;
-            }
+                for(int i = 0; i < 2; ++i)
+                {
+                    lua_pushinteger(lua, i + 1);
+                    lua_gettable(lua, -2);
 
-            for(int i = 0; i < 2; ++i)
-            {
-                lua_pushinteger(lua, i + 1);
-                lua_gettable(lua, -2);
+                    frame.offset[i] = (float)lua_tonumber(lua, -1);
 
-                frame.offset[i] = (float)lua_tonumber(lua, -1);
-
-                lua_pop(lua, 1);
+                    lua_pop(lua, 1);
+                }
             }
 
             lua_pop(lua, 1);
