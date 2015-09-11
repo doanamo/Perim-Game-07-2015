@@ -241,9 +241,12 @@ void BasicRenderer::DrawSprites(const SpriteInfoList& spriteInfo, const SpriteDa
             if(spriteNext >= spriteCount)
                 break;
 
-            // Check if the next sprite is similar.
-            if(info == spriteInfo[spriteNext])
-                ++spritesBatched;
+            // Check if the next sprite can be batched.
+            if(info != spriteInfo[spriteNext])
+                break;
+
+            // Add sprite to batch.
+            ++spritesBatched;
         }
 
         // Update the instance buffer with sprite data.
