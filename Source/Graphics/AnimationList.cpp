@@ -9,9 +9,6 @@ namespace
 {
     // Log messages.
     #define LogLoadError(filename) "Failed to load an animation list from \"" << filename << "\" file! "
-
-    // Invalid animation entry.
-    const AnimationList::Animation InvalidAnimation;
 }
 
 AnimationList::Frame::Frame() :
@@ -221,6 +218,9 @@ bool AnimationList::AddAnimation(std::string name, const std::vector<Frame>& fra
     if(name.empty())
         return false;
 
+    if(frames.empty())
+        return false;
+
     // Add an animation entry.
     auto result = m_animations.emplace(
         std::piecewise_construct,
@@ -246,16 +246,16 @@ bool AnimationList::AddAnimation(std::string name, const std::vector<Frame>& fra
     return true;
 }
 
-const AnimationList::Animation& AnimationList::GetAnimation(std::string name) const
+const AnimationList::Animation* AnimationList::GetAnimation(std::string name) const
 {
     if(name.empty())
-        return InvalidAnimation;
+        return nullptr;
 
     // Find animation by name,
     auto it = m_animations.find(name);
 
     if(it == m_animations.end())
-        return InvalidAnimation;
+        return nullptr;
 
-    return it->second;
+    return &it->second;
 }

@@ -62,7 +62,7 @@ namespace Graphics
         bool AddAnimation(std::string name, const std::vector<Frame>& frames);
 
         // Gets an animation.
-        const Animation& GetAnimation(std::string name) const;
+        const Animation* GetAnimation(std::string name) const;
 
     private:
         // Sprite sheet texture.
