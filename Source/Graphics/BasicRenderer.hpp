@@ -3,6 +3,7 @@
 #include "Precompiled.hpp"
 #include "Buffer.hpp"
 #include "VertexInput.hpp"
+#include "Sampler.hpp"
 #include "Shader.hpp"
 
 //
@@ -42,6 +43,7 @@ namespace Graphics
 
                 const Texture* texture;
                 bool transparent;
+                bool filter;
             } info;
             
             struct Data
@@ -55,6 +57,7 @@ namespace Graphics
         };
 
         // Type declarations.
+        typedef std::shared_ptr<const Shader> ShaderPtr;
         typedef std::vector<Sprite::Info> SpriteInfoList;
         typedef std::vector<Sprite::Data> SpriteDataList;
 
@@ -91,9 +94,10 @@ namespace Graphics
         VertexBuffer   m_vertexBuffer;
         InstanceBuffer m_instanceBuffer;
         VertexInput    m_vertexInput;
-
-        std::shared_ptr<const Shader> m_shader;
-
+        Sampler        m_nearestSampler;
+        Sampler        m_linearSampler;
+        ShaderPtr      m_shader;
+        
         // Initialization state.
         bool m_initialized;
     };

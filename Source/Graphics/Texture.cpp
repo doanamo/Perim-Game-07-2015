@@ -296,13 +296,6 @@ bool Texture::Initialize(int width, int height, GLenum format, const void* data)
     // Bind the texture.
     glBindTexture(GL_TEXTURE_2D, m_handle);
 
-    // Set default sampling parameters.
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
- 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
     // Set packing aligment for provided data.
     /*
     if(format == GL_R || format == GL_RED)

@@ -149,6 +149,7 @@ void RenderSystem::Draw()
         Graphics::BasicRenderer::Sprite::Info info;
         info.texture = render->GetTexture().get();
         info.transparent = render->IsTransparent();
+        info.filter = false;
 
         Graphics::BasicRenderer::Sprite::Data data;
         data.transform = glm::scale(transform->CalculateMatrix(), renderScale);

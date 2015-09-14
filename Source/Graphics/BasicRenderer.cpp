@@ -19,18 +19,19 @@ namespace
 
 BasicRenderer::Sprite::Info::Info() :
     texture(nullptr),
-    transparent(false)
+    transparent(false),
+    filter(true)
 {
 }
 
 bool BasicRenderer::Sprite::Info::operator==(const Info& right) const
 {
-    return this->texture == right.texture && this->transparent == right.transparent;
+    return this->texture == right.texture && this->transparent == right.transparent && this->filter == right.filter;
 }
 
 bool BasicRenderer::Sprite::Info::operator!=(const Info& right) const
 {
-    return this->texture != right.texture || this->transparent != right.transparent;
+    return !(*this == right);
 }
 
 BasicRenderer::Sprite::Data::Data() :
@@ -56,6 +57,8 @@ void BasicRenderer::Cleanup()
     m_vertexBuffer.Cleanup();
     m_instanceBuffer.Cleanup();
     m_vertexInput.Cleanup();
+    m_nearestSampler.Cleanup();
+    m_linearSampler.Cleanup();
 
     m_shader = nullptr;
 
@@ -131,6 +134,18 @@ bool BasicRenderer::Initialize(Context& context)
         Log() << LogInitializeError() << "Couldn't create a vertex input.";
         return false;
     }
+
+    // Create samplers.
+    if(!m_nearestSampler.Initialize() || !m_linearSampler.Initialize())
+    {
+        Log() << LogInitializeError() << "Couldn't create samplers.";
+    }
+
+    m_nearestSampler.SetParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    m_nearestSampler.SetParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    m_linearSampler.SetParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    m_linearSampler.SetParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Load the shader.
     m_shader = resourceManager->Load<Shader>("Data/Shaders/Sprite.glsl");
@@ -293,6 +308,15 @@ void BasicRenderer::DrawSprites(const SpriteInfoList& spriteInfo, const SpriteDa
                 // Enable texture unit.
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, info.texture->GetHandle());
+                
+                if(info.filter)
+                {
+                    glBindSampler(0, m_linearSampler.GetHandle());
+                }
+                else
+                {
+                    glBindSampler(0, m_nearestSampler.GetHandle());
+                }
             }
             else
             {
