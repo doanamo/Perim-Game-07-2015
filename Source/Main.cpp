@@ -9,14 +9,17 @@
 #include "Game/ComponentSystem.hpp"
 #include "Game/Components/Transform.hpp"
 #include "Game/Components/Script.hpp"
+#include "Game/Components/Animation.hpp"
 #include "Game/Components/Render.hpp"
 #include "Game/IdentitySystem.hpp"
 #include "Game/ScriptSystem.hpp"
 #include "Game/Scripts/Player.hpp"
+#include "Game/AnimationSystem.hpp"
 #include "Game/RenderSystem.hpp"
 
 #include "Graphics/Texture.hpp"
 #include "Graphics/SpriteSheet.hpp"
+#include "Graphics/AnimationList.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -92,6 +95,11 @@ int main(int argc, char* argv[])
     if(!scriptSystem.Initialize(context))
         return -1;
 
+    // Initialize the animation system.
+    Game::AnimationSystem animationSystem;
+    if(!animationSystem.Initialize(context))
+        return -1;
+
     // Initialize the render system.
     Game::RenderSystem renderSystem;
     if(!renderSystem.Initialize(context))
@@ -99,7 +107,7 @@ int main(int argc, char* argv[])
 
     // Create entities.
     {
-        auto spriteSheet = resourceManager.Load<Graphics::SpriteSheet>("Data/Character.sprites");
+        auto animationList = resourceManager.Load<Graphics::AnimationList>("Data/Character.animations");
 
         Game::EntityHandle entity = entitySystem.CreateEntity();
         identitySystem.SetEntityName(entity, "Player");
@@ -110,32 +118,37 @@ int main(int argc, char* argv[])
         auto script = componentSystem.Create<Game::Components::Script>(entity);
         script->Add<Game::Scripts::Player>();
 
+        auto animation = componentSystem.Create<Game::Components::Animation>(entity);
+        animation->SetAnimationList(animationList);
+        animation->Play("standing_down", Game::Components::Animation::PlayFlags::Loop);
+
         auto render = componentSystem.Create<Game::Components::Render>(entity);
-        render->SetDiffuseColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-        render->SetTexture(spriteSheet->GetTexture());
-        render->SetRectangle(spriteSheet->GetSprite("default"));
     }
 
     {
+        auto spriteSheet = resourceManager.Load<Graphics::SpriteSheet>("Data/Character.sprites");
+
         Game::EntityHandle entity = entitySystem.CreateEntity();
 
         auto transform = componentSystem.Create<Game::Components::Transform>(entity);
         transform->SetPosition(glm::vec2(3.0f, 0.0f));
 
         auto render = componentSystem.Create<Game::Components::Render>(entity);
-        render->SetDiffuseColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-        render->SetTexture(resourceManager.Load<Graphics::Texture>("Data/Textures/Check.png"));
+        render->SetTexture(spriteSheet->GetTexture());
+        render->SetRectangle(spriteSheet->GetSprite("friendly"));
     }
 
     {
+        auto spriteSheet = resourceManager.Load<Graphics::SpriteSheet>("Data/Character.sprites");
+
         Game::EntityHandle entity = entitySystem.CreateEntity();
 
         auto transform = componentSystem.Create<Game::Components::Transform>(entity);
         transform->SetPosition(glm::vec2(-3.0f, 0.0f));
 
         auto render = componentSystem.Create<Game::Components::Render>(entity);
-        render->SetDiffuseColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-        render->SetTexture(resourceManager.Load<Graphics::Texture>("Data/Textures/Check.png"));
+        render->SetTexture(spriteSheet->GetTexture());
+        render->SetRectangle(spriteSheet->GetSprite("friendly"));
     }
 
     // Tick timer once after the initialization to avoid big
@@ -162,6 +175,9 @@ int main(int argc, char* argv[])
 
         // Update entity scripts.
         scriptSystem.Update(timeDelta);
+
+        // Update entity animations.
+        animationSystem.Update(timeDelta);
 
         // Draw the scene.
         renderSystem.Draw();

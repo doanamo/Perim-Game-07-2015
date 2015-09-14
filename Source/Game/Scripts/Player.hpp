@@ -9,17 +9,21 @@ namespace System
     class InputState;
 }
 
+namespace Game
+{
+    namespace Components
+    {
+        class Transform;
+        class Animation;
+    }
+}
+
 //
 // Player
 //
 
 namespace Game
 {
-    namespace Components
-    {
-        class Transform;
-    }
-
     namespace Scripts
     {
         // Player script class.
@@ -35,6 +39,7 @@ namespace Game
         private:
             System::InputState*    m_inputState;
             Components::Transform* m_transform;
+            Components::Animation* m_animation;
         };
     }
 }

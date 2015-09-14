@@ -124,7 +124,7 @@ void RenderSystem::Draw()
     glm::mat4 view = glm::translate(glm::mat4(1.0f), -glm::vec3(m_screenSpace.GetOffset(), 0.0f));
 
     // Global rendering scale.
-    glm::vec3 renderScale(1.0 / 128.0f, 1.0 / 128.0f, 1.0f);
+    glm::vec3 renderScale(1.0 / 16.0f, 1.0 / 16.0f, 1.0f);
 
     // Clear the back buffer.
     m_basicRenderer->SetClearColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -152,7 +152,9 @@ void RenderSystem::Draw()
         info.filter = false;
 
         Graphics::BasicRenderer::Sprite::Data data;
-        data.transform = glm::scale(transform->CalculateMatrix(), renderScale);
+        data.transform = glm::translate(data.transform, glm::vec3(transform->GetPosition(), 0.0f));
+        //data.transform = glm::rotate(data.transform, transform->GetRotation(), glm::vec3(0.0f, 0.0f, -1.0f));
+        data.transform = glm::scale(data.transform, glm::vec3(transform->GetScale(), 1.0f) * renderScale);
         data.rectangle = render->GetRectangle();
         data.color = render->CalculateColor();
 

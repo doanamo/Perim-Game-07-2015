@@ -3,34 +3,32 @@
 #include "Precompiled.hpp"
 
 //
-// Script System
+// Animation System
 //
 
 namespace Game
 {
     // Forward declarations.
-    class EntitySystem;
     class ComponentSystem;
 
-    // Script system class.
-    class ScriptSystem
+    // Animation system class.
+    class AnimationSystem
     {
     public:
-        ScriptSystem();
-        ~ScriptSystem();
+        AnimationSystem();
+        ~AnimationSystem();
 
         // Restores instance to it's original state.
         void Cleanup();
 
-        // Initializes the script system.
+        // Initializes the animation system.
         bool Initialize(Context& context);
 
-        // Updates all script components.
+        // Updates all animation components.
         void Update(float timeDelta);
 
     private:
         // Context references.
-        EntitySystem*    m_entitySystem;
         ComponentSystem* m_componentSystem;
 
         // Initialization state.

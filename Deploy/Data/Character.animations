@@ -6,12 +6,87 @@ AnimationList =
     -- Animation list data.
     Animations =
     {
-        ["default"] =
+        ["standing_left"] =
         {
             {
-                Sprite = "default",
-                Offset = { 0, 0 },
-                Duration = 10.0,
+                Sprite = "standing_left",
+                Duration = 1.0,
+            },
+        },
+
+        ["standing_right"] =
+        {
+            {
+                Sprite = "standing_right",
+                Duration = 1.0,
+            },
+        },
+
+        ["standing_down"] =
+        {
+            {
+                Sprite = "standing_down",
+                Duration = 1.0,
+            },
+        },
+
+        ["standing_up"] =
+        {
+            {
+                Sprite = "standing_up",
+                Duration = 1.0,
+            },
+        },
+
+        ["moving_left"] =
+        {
+            {
+                Sprite = "moving_left_1",
+                Duration = 0.2,
+            },
+
+            {
+                Sprite = "moving_left_2",
+                Duration = 0.2,
+            },
+        },
+
+        ["moving_right"] =
+        {
+            {
+                Sprite = "moving_right_1",
+                Duration = 0.2,
+            },
+
+            {
+                Sprite = "moving_right_2",
+                Duration = 0.2,
+            },
+        },
+
+        ["moving_down"] =
+        {
+            {
+                Sprite = "moving_down_1",
+                Duration = 0.2,
+            },
+
+            {
+                Sprite = "moving_down_2",
+                Duration = 0.2,
+            },
+        },
+
+        ["moving_up"] =
+        {
+            {
+                Sprite = "moving_up_1",
+                Duration = 0.2,
+            },
+
+            {
+                Sprite = "moving_up_2",
+                Duration = 0.2,
             },
         },
     }
