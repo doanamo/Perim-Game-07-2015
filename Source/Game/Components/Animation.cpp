@@ -97,7 +97,7 @@ void Animation::Update(float timeDelta)
 
             m_render->SetTexture(m_animationList->GetTexture());
             m_render->SetRectangle(m_currentFrame->rectangle);
-            //m_render->SetOffset(m_currentFrame->offset);
+            m_render->SetOffset(m_currentFrame->offset);
 
             m_update = false;
         }

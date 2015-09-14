@@ -18,6 +18,7 @@ AnimationList =
         {
             {
                 Sprite = "standing_right",
+                Offset = { 1, 0 },
                 Duration = 1.0,
             },
         },
@@ -55,11 +56,13 @@ AnimationList =
         {
             {
                 Sprite = "moving_right_1",
+                Offset = { 1, 0 },
                 Duration = 0.2,
             },
 
             {
                 Sprite = "moving_right_2",
+                Offset = { 1, 0 },
                 Duration = 0.2,
             },
         },
@@ -73,6 +76,7 @@ AnimationList =
 
             {
                 Sprite = "moving_down_2",
+                Offset = { 1, 0 },
                 Duration = 0.2,
             },
         },
@@ -86,6 +90,7 @@ AnimationList =
 
             {
                 Sprite = "moving_up_2",
+                Offset = { 1, 0 },
                 Duration = 0.2,
             },
         },

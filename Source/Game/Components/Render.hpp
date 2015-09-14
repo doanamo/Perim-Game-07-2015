@@ -35,6 +35,9 @@ namespace Game
             // Calculates the final color.
             glm::vec4 CalculateColor() const;
 
+            // Sets the offset.
+            void SetOffset(const glm::vec2& offset);
+
             // Sets the texture.
             void SetTexture(TexturePtr texture);
             void SetTexture(TexturePtr texture, const glm::vec4& rectangle);
@@ -54,8 +57,8 @@ namespace Game
             // Sets transparency state.
             void SetTransparent(bool transparent);
 
-            // Gets the transform component.
-            Transform* GetTransform();
+            // Gets the offset.
+            const glm::vec2& GetOffset() const;
 
             // Gets the texture.
             const TexturePtr& GetTexture() const;
@@ -75,6 +78,9 @@ namespace Game
             // Checks if is transparent.
             bool IsTransparent() const;
 
+            // Gets the transform component.
+            Transform* GetTransform();
+
         protected:
             // Finalizes the render component.
             bool Finalize(EntityHandle self, const Context& context) override;
@@ -85,6 +91,7 @@ namespace Game
             glm::vec4 m_rectangle;
 
             // Render parameters.
+            glm::vec2 m_offset;
             glm::vec4 m_diffuseColor;
             glm::vec4 m_emissiveColor;
             float m_emissivePower;

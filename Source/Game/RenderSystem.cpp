@@ -155,6 +155,7 @@ void RenderSystem::Draw()
         data.transform = glm::translate(data.transform, glm::vec3(transform->GetPosition(), 0.0f));
         //data.transform = glm::rotate(data.transform, transform->GetRotation(), glm::vec3(0.0f, 0.0f, -1.0f));
         data.transform = glm::scale(data.transform, glm::vec3(transform->GetScale(), 1.0f) * renderScale);
+        data.transform = glm::translate(data.transform, glm::vec3(render->GetOffset(), 0.0f));
         data.rectangle = render->GetRectangle();
         data.color = render->CalculateColor();
 

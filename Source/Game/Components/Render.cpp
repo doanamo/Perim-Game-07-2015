@@ -7,6 +7,7 @@ using namespace Game;
 using namespace Components;
 
 Render::Render() :
+    m_offset(0.0f, 0.0f),
     m_rectangle(0.0f, 0.0f, 1.0f, 1.0f),
     m_diffuseColor(1.0f, 1.0f, 1.0f, 1.0f),
     m_emissiveColor(1.0f, 1.0f, 1.0f, 1.0f),
@@ -31,6 +32,11 @@ bool Render::Finalize(EntityHandle self, const Context& context)
     if(m_transform == nullptr) return false;
 
     return true;
+}
+
+void Render::SetOffset(const glm::vec2& offset)
+{
+    m_offset = offset;
 }
 
 glm::vec4 Render::CalculateColor() const
@@ -75,9 +81,9 @@ void Render::SetTransparent(bool transparent)
     m_transparent = transparent;
 }
 
-Transform* Render::GetTransform()
+const glm::vec2& Render::GetOffset() const
 {
-    return m_transform;
+    return m_offset;
 }
 
 const Render::TexturePtr& Render::GetTexture() const
@@ -108,4 +114,9 @@ float Render::GetEmissivePower() const
 bool Render::IsTransparent() const
 {
     return m_transparent;
+}
+
+Transform* Render::GetTransform()
+{
+    return m_transform;
 }
