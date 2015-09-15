@@ -60,7 +60,7 @@ void Player::OnUpdate(EntityHandle self, float timeDelta)
         float rotation = m_transform->GetRotation();
 
         // Calculate new position.
-        position += glm::normalize(direction) * 2.0f * timeDelta;
+        position += glm::normalize(direction) * 3.0f * timeDelta;
         m_transform->SetPosition(position);
 
         // Calculate new rotation.

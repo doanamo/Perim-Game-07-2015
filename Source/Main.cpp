@@ -131,7 +131,7 @@ int main(int argc, char* argv[])
         Game::EntityHandle entity = entitySystem.CreateEntity();
 
         auto transform = componentSystem.Create<Game::Components::Transform>(entity);
-        transform->SetPosition(glm::vec2(3.0f, 0.0f));
+        transform->SetPosition(glm::vec2(-2.0f, 2.0f));
 
         auto render = componentSystem.Create<Game::Components::Render>(entity);
         render->SetTexture(spriteSheet->GetTexture());
@@ -144,7 +144,33 @@ int main(int argc, char* argv[])
         Game::EntityHandle entity = entitySystem.CreateEntity();
 
         auto transform = componentSystem.Create<Game::Components::Transform>(entity);
-        transform->SetPosition(glm::vec2(-3.0f, 0.0f));
+        transform->SetPosition(glm::vec2(2.0f, 2.0f));
+
+        auto render = componentSystem.Create<Game::Components::Render>(entity);
+        render->SetTexture(spriteSheet->GetTexture());
+        render->SetRectangle(spriteSheet->GetSprite("friendly"));
+    }
+
+    {
+        auto spriteSheet = resourceManager.Load<Graphics::SpriteSheet>("Data/Character.sprites");
+
+        Game::EntityHandle entity = entitySystem.CreateEntity();
+
+        auto transform = componentSystem.Create<Game::Components::Transform>(entity);
+        transform->SetPosition(glm::vec2(-2.0f, -2.0f));
+
+        auto render = componentSystem.Create<Game::Components::Render>(entity);
+        render->SetTexture(spriteSheet->GetTexture());
+        render->SetRectangle(spriteSheet->GetSprite("friendly"));
+    }
+
+    {
+        auto spriteSheet = resourceManager.Load<Graphics::SpriteSheet>("Data/Character.sprites");
+
+        Game::EntityHandle entity = entitySystem.CreateEntity();
+
+        auto transform = componentSystem.Create<Game::Components::Transform>(entity);
+        transform->SetPosition(glm::vec2(2.0f, -2.0f));
 
         auto render = componentSystem.Create<Game::Components::Render>(entity);
         render->SetTexture(spriteSheet->GetTexture());

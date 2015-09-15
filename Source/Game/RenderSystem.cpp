@@ -40,6 +40,7 @@ void RenderSystem::Cleanup()
     // Cleanup sprite list.
     Utility::ClearContainer(m_spriteInfo);
     Utility::ClearContainer(m_spriteData);
+    Utility::ClearContainer(m_spriteSort);
 
     // Reset initialization state.
     m_initialized = false;
@@ -100,6 +101,7 @@ bool RenderSystem::Initialize(Context& context)
     const int SpriteListSize = 128;
     m_spriteInfo.reserve(SpriteListSize);
     m_spriteData.reserve(SpriteListSize);
+    m_spriteSort.reserve(SpriteListSize);
 
     // Success!
     return m_initialized = true;
@@ -162,6 +164,70 @@ void RenderSystem::Draw()
         m_spriteInfo.push_back(info);
         m_spriteData.push_back(data);
     }
+
+    // Create sort permutation.
+    auto SpriteSort = [&](const int& a, const int& b)
+    {
+        // Get sprite info and data.
+        const auto& spriteInfoA = m_spriteInfo[a];
+        const auto& spriteDataA = m_spriteData[a];
+
+        const auto& spriteInfoB = m_spriteInfo[b];
+        const auto& spriteDataB = m_spriteData[b];
+
+        // Sort by transparency (opaque first, transparent second).
+        if(spriteInfoA.transparent < spriteInfoB.transparent)
+            return true;
+
+        if(spriteInfoA.transparent == spriteInfoB.transparent)
+        {
+            if(spriteInfoA.transparent)
+            {
+                // Sort transparent by depth (back to front).
+                if(spriteDataA.transform[3][2] < spriteDataB.transform[3][2])
+                    return true;
+
+                if(spriteDataA.transform[3][2] == spriteDataB.transform[3][2])
+                {
+                    // Sort by the y position.
+                    if(spriteDataA.transform[3][1] > spriteDataB.transform[3][1])
+                        return true;
+
+                    if(spriteDataA.transform[3][1] == spriteDataB.transform[3][1])
+                    {
+                        // Sort by texture.
+                        if(spriteInfoA.texture < spriteInfoB.texture)
+                            return true;
+                    }
+                }
+            }
+            else
+            {
+                // Sort opaque by depth (front to back).
+                if(spriteDataA.transform[3][2] > spriteDataB.transform[3][2])
+                    return true;
+
+                if(spriteDataA.transform[3][2] == spriteDataB.transform[3][2])
+                {
+                    // Sort by texture.
+                    if(spriteInfoA.texture < spriteInfoB.texture)
+                        return true;
+                }
+            }
+        }
+
+        return false;
+    };
+
+    assert(m_spriteInfo.size() == m_spriteData.size());
+    m_spriteSort.resize(m_spriteInfo.size());
+
+    std::iota(m_spriteSort.begin(), m_spriteSort.end(), 0);
+    std::sort(m_spriteSort.begin(), m_spriteSort.end(), SpriteSort);
+
+    // Sort sprite lists.
+    Utility::Reorder(m_spriteInfo, m_spriteSort);
+    Utility::Reorder(m_spriteData, m_spriteSort);
 
     // Render sprites.
     m_basicRenderer->DrawSprites(m_spriteInfo, m_spriteData, m_screenSpace.GetTransform() * view);

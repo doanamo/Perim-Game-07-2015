@@ -26,6 +26,7 @@ namespace Game
         // Type delcarations.
         typedef std::vector<Graphics::BasicRenderer::Sprite::Info> SpriteInfoList;
         typedef std::vector<Graphics::BasicRenderer::Sprite::Data> SpriteDataList;
+        typedef std::vector<std::size_t> SpriteSortList;
 
     public:
         RenderSystem();
@@ -52,6 +53,7 @@ namespace Game
         // Sprite list.
         SpriteInfoList m_spriteInfo;
         SpriteDataList m_spriteData;
+        SpriteSortList m_spriteSort;
 
         // Initialization state.
         bool m_initialized;

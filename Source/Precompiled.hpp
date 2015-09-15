@@ -7,6 +7,7 @@
 #include <limits>
 #include <memory>
 #include <chrono>
+#include <numeric>
 #include <algorithm>
 #include <functional>
 #include <fstream>
