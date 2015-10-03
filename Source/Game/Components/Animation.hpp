@@ -24,10 +24,9 @@ namespace Game
             {
                 enum
                 {
-                    None = 0,
-                    Loop = 1 << 0,
-                    Reset = 1 << 1,
-                    Continue = 1 << 2,
+                    None     = 0,
+                    Continue = 1 << 0,
+                    Loop     = 1 << 1,
                 };
 
                 typedef unsigned int Type;

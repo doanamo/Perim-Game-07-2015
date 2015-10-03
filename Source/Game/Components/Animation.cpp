@@ -128,7 +128,7 @@ void Animation::Play(std::string name, PlayFlags::Type flags)
     }
 
     // Play the animation.
-    bool continueAnimation = flags & PlayFlags::Continue ? true : false;
+    bool continueAnimation = (flags & PlayFlags::Continue) != 0;
     continueAnimation = continueAnimation && m_currentAnimation == animation;
     continueAnimation = continueAnimation && m_frameIndex < m_currentAnimation->frames.size();
 
