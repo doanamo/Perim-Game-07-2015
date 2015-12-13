@@ -117,6 +117,8 @@ Set(SourceFiles
     "Game/AnimationSystem.cpp"
     "Game/RenderSystem.hpp"
     "Game/RenderSystem.cpp"
+    "Game/TileSet.hpp"
+    "Game/TileSet.cpp"
 )
 
 #

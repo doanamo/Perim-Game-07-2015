@@ -20,6 +20,7 @@
 #include "Graphics/Texture.hpp"
 #include "Graphics/SpriteSheet.hpp"
 #include "Graphics/AnimationList.hpp"
+#include "Game/TileSet.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -176,6 +177,9 @@ int main(int argc, char* argv[])
         render->SetTexture(spriteSheet->GetTexture());
         render->SetRectangle(spriteSheet->GetSprite("friendly"));
     }
+
+    //
+    auto tileSet = resourceManager.Load<Game::TileSet>("Data/Dungeon.tiles");
 
     // Tick timer once after the initialization to avoid big
     // time delta value right at the start of the first frame.

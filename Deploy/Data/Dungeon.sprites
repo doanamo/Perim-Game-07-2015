@@ -1,0 +1,65 @@
+SpriteSheet =
+{
+    -- Sprite sheet texture.
+    Texture = "Data/Dungeon.png",
+
+    -- Sprite sheet data.
+    Sprites =
+    {
+        -- Dungeon floor.
+        ["dungeon_floor"] = { 32, 96, 16, 16 },
+        
+        -- Dungeon wall.
+        ["dungeon_wall"] = { 0, 80, 16, 16 },
+        ["dungeon_wall_1a"] = { 16, 80, 16, 16 },
+        ["dungeon_wall_1b"] = { 32, 80, 16, 16 },
+        ["dungeon_wall_1c"] = { 48, 80, 16, 16 },
+        
+        -- Dungeon ceiling.
+        ["dungeon_ceiling_1a"] = { 0, 0, 16, 16 },
+        ["dungeon_ceiling_1b"] = { 0, 16, 16, 16 },
+        ["dungeon_ceiling_1c"] = { 0, 32, 16, 16 },
+        ["dungeon_ceiling_1d"] = { 16, 48, 16, 16 },
+        ["dungeon_ceiling_1e"] = { 32, 48, 16, 16 },
+        ["dungeon_ceiling_1f"] = { 48, 48, 16, 16 },
+        
+        ["dungeon_ceiling_2nw"] = { 16, 0, 16, 16 },
+        ["dungeon_ceiling_2n"] = { 32, 0, 16, 16 },
+        ["dungeon_ceiling_2ne"] = { 48, 0, 16, 16 },
+        ["dungeon_ceiling_2w"] = { 16, 16, 16, 16 },
+        ["dungeon_ceiling_2c"] = { 32, 16, 16, 16 },
+        ["dungeon_ceiling_2e"] = { 48, 16, 16, 16 },
+        ["dungeon_ceiling_2sw"] = { 16, 32, 16, 16 },
+        ["dungeon_ceiling_2s"] = { 32, 32, 16, 16 },
+        ["dungeon_ceiling_2se"] = { 48, 32, 16, 16 },
+
+        ["dungeon_ceiling_3nw"] = { 64, 0, 16, 16 },
+        ["dungeon_ceiling_3n"] = { 80, 0, 16, 16 },
+        ["dungeon_ceiling_3ne"] = { 96, 0, 16, 16 },
+        ["dungeon_ceiling_3w"] = { 64, 16, 16, 16 },
+        ["dungeon_ceiling_3c"] = { 80, 16, 16, 16 },
+        ["dungeon_ceiling_3e"] = { 96, 16, 16, 16 },
+        ["dungeon_ceiling_3sw"] = { 64, 32, 16, 16 },
+        ["dungeon_ceiling_3s"] = { 80, 32, 16, 16 },
+        ["dungeon_ceiling_3se"] = { 96, 32, 16, 16 },
+        
+        ["dungeon_ceiling_4nw"] = { 112, 0, 16, 16 },
+        ["dungeon_ceiling_4n"] = { 128, 0, 16, 16 },
+        ["dungeon_ceiling_4ne"] = { 144, 0, 16, 16 },
+        ["dungeon_ceiling_4w"] = { 112, 16, 16, 16 },
+        ["dungeon_ceiling_4c"] = { 128, 16, 16, 16 },
+        ["dungeon_ceiling_4e"] = { 144, 16, 16, 16 },
+        ["dungeon_ceiling_4sw"] = { 112, 32, 16, 16 },
+        ["dungeon_ceiling_4s"] = { 128, 32, 16, 16 },
+        ["dungeon_ceiling_4se"] = { 144, 32, 16, 16 },
+        
+        ["dungeon_ceiling_5a"] = { 64, 48, 16, 16 },
+        ["dungeon_ceiling_5b"] = { 80, 48, 16, 16 },
+        ["dungeon_ceiling_5c"] = { 64, 64, 16, 16 },
+        ["dungeon_ceiling_5d"] = { 80, 64, 16, 16 },
+        ["dungeon_ceiling_5e"] = { 96, 48, 16, 16 },
+        ["dungeon_ceiling_5f"] = { 112, 48, 16, 16 },
+        ["dungeon_ceiling_5g"] = { 96, 64, 16, 16 },
+        ["dungeon_ceiling_5h"] = { 112, 64, 16, 16 },
+    }
+}

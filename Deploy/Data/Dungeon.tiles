@@ -1,0 +1,571 @@
+Layers = 
+{
+    Floor   = 0.0,
+    Wall    = 0.1,
+    Ceiling = 0.2,
+}
+
+TileSet =
+{
+    -- Tile set sprite sheet.
+    SpriteSheet = "Data/dungeon.sprites",
+
+    -- Tile set data.
+    Tiles =
+    {
+        ["empty"] =
+        {
+            Sprite = "dungeon_ceiling_2c",
+            Layer = Layers.Ceiling,
+            
+            Rules =
+            {
+                {
+                    Sprite = "dungeon_ceiling_2s",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XXX
+                        -- X X
+                        -- WWW
+                    
+                        ["South"] = "wall",
+                        ["SouthEast"] = "wall",
+                        ["SouthWest"] = "wall",
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_4ne",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XXX
+                        -- X X
+                        -- WWX
+                    
+                        ["South"] = "wall",
+                        ["SouthWest"] = "wall",
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_4nw",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XXX
+                        -- X X
+                        -- XWW
+                    
+                        ["South"] = "wall",
+                        ["SouthEast"] = "wall",
+                    },
+                },
+            }
+        },
+
+        ["floor"] =
+        {
+            Sprite = "dungeon_floor",
+            Layer = Layers.Floor,
+        },
+
+        ["wall"] =
+        {
+            Sprite = "dungeon_ceiling_2c",
+            Layer = Layers.Ceiling,
+            
+            Rules =
+            {
+                {
+                    Sprite = "dungeon_wall",
+                    Layer = Layers.Wall,
+                    Transparent = true,
+                    
+                    Neighbors =
+                    {
+                        -- XXX
+                        -- W W
+                        -- XFX
+                    
+                        ["South"] = "floor",
+                        ["East"] = "wall",
+                        ["West"] = "wall",
+                    },
+                },
+                {
+                    Sprite = "dungeon_wall_1a",
+                    Layer = Layers.Wall,
+                    Transparent = true,
+                    
+                    Neighbors =
+                    {
+                        -- XXX
+                        -- F W
+                        -- XFX
+                    
+                        ["South"] = "floor",
+                        ["East"] = "wall",
+                        ["West"] = "floor",
+                    },
+                },
+                {
+                    Sprite = "dungeon_wall_1b",
+                    Layer = Layers.Wall,
+                    Transparent = true,
+                    
+                    Neighbors =
+                    {
+                        -- XXX
+                        -- W F
+                        -- XFX
+                    
+                        ["South"] = "floor",
+                        ["East"] = "floor",
+                        ["West"] = "wall",
+                    },
+                },
+                {
+                    Sprite = "dungeon_wall_1c",
+                    Layer = Layers.Wall,
+                    Transparent = true,
+                    
+                    Neighbors =
+                    {
+                        -- XXX
+                        -- FWF
+                        -- XFX
+                    
+                        ["South"] = "floor",
+                        ["East"] = "floor",
+                        ["West"] = "floor",
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_1a",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XFX
+                        -- F F
+                        -- XWX
+                        -- XWX
+                    
+                        ["North"] = "floor",
+                        ["South"] = "wall",
+                        ["East"] = "floor",
+                        ["West"] = "floor",
+                        
+                        {
+                            Offset = { 0, -2 },
+                            Rule = "wall",
+                        },
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_1b",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XWX
+                        -- F F
+                        -- XWX
+                        -- XWX
+                    
+                        ["North"] = "wall",
+                        ["South"] = "wall",
+                        ["East"] = "floor",
+                        ["West"] = "floor",
+                        
+                        {
+                            Offset = { 0, -2 },
+                            Rule = "wall",
+                        },
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_1c",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XWX
+                        -- F F
+                        -- XWX
+                        -- XFX
+                    
+                        ["North"] = "wall",
+                        ["South"] = "wall",
+                        ["East"] = "floor",
+                        ["West"] = "floor",
+                        
+                        {
+                            Offset = { 0, -2 },
+                            Rule = "floor",
+                        },
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_1d",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XFX
+                        -- F W
+                        -- XWX
+                        -- XFX
+                    
+                        ["North"] = "floor",
+                        ["South"] = "wall",
+                        ["East"] = "wall",
+                        ["West"] = "floor",
+                        
+                        {
+                            Offset = { 0, -2 },
+                            Rule = "floor",
+                        },
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_1e",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XFX
+                        -- W W
+                        -- XWX
+                        -- XFX
+                    
+                        ["North"] = "floor",
+                        ["South"] = "wall",
+                        ["East"] = "wall",
+                        ["West"] = "wall",
+                        
+                        {
+                            Offset = { 0, -2 },
+                            Rule = "floor",
+                        },
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_1f",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XFX
+                        -- W F
+                        -- XWX
+                        -- XFX
+                    
+                        ["North"] = "floor",
+                        ["South"] = "wall",
+                        ["East"] = "floor",
+                        ["West"] = "wall",
+                        
+                        {
+                            Offset = { 0, -2 },
+                            Rule = "floor",
+                        },
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_5a",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XFX
+                        -- W W
+                        -- XWW
+                        -- XXF
+                        
+                        ["North"] = "floor",
+                        ["South"] = "wall",
+                        ["East"] = "wall",
+                        ["West"] = "wall",
+                        ["SouthEast"] = "wall",
+                        
+                        {
+                            Offset = { 1, -2 },
+                            Rule = "floor",
+                        },
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_5f",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XFX
+                        -- W W
+                        -- WWX
+                        -- FXX
+                        
+                        ["North"] = "floor",
+                        ["South"] = "wall",
+                        ["East"] = "wall",
+                        ["West"] = "wall",
+                        ["SouthWest"] = "wall",
+                        
+                        {
+                            Offset = { -1, -2 },
+                            Rule = "floor",
+                        },
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_2n",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XFX
+                        -- W W
+                        -- XXX
+                    
+                        ["North"] = "floor",
+                        ["East"] = "wall",
+                        ["West"] = "wall",
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_2s",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XXX
+                        -- W W
+                        -- XFX
+                    
+                        ["South"] = "floor",
+                        ["East"] = "wall",
+                        ["West"] = "wall",
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_2e",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XWX
+                        -- W F
+                        -- XWX
+                        -- XWX
+                    
+                        ["North"] = "wall",
+                        ["South"] = "wall",
+                        ["East"] = "floor",
+                        ["West"] = "!floor",
+                        
+                        {
+                            Offset = { 0, -2 },
+                            Rule = "!floor",
+                        },
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_2e",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XXX
+                        -- X W
+                        -- XWF
+                        -- XWX
+                    
+                        ["South"] = "wall",
+                        ["East"] = "wall",
+                        ["SouthEast"] = "floor",
+                        
+                        {
+                            Offset = { 0, -2 },
+                            Rule = "!floor",
+                        },
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_2w",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XWX
+                        -- F W
+                        -- XWX
+                        -- XWX
+                    
+                        ["North"] = "wall",
+                        ["South"] = "wall",
+                        ["East"] = "!floor",
+                        ["West"] = "floor",
+                        
+                        {
+                            Offset = { 0, -2 },
+                            Rule = "!floor",
+                        },
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_2w",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XXX
+                        -- W X
+                        -- FWX
+                        -- XWX
+                    
+                        ["South"] = "wall",
+                        ["West"] = "wall",
+                        ["SouthWest"] = "floor",
+                        
+                        {
+                            Offset = { 0, -2 },
+                            Rule = "!floor",
+                        },
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_2ne",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XFX
+                        -- W F
+                        -- XWX
+                    
+                        ["North"] = "floor",
+                        ["South"] = "wall",
+                        ["East"] = "floor",
+                        ["West"] = "wall",
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_2nw",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XFX
+                        -- F W
+                        -- XWX
+                    
+                        ["North"] = "floor",
+                        ["South"] = "wall",
+                        ["East"] = "wall",
+                        ["West"] = "floor",
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_2se",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XWX
+                        -- W F
+                        -- XWX
+                        -- XFX
+                    
+                        ["North"] = "wall",
+                        ["South"] = "wall",
+                        ["East"] = "floor",
+                        ["West"] = "!floor",
+                        
+                        {
+                            Offset = { 0, -2 },
+                            Rule = "floor",
+                        },
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_2sw",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XWX
+                        -- F W
+                        -- XWX
+                        -- XFX
+                    
+                        ["North"] = "wall",
+                        ["South"] = "wall",
+                        ["East"] = "!floor",
+                        ["West"] = "floor",
+                        
+                        {
+                            Offset = { 0, -2 },
+                            Rule = "floor",
+                        },
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_3c",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XFX
+                        -- F F
+                        -- XWX
+                        -- XFX
+                    
+                        ["North"] = "floor",
+                        ["South"] = "wall",
+                        ["East"] = "floor",
+                        ["West"] = "floor",
+                        
+                        {
+                            Offset = { 0, -2 },
+                            Rule = "floor",
+                        },
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_4se",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- FWX
+                        -- WWX
+                        -- XXX
+                    
+                        ["North"] = "wall",
+                        ["West"] = "wall",
+                        ["NorthWest"] = "floor",
+                    },
+                },
+                {
+                    Sprite = "dungeon_ceiling_4sw",
+                    Layer = Layers.Ceiling,
+                    
+                    Neighbors =
+                    {
+                        -- XWF
+                        -- XWW
+                        -- XXX
+                    
+                        ["North"] = "wall",
+                        ["East"] = "wall",
+                        ["NorthEast"] = "floor",
+                    },
+                },
+            },
+        },
+    }
+}
