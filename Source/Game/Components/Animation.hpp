@@ -27,6 +27,7 @@ namespace Game
                     None     = 0,
                     Continue = 1 << 0,
                     Loop     = 1 << 1,
+                    Reset    = 1 << 2,
                 };
 
                 typedef unsigned int Type;
